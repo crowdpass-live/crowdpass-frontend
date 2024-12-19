@@ -1,0 +1,427 @@
+[
+  {
+    "type": "impl",
+    "name": "EventContractImpl",
+    "interface_name": "contract::event_contract::IEventContract"
+  },
+  {
+    "type": "struct",
+    "name": "core::byte_array::ByteArray",
+    "members": [
+      {
+        "name": "data",
+        "type": "core::array::Array::<core::bytes_31::bytes31>"
+      },
+      {
+        "name": "pending_word",
+        "type": "core::felt252"
+      },
+      {
+        "name": "pending_word_len",
+        "type": "core::integer::u32"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "core::integer::u256",
+    "members": [
+      {
+        "name": "low",
+        "type": "core::integer::u128"
+      },
+      {
+        "name": "high",
+        "type": "core::integer::u128"
+      }
+    ]
+  },
+  {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
+    "type": "struct",
+    "name": "contract::event_contract::Events",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u32"
+      },
+      {
+        "name": "name",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "description",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "image",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "location",
+        "type": "core::byte_array::ByteArray"
+      },
+      {
+        "name": "organizer",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "event_type",
+        "type": "core::felt252"
+      },
+      {
+        "name": "category",
+        "type": "core::felt252"
+      },
+      {
+        "name": "total_tickets",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "tickets_sold",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "ticket_price",
+        "type": "core::integer::u256"
+      },
+      {
+        "name": "start_date",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "end_date",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "is_canceled",
+        "type": "core::bool"
+      },
+      {
+        "name": "event_ticket_addr",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "type": "interface",
+    "name": "contract::event_contract::IEventContract",
+    "items": [
+      {
+        "type": "function",
+        "name": "create_event",
+        "inputs": [
+          {
+            "name": "_name",
+            "type": "core::byte_array::ByteArray"
+          },
+          {
+            "name": "_description",
+            "type": "core::byte_array::ByteArray"
+          },
+          {
+            "name": "_image",
+            "type": "core::byte_array::ByteArray"
+          },
+          {
+            "name": "_location",
+            "type": "core::byte_array::ByteArray"
+          },
+          {
+            "name": "_category",
+            "type": "core::felt252"
+          },
+          {
+            "name": "_event_type",
+            "type": "core::felt252"
+          },
+          {
+            "name": "_start_date",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "_end_date",
+            "type": "core::integer::u64"
+          },
+          {
+            "name": "_ticket_price",
+            "type": "core::integer::u256"
+          },
+          {
+            "name": "_total_tickets",
+            "type": "core::integer::u256"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::bool"
+          }
+        ],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "get_all_events",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::array::Array::<contract::event_contract::Events>"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "cancel_event",
+        "inputs": [
+          {
+            "name": "_event_id",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "purchase_ticket",
+        "inputs": [
+          {
+            "name": "_event_id",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "external"
+      },
+      {
+        "type": "function",
+        "name": "get_event",
+        "inputs": [
+          {
+            "name": "_event_id",
+            "type": "core::integer::u32"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "contract::event_contract::Events"
+          }
+        ],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "get_event_count",
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "core::integer::u32"
+          }
+        ],
+        "state_mutability": "view"
+      }
+    ]
+  },
+  {
+    "type": "impl",
+    "name": "ticketsImpl",
+    "interface_name": "contract::tickets::tickets::ITicketFactory"
+  },
+  {
+    "type": "interface",
+    "name": "contract::tickets::tickets::ITicketFactory",
+    "items": [
+      {
+        "type": "function",
+        "name": "deploy_ticket",
+        "inputs": [
+          {
+            "name": "pauser",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "minter",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "salt",
+            "type": "core::felt252"
+          }
+        ],
+        "outputs": [
+          {
+            "type": "core::starknet::contract_address::ContractAddress"
+          }
+        ],
+        "state_mutability": "external"
+      }
+    ]
+  },
+  {
+    "type": "constructor",
+    "name": "constructor",
+    "inputs": [
+      {
+        "name": "_token_address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "contract::event_contract::EventContract::EventCreated",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "organizer",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "contract::event_contract::EventContract::EventRescheduled",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "start_date",
+        "type": "core::integer::u64",
+        "kind": "data"
+      },
+      {
+        "name": "end_date",
+        "type": "core::integer::u64",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "contract::event_contract::EventContract::EventCanceled",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "id",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "is_canceled",
+        "type": "core::bool",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "contract::event_contract::EventContract::TicketPurchased",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "event_id",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "buyer",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      {
+        "name": "amount",
+        "type": "core::integer::u256",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "contract::event_contract::EventContract::TicketRecliamed",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "event_id",
+        "type": "core::integer::u32",
+        "kind": "data"
+      },
+      {
+        "name": "user_acct",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      {
+        "name": "amount",
+        "type": "core::integer::u256",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "contract::tickets::tickets::TicketFactory::Event",
+    "kind": "enum",
+    "variants": []
+  },
+  {
+    "type": "event",
+    "name": "contract::event_contract::EventContract::Event",
+    "kind": "enum",
+    "variants": [
+      {
+        "name": "EventCreated",
+        "type": "contract::event_contract::EventContract::EventCreated",
+        "kind": "nested"
+      },
+      {
+        "name": "EventRescheduled",
+        "type": "contract::event_contract::EventContract::EventRescheduled",
+        "kind": "nested"
+      },
+      {
+        "name": "EventCanceled",
+        "type": "contract::event_contract::EventContract::EventCanceled",
+        "kind": "nested"
+      },
+      {
+        "name": "TicketPurchased",
+        "type": "contract::event_contract::EventContract::TicketPurchased",
+        "kind": "nested"
+      },
+      {
+        "name": "TicketRecliamed",
+        "type": "contract::event_contract::EventContract::TicketRecliamed",
+        "kind": "nested"
+      },
+      {
+        "name": "TicketFactoryEvent",
+        "type": "contract::tickets::tickets::TicketFactory::Event",
+        "kind": "nested"
+      }
+    ]
+  }
+]

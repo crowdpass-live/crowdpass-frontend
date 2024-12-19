@@ -1,0 +1,13 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Facebook">
+<g clip-path="url(#clip0_590_5767)">
+<rect width="32" height="32" rx="16" fill="white"/>
+<path id="Subtract" fill-rule="evenodd" clip-rule="evenodd" d="M100 0H0V100H100V0ZM20.0506 14.1051L19.5946 16.9994H17.242V24H14.0824V16.9994H11.52V14.1051H14.0824V11.8982C14.0824 9.38836 15.5915 8 17.9031 8C18.6668 8.00933 19.4287 8.07432 20.1828 8.19446V10.6591H18.8879C17.6341 10.6591 17.242 11.4324 17.242 12.2239V14.1051H20.0506Z" fill="#337FFF"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_590_5767">
+<rect width="32" height="32" rx="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>
