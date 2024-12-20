@@ -5,13 +5,13 @@ import { Button } from '../../ui/button'
 const AboutSection = () => {
     return (
         <div className='flex justify-center items-center py-12'>
-            <div className='flex flex-col -mr-10'>
+            <div className='md:flex flex-col -mr-10 hidden '>
                 <img src="/assets/about-image-podcast.jpg" alt="podcast-image" className='w-96 h-72 rounded-t-2xl' />
                 <img src="/assets/about-image-concert.jpg" alt="concert-image" className='w-96 h-72 rounded-b-2xl' />
             </div>
             <Card className="w-[95%] md:w-[470px] gap-12 py-14 z-10 bg-deep-blue px-6 border-deep-blue rounded-2xl">
                 <CardHeader>
-                    <CardTitle className="text-white text-4xl font-semibold">
+                    <CardTitle className="text-white text-4xl raleway font-semibold">
                         About Us
                     </CardTitle>
                 </CardHeader>
@@ -25,7 +25,7 @@ const AboutSection = () => {
                     </Button>
                 </CardFooter>
             </Card>
-            <div className='flex flex-col -ml-10'>
+            <div className='md:flex flex-col -ml-10 hidden'>
                 <img src="/assets/about-image-get-together.jpg" alt="get-together-image" className='w-96 h-72 rounded-t-2xl' />
                 <img src="/assets/about-image-dinner.jpg" alt="dinner-image" className='w-96 h-72 rounded-b-2xl' />
             </div>

@@ -9,7 +9,7 @@ import HiwSection from "@/components/landing-page/sections/hiw-section";
 
 export default function Home() {
   return (
-    <div className='overflow-x-hidden bg-gradient-to-b from-[#14141A] to-[#14141A]/50'>
+    <div className='overflow-x-hidden p-2 bg-gradient-to-b from-[#14141A] to-[#14141A]/50'>
     <HeroSection />
     <AboutSection />
     <FeaturesSection />

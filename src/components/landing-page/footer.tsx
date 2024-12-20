@@ -5,10 +5,10 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="bg-deep-blue flex flex-col justify-center items-center py-14 mt-10">
-      <div className="flex flex-col max-w-[1280px] xl:w-[1280px] gap-8">
-        <div className="flex gap-6 w-full justify-between items-start">
-          <div className="flex flex-col gap-3 w-[430px]">
+    <div className="bg-deep-blue flex flex-col justify-center items-center py-10 mt-10 rounded-md max-w-[1280px] xl:w-[1280px] mx-auto">
+      <div className="flex flex-col max-w-[1280px] xl:w-[1280px] gap-8 lg:px-6">
+        <div className="flex flex-col lg:flex-row gap-6 w-full justify-between items-start">
+          <div className="flex flex-col mx-4 gap-3 lg:w-[430px]">
             <img src="/assets/crowdpass_logo.png" height={48} width={300} />
             <p className="text-white pt-3">
               Welcome to CrowdPass, your ultimate event management platform. We
@@ -19,14 +19,14 @@ const Footer = () => {
               <input
                 type="text"
                 placeholder="Enter email to subsribe to our newsletter"
-                className="border-none bg-deep-blue text-white"
+                className="border-none bg-deep-blue text-white w-full"
               />
               <Button className="text-primary bg-light-black hover:text-deep-blue">
                 <BsSendFill />
               </Button>
             </div>
           </div>
-          <div className="flex gap-10">
+          <div className="flex mx-4 gap-1 md:gap-x-20 lg:gap-10">
             <div className="flex flex-col gap-6">
               <h1 className="font-bold text-xl  text-white">Quick Links</h1>
               <div className="flex flex-col gap-6">
@@ -74,8 +74,8 @@ const Footer = () => {
             </div>
           </div>
         </div>
-        <hr />
-        <div className="flex gap-6 w-full justify-between items-center">
+        <hr className="w-full" />
+        <div className="flex flex-col-reverse md:flex-row gap-6 w-full justify-between items-center px-4 ">
           <div className="flex gap-2">
             <img src="/assets/copyright.png" alt="copyright" />
             <p className="text-lg text-white">All Rights Reserved, CrowdPass 2024.</p>
