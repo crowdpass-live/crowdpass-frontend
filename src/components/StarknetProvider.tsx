@@ -1,34 +1,22 @@
 "use client";
 import React from "react";
  
-import { sepolia, mainnet } from "@starknet-react/chains";
+import { sepolia } from "@starknet-react/chains";
+import { WebWalletConnector } from "starknetkit/webwallet";
 import {
   StarknetConfig,
   publicProvider,
-  argent,
-  braavos,
-  useInjectedConnectors,
   voyager
 } from "@starknet-react/core";
  
 export function StarknetProvider({ children }: { children: React.ReactNode }) {
-  const { connectors } = useInjectedConnectors({
-    // Show these connectors if the user has no connector installed.
-    recommended: [
-      argent(),
-      braavos(),
-    ],
-    // Hide recommended connectors if the user has any connector installed.
-    includeRecommended: "onlyIfNoConnectors",
-    // Randomize the order of the connectors.
-    order: "random"
-  });
- 
+    const connector = new WebWalletConnector({ url: "https://web.argent.xyz" })
+    
   return (
     <StarknetConfig
       chains={[sepolia]}
       provider={publicProvider()}
-      connectors={connectors}
+      connectors={[connector]}
       explorer={voyager}
     >
       {children}

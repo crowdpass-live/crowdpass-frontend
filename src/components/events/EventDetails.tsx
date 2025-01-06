@@ -4,8 +4,6 @@ import React from "react";
 import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
 
-type Props = {};
-
 const EventDetails = ({ eventDetails }: any) => {
   const {
     eventName,
@@ -19,6 +17,21 @@ const EventDetails = ({ eventDetails }: any) => {
   }: any = eventDetails;
 
   const response = epochToDatetime(`${eventStartDate}`);
+
+  function convertTime(time: string) {
+    let hours = time.substring(0, 2);
+    let minutes = time.substring(3, 5);
+    let ampm = parseInt(hours) >= 12 ? "PM" : "AM";
+
+    if (parseInt(hours) > 12) {
+      hours = (parseInt(hours) - 12).toString();
+    } else if (parseInt(hours) == 0) {
+      hours = "12";
+    }
+
+    return hours + ":" + minutes + " " + ampm;
+  }
+
   return (
     <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
       <Image
@@ -26,16 +39,16 @@ const EventDetails = ({ eventDetails }: any) => {
         alt="event-image"
         width={384}
         height={467}
-        className="rounded-3xl w-full md:w-96"
+        className="rounded-3xl w-full md:w-96 object-center object-cover"
       />
-      <div className="flex flex-col gap-4 lg:gap-6">
+      <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
         <div>
           <p className="text-primary">{paid ? "PAID" : "FREE"}</p>
           <h1 className="raleway text-2xl md:text-4xl text-white font-semibold">
             {eventName}
           </h1>
         </div>
-        <div className="bg-[#CBCACF66] flex gap-2 rounded-lg py-2 px-3">
+        <div className="bg-[#CBCACF66] flex gap-2 rounded-lg lg:max-w-80 py-2 px-3">
           <div className="bg-[#14141A] p-2 rounded-xl">
             <Calendar size={30} color="#FF6932" />
           </div>
@@ -43,7 +56,7 @@ const EventDetails = ({ eventDetails }: any) => {
             <p className="text-white">
               {response.day} {response.month}, {response.year}
             </p>
-            <p className="text-white text-sm">{response.time}</p>
+            <p className="text-white text-sm">{convertTime(response.time)}</p>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -117,7 +130,7 @@ const EventDetails = ({ eventDetails }: any) => {
             </h1>
           </div>
         </div>
-        <div className="flex justify-end gap-8 items-center">
+        <div className="flex justify-end lg:w-full gap-8 items-center">
           <div className="pt-4 flex gap-4">
             <Share2 size={40} fill="#ffffff" color="#ffffff" />
             <Bookmark size={40} fill="#ffffff" color="#ffffff" />

@@ -1,26 +1,30 @@
 import React from 'react'
 import FeaturesCard from '../features-card'
+import { FaPeopleLine, FaAward, FaIdCard } from "react-icons/fa6";
+import { IoMdAnalytics } from "react-icons/io";
+import { IoShieldCheckmark } from "react-icons/io5";
+
 
 const FeaturesSection = () => {
     const featuresData = [
         {
-            icon: "/assets/event-management.png",
+            icon: <FaPeopleLine className='w-16 h-16 text-primary'/>,
             title: "Event Management",
-            description: "Streamline your event planning process with our intuitive event management tools. Create, manage, and promote your events with ease."
+            description: "We help you treamline your event planning process with our intuitive event management tools. Create, manage, and promote your events with ease."
         }, {
-            icon: "/assets/real-time-analytics.png",
+            icon: <IoMdAnalytics className='w-16 h-16 text-primary'/>,
             title: "Real Time Analytics",
             description: "Get real-time insights into your event's performance with our analytics dashboard. Track attendance, engagement, and revenue in real-time."
         }, {
-            icon: "/assets/poap-integration.png",
+            icon: <FaAward className='w-16 h-16 text-primary'/>            ,
             title: "SPOK Integration",
             description: "Enhance your event experience with our SPOK (Starknet Proof-of-Kudos) integration. Reward attendees for their participation and create a unique experience."
         }, {
-            icon: "/assets/security.png",
+            icon: <IoShieldCheckmark className='w-16 h-16 text-primary'/>,
             title: "Security",
             description: "Ensure the security and integrity of your event data with our robust security measures. Protect your attendees' information and prevent unauthorized access."
         }, {
-            icon: "/assets/decentralized-identity.png",
+            icon: <FaIdCard className='w-16 h-16 text-primary'/> ,
             title: "Decentralized Identity",
             description: "Empower your attendees with decentralized identity management. Allow them to control their own data and identity, while ensuring a seamless event experience."
         },

@@ -4,6 +4,9 @@ import React from "react";
 import Header from "../header";
 import { Button } from "../../ui/button";
 import Link from "next/link";
+import { useAccount, useConnect } from "@starknet-react/core"
+
+
 
 const HeroSection = () => {
   return (
@@ -18,9 +21,11 @@ const HeroSection = () => {
             Secure Tickets, Seamless Access — Anytime, Anywhere with{" "}
             <span className="text-primary">CrowdPass</span>
           </h1>
+          <Link href="/events">
           <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4">
             Get Started
           </Button>
+          </Link>
         </div>
         <div className="lg:flex gap-4 hidden lg:min-w-[50%]">
           <div className="flex gap-4 flex-col">

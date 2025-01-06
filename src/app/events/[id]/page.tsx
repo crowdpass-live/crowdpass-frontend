@@ -44,9 +44,9 @@ const page = (props: Props) => {
           <h1 className="raleway text-2xl md:text-4xl text-white font-semibold my-4">
             Description
           </h1>
-          <hr className="text-white " />
+          <hr className="text-white"/>
           <p className="text-white my-6">{description}</p>
-          <hr className="text-white " />
+          <hr className="text-white"/>
 
           <div className="flex flex-col md:flex-row gap-10">
             <div className="flex flex-col lg:w-[384px] my-6">
