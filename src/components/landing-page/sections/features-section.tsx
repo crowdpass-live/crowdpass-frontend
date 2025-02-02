@@ -38,7 +38,7 @@ const FeaturesSection = () => {
     return (
         <div className='flex flex-col justify-center items-center'>
             <div className='flex flex-col justify-center items-center max-w-[1280px]'>
-            <h1 className='text-white text-4xl lg:text-6xl font-bold pt-16 pb-20 raleway'>Features</h1>
+            <h1 className='text-white text-4xl lg:text-6xl font-medium pt-16 pb-20 raleway'>Our Features</h1>
             <div className='flex justify-center items-center flex-wrap gap-6'>
                 {cards}
             </div>

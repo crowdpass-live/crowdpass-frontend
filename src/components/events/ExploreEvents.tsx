@@ -4,8 +4,15 @@ import { dummyEvents } from "./dummyData";
 import EventCard from "./EventCard";
 import { Button } from "../ui/button";
 import { Search } from "lucide-react";
-import { IoMdSwitch } from "react-icons/io";
-import { Pagination } from "@mui/material";
+import { HiOutlineAdjustmentsHorizontal } from "react-icons/hi2";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../ui/pagination";
 
 type Props = {};
 
@@ -20,18 +27,7 @@ const ExploreEvents = (props: Props) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(2);
 
-  const handleChangePage = (
-    event: any,
-    newPage: React.SetStateAction<number>
-  ) => {
-    setCurrentPage(newPage);
-  };
-
   const itemsPerPage = 6;
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   // Filter Parameters
   const detailsTabs = ["All Events", "Upcoming", "Ended"];
@@ -61,6 +57,22 @@ const ExploreEvents = (props: Props) => {
 
   const Dates = ["from", "to"];
 
+  const events =
+    tabIndex === 0
+      ? dummyEvents
+      : tabIndex === 1
+      ? upcomingEvents
+      : endedEvents;
+
+  const totalPages = Math.ceil(events.length / itemsPerPage);
+
+  const handleChangePage = (
+    event: React.ChangeEvent<unknown>,
+    page: number
+  ) => {
+    setCurrentPage(page);
+  };
+
   return (
     <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
       <div className="flex flex-col md:flex-row items-center justify-between ">
@@ -72,7 +84,7 @@ const ExploreEvents = (props: Props) => {
             <Tab
               key={index}
               className={"text-white font-semibold raleway text-lg"}
-              selectedClassName="bg-primary raleway py-2 px-4 font-semibold text-[#14141A] rounded-sm"
+              selectedClassName="bg-primary raleway py-2 px-4 text-black rounded-sm"
             >
               {eachTab}
             </Tab>
@@ -82,7 +94,7 @@ const ExploreEvents = (props: Props) => {
 
       <div className="flex items-start justify-between">
         {/* Filter Section */}
-        <div className="w-[45%] h-[1240px] bg-[#14141A] p-5 space-y-8 rounded-md">
+        <div className="w-[45%] h-[1240px] bg-[#14141A] p-5 space-y-8 hidden rounded-md">
           {/* Search BAR */}
           <div className="border w-full rounded-md border-[#B0B0B4] flex gap-3 text-white justify-between items-center">
             <input
@@ -144,7 +156,7 @@ const ExploreEvents = (props: Props) => {
                   ))}
                 </div>
                 <Button className="text-[#14141A] bg-primary hover:text-deep-blue h-full">
-                  <IoMdSwitch size={25} />
+                  <HiOutlineAdjustmentsHorizontal size={25} />
                 </Button>
               </div>
             </div>
@@ -225,25 +237,45 @@ const ExploreEvents = (props: Props) => {
             ) : (
               <p className="text-white">No events to show</p>
             ))}
-          <Pagination
-            count={Math.ceil(
-              (tabIndex === 0
-                ? dummyEvents
-                : tabIndex === 1
-                ? upcomingEvents
-                : endedEvents
-              ).length / itemsPerPage
-            )}
-            page={currentPage}
-            onChange={handleChangePage}
-            color="primary"
-            style={{
-              marginTop: "10px",
-              display: "flex",
-              justifyContent: "right",
-              width: "100%",
-            }}
-          />
+
+          {dummyEvents.length > 0 && (
+            <Pagination className="flex justify-end text-white">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) handleChangePage(e, currentPage - 1);
+                    }}
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleChangePage(e, index + 1);
+                      }}
+                    >
+                      {index + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages)
+                        handleChangePage(e, currentPage + 1);
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </div>
       </div>
     </Tabs>

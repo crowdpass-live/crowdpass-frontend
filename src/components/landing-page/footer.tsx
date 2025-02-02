@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const Footer = () => {
   return (
-    <div className="bg-deep-blue flex flex-col justify-center items-center py-10 mt-10 rounded-md">
+    <div className="bg-deep-blue flex flex-col justify-center items-center py-10 mt-10 rounded-md raleway">
       <div className="flex flex-col max-w-[1280px] xl:w-[1280px] gap-8 lg:px-6">
         <div className="flex flex-col lg:flex-row gap-6 w-full justify-between items-start">
           <div className="flex flex-col mx-4 gap-3 lg:w-[430px]">
@@ -27,48 +27,45 @@ const Footer = () => {
               </Button>
             </div>
           </div>
-          <div className="flex mx-4 gap-1 md:gap-x-20 lg:gap-10">
-            <div className="flex flex-col gap-6">
-              <h1 className="font-bold text-xl  text-white">Quick Links</h1>
-              <div className="flex flex-col gap-6">
-                <Link href="#" className="text-white hover:underline">
+          <div className="grid lg:grid-cols-3 gap-evenly w-full mx-4 gap-3 md:gap-x-20 lg:w-2/5  lg:gap-10">
+            <div className="flex flex-col gap-2 my-2 md:gap-6">
+              <h1 className="font-medium text-xl  text-white">Quick Links</h1>
+              <div className="flex flex-col gap-2 md:gap-6">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Home
                 </Link>
-                <Link href="#" className="text-white hover:underline">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   About
                 </Link>
-                <Link href="#" className="text-white hover:underline">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Contact
                 </Link>
               </div>
             </div>
-            <div className="flex flex-col gap-6">
-              <h1 className="font-bold text-xl text-white">Quick Links</h1>
-              <div className="flex flex-col gap-6">
-                <Link href="#" className="text-white hover:underline">
+            <div className="flex flex-col gap-2 my-2 md:gap-6">
+              <h1 className="font-medium text-xl text-white">Quick Links</h1>
+              <div className="flex flex-col gap-2 md:gap-6">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Get Started
                 </Link>
-                <Link href="#" className="text-white hover:underline">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Term & Conditions
                 </Link>
-                <Link href="#" className="text-white hover:underline">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Privacy policy
                 </Link>
               </div>
             </div>
-            <div className="flex flex-col gap-6">
-              <h1 className="font-bold text-xl text-white">Quick Links</h1>
-              <div className="flex flex-col gap-6">
-                <Link href="#" className="text-white hover:underline">
+            <div className="flex flex-col gap-2 my-2 md:gap-6">
+              <h1 className="font-medium text-xl text-white">Quick Links</h1>
+              <div className="flex flex-col gap-2 md:gap-6">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Create event
                 </Link>
-                <Link href="#" className="text-white hover:underline">
-                  Explore events
-                </Link>
-                <Link href="#" className="text-white hover:underline">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Get SPOK
                 </Link>
-                <Link href="#" className="text-white hover:underline">
+                <Link href="#" className="text-white hover:underline hover:text-primary">
                   Attend Event
                 </Link>
               </div>
@@ -76,7 +73,7 @@ const Footer = () => {
           </div>
         </div>
         <hr className="w-full" />
-        <div className="flex flex-col-reverse md:flex-row gap-6 w-full justify-between items-center px-4 ">
+        <div className="flex flex-col-reverse md:flex-row gap-2 md:gap-6 w-full justify-between items-center px-4 ">
           <div className="flex gap-2">
             <img src="/assets/copyright.png" alt="copyright" />
             <p className="text-lg text-white">

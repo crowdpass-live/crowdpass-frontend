@@ -5,12 +5,12 @@ type Props = {};
 
 const EventHero = (props: Props) => {
   return (
-    <div className="flex justify-between items-center lg:my-10">
+    <div className="flex justify-between items-center lg:my-10 flex-col-reverse lg:flex-row mx-4">
       <div className="flex flex-col items-center w-[90%] lg:w-full mx-auto lg:items-start lg:gap-2">
         <div className="text-center lg:text-left font-medium text-sm text-primary">
           ELEVATE YOUR EXPERIENCE{" "}
         </div>
-        <h1 className="font-medium text-center lg:text-left text-4xl lg:text-6xl text-white raleway lg:pr-16">
+        <h1 className="font-medium text-center lg:text-left text-2xl md:text-4xl xl:text-6xl  text-white raleway lg:pr-16">
           Discover Events, Secure Tickets, and Join the Crowd — All in One{" "}
           <span className="text-primary">Place</span>.
         </h1>
@@ -18,11 +18,11 @@ const EventHero = (props: Props) => {
           Get Started
         </Button>
       </div>
-      <div className="lg:flex gap-4 hidden lg:min-w-[50%]">
+      <div className="flex items-center justify-center m-3 gap-4 w-full lg:min-w-[50%]">
         <img
           src="/assets/event-hero.png"
           alt="hero-inage"
-          className="hidden md:flex"
+          className="md:flex"
         />
       </div>
     </div>

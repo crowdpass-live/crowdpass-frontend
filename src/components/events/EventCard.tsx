@@ -1,6 +1,7 @@
 import { epochToDatetime } from "datetime-epoch-conversion";
 import Link from "next/link";
 import React from "react";
+import { Card } from "../ui/card";
 
 const EventCard = ({ eachEvent }: any) => {
   const {
@@ -8,18 +9,13 @@ const EventCard = ({ eachEvent }: any) => {
     eventImage,
     eventName,
     eventStartDate,
-    eventLocation,
     description,
     paid,
-    schedule,
-    ticketsType,
-    workshops,
-    speakers,
   } = eachEvent;
   const response = epochToDatetime(`${eventStartDate}`);
 
   return (
-    <div className="bg-[#5B5959] rounded-xl max-w-96">
+    <Card className="bg-deep-blue rounded-xl max-w-96 border-0">
       <img
         src={eventImage}
         alt="event"
@@ -45,7 +41,7 @@ const EventCard = ({ eachEvent }: any) => {
           </Link>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

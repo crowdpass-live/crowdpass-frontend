@@ -22,7 +22,8 @@ export default {
 		  "accordion-up": "accordion-up 0.2s ease-out",
 		},
 		backgroundImage: {
-		  'hero-image': "url('/assets/hero-image.jpg')",
+		  'ticketImage': "url('/assets/ticket-bg-image.png')",
+		  'add-image': "url('/assets/add-image.png')"
 		},
 		colors: {
 		  "deep-blue": "#5B5959",

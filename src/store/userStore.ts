@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { connect, disconnect } from "starknetkit";
 
+
+
 const connectWallet = async () => {
   const { wallet, connector, connectorData } = await connect({
     modalMode: "neverAsk",
@@ -10,6 +12,9 @@ const connectWallet = async () => {
       url: "https://www.crowdpass.live",
     },
   });
+
+  
+
 };
 
 const disconnectWallet = async () => {

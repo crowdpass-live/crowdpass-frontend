@@ -11,7 +11,7 @@ const AboutSection = () => {
             </div>
             <Card className="w-[95%] md:w-[470px] gap-12 py-14 z-10 bg-deep-blue px-6 border-deep-blue rounded-2xl">
                 <CardHeader>
-                    <CardTitle className="text-white text-4xl raleway font-semibold">
+                    <CardTitle className="text-white text-4xl raleway font-medium">
                         About Us
                     </CardTitle>
                 </CardHeader>

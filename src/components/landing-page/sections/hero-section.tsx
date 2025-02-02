@@ -12,12 +12,12 @@ const HeroSection = () => {
   return (
     <div className="max-w-[1280px] mx-auto relative">
       <Header />
-      <div className="flex justify-between items-center lg:my-20">
-        <div className="flex flex-col items-center w-[85%] lg:w-full mx-auto lg:items-start lg:gap-2">
+      <div className="flex flex-col-reverse gap-4 md:flex-row justify-between items-center lg:my-20 mx-4">
+        <div className="flex flex-col items-center w-[85%] lg:w-full mx-auto md:items-start lg:gap-2">
           <div className="text-center lg:text-left font-medium text-sm text-primary">
             REINVENT YOUR EVENTS{" "}
           </div>
-          <h1 className="font-medium text-center lg:text-left text-4xl lg:text-6xl text-white raleway">
+          <h1 className="font-medium text-center md:text-left text-2xl md:text-4xl xl:text-6xl  text-white raleway">
             Secure Tickets, Seamless Access — Anytime, Anywhere with{" "}
             <span className="text-primary">CrowdPass</span>
           </h1>
@@ -27,36 +27,36 @@ const HeroSection = () => {
           </Button>
           </Link>
         </div>
-        <div className="lg:flex gap-4 hidden lg:min-w-[50%]">
+        <div className="w-full flex gap-4 lg:min-w-[50%]">
           <div className="flex gap-4 flex-col">
             <img
               src="/assets/top-left.png"
               alt="hero-inage"
-              className="hidden md:flex"
+              className=" md:flex"
             />
             <img
               src="/assets/bottom-left.png"
               alt="hero-inage"
-              className="hidden md:flex"
+              className=" md:flex"
             />
           </div>
           <div className="flex gap-4 flex-col">
             <img
               src="/assets/hero-image.png"
               alt="hero-inage"
-              className="hidden md:flex"
+              className=" md:flex"
             />
           </div>
           <div className="flex gap-4 flex-col">
             <img
               src="/assets/bottom-left.png"
               alt="hero-inage"
-              className="hidden md:flex rotate-180"
+              className=" md:flex rotate-180"
             />
             <img
               src="/assets/bottom-right.png"
               alt="hero-inage"
-              className="hidden md:flex"
+              className=" md:flex"
             />
           </div>
         </div>
