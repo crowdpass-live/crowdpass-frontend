@@ -13,12 +13,12 @@ const ConnectWallet = async () => {
     },
   });
 
-  const handleDialogSubmit = (name: string, email: string) => {
-    useUserStore.getState().setUser({ walletAddress: wallet.selectedAddress, name, email });
-  };
+  // const handleDialogSubmit = (name: string, email: string) => {
+  //   useUserStore.getState().setUser({ walletAddress: wallet.selectedAddress, name, email });
+  // };
 
-  ReactDOM.render(
-    <RegModal onSubmit={handleDialogSubmit} />,
-    document.getElementById('dialog-root')
-  );
+//   ReactDOM.render(
+//     <RegModal onSubmit={handleDialogSubmit} />,
+//     document.getElementById('dialog-root')
+//   );
 };
