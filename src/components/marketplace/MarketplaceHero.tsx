@@ -12,7 +12,7 @@ const MarketplaceHero = (props: Props) => {
         </div>
         <h1 className="font-medium text-center lg:text-left text-2xl md:text-4xl xl:text-6xl text-white raleway lg:pr-16">
           Resell with confidence, buy with trust — unlock new opportunities with
-          the<span className="text-primary"> CrowdPass</span> marketplace.
+          <span className="text-primary"> CrowdPass</span> 
         </h1>
         <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4">
           List Ticket

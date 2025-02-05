@@ -10,7 +10,7 @@ const CreateEventHero = (props: Props) => {
         <div className="text-center lg:text-left font-medium text-sm text-primary">
           BRING YOUR VISION TO LIFE{" "}
         </div>
-        <h1 className="font-medium text-center lg:text-left text-2xl md:text-4xl xl:text-6xl  text-white raleway lg:pr-16">
+        <h1 className="font-medium text-center lg:text-left text-2xl md:text-3xl xl:text-5xl  text-white raleway lg:pr-16">
           Organize with ease, connect effortlessly — start your event journey
           with <span className="text-primary">CrowdPass</span>.
         </h1>

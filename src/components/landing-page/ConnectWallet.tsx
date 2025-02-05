@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import {
   argent,
@@ -12,20 +12,20 @@ import {
 import { useRouter } from "next/navigation";
 import Preloader from "../Preloader";
 
-const ConnectWallet = () => {
+const ConnectWallet = ({setConnected}: any) => {
   const router = useRouter();
   const { connectAsync, status } = useConnect();
   const { connectors } = useInjectedConnectors({
     recommended: [argent(), braavos()],
     includeRecommended: "onlyIfNoConnectors",
-    order: "random",
+    order: "alphabetical"
   });
 
   const { address } = useAccount();
 
   React.useEffect(() => {
     if (status === "success" || address !== undefined) {
-      router.push("/dashboard");
+      setConnected(true)
     }
   }, [status, router]);
 

@@ -11,7 +11,7 @@ const EventHero = (props: Props) => {
           ELEVATE YOUR EXPERIENCE{" "}
         </div>
         <h1 className="font-medium text-center lg:text-left text-2xl md:text-4xl xl:text-6xl  text-white raleway lg:pr-16">
-          Discover Events, Secure Tickets, and Join the Crowd — All in One{" "}
+          Discover Events, Secure Tickets, and Join the Crowd — All in One
           <span className="text-primary">Place</span>.
         </h1>
         <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4">

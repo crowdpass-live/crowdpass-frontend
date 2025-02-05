@@ -4,13 +4,26 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ConnectWallet } from "../ConnectWallet";
+import { connect } from "starknetkit";
+import ConnectedUser from "../ConnectedUser";
 
 const Header = () => {
   const navLinks = [
     { name: "Events", href: "/events" },
     { name: "Marketplace", href: "/marketplace" },
   ];
-
+  const [connected, setConnected] = useState(false);
+  useEffect(() => {
+    const addr = localStorage.getItem("address")
+    console.log()
+    if (addr === null){
+      setConnected(false)
+    } else(setConnected(true))
+  
+  },[connected])
+  
+ 
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {
     if (showMobileNav) {
@@ -51,18 +64,37 @@ const Header = () => {
             </a>
           ))}
         </div>
-        <div className="flex gap-4">
-        <Button className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
-        Log In
-          </Button>
-        <Link href="/create-event">
-          <Button className="bg-primary text-light-black font-semibold text-sm lg:text-xl raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
-            Create Event
-          </Button>
-        </Link>
 
+        {connected? <a
+              href="/my-events"
+              className={`text-white font-medium text-md lg:text-2xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
+                pathname === "/my-events"
+                  ? "underline-offset-8 decoration-primary underline"
+                  : ""
+              }`}
+            >
+              My Events
+            </a> : ""}
+        <div className="flex gap-4">
+          {connected ? (
+            <ConnectedUser setConnected={setConnected}/>
+          ) : (
+            <>
+              <Button
+                onClick={() => ConnectWallet(setConnected)}
+                className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 hidden md:flex"
+              >
+                Log In
+              </Button>
+              <Link href="/create-event">
+                <Button className="bg-primary text-light-black font-semibold text-sm lg:text-xl raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
+                  Create Event
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
-        
+
         <div className="md:hidden">
           <button
             onClick={() => setShowMobileNav(!showMobileNav)}
