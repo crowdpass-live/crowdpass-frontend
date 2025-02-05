@@ -15,15 +15,13 @@ const Header = () => {
   ];
   const [connected, setConnected] = useState(false);
   useEffect(() => {
-    const addr = localStorage.getItem("address")
-    console.log()
-    if (addr === null){
-      setConnected(false)
-    } else(setConnected(true))
-  
-  },[connected])
-  
- 
+    const addr = localStorage.getItem("address");
+    console.log();
+    if (addr === null) {
+      setConnected(false);
+    } else setConnected(true);
+  }, [connected]);
+
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {
     if (showMobileNav) {
@@ -63,9 +61,8 @@ const Header = () => {
               {link.name}
             </a>
           ))}
-        </div>
-
-        {connected? <a
+          {connected ? (
+            <a
               href="/my-events"
               className={`text-white font-medium text-md lg:text-2xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
                 pathname === "/my-events"
@@ -74,10 +71,15 @@ const Header = () => {
               }`}
             >
               My Events
-            </a> : ""}
+            </a>
+          ) : (
+            ""
+          )}
+        </div>
+
         <div className="flex gap-4">
           {connected ? (
-            <ConnectedUser setConnected={setConnected}/>
+            <ConnectedUser setConnected={setConnected} />
           ) : (
             <>
               <Button
