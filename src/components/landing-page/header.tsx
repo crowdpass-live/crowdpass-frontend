@@ -1,26 +1,30 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ConnectWallet } from "../ConnectWallet";
-import { connect } from "starknetkit";
+import ConnectWalletButton from "../ConnectWallet";
 import ConnectedUser from "../ConnectedUser";
+import { UserContext } from "@/app/layout";
+import { disconnect } from "starknetkit";
+import { UserCircle } from "lucide-react";
 
 const Header = () => {
   const navLinks = [
     { name: "Events", href: "/events" },
     { name: "Marketplace", href: "/marketplace" },
   ];
-  const [connected, setConnected] = useState(false);
+  const disconnectWallet = async () => {
+    await disconnect()
+    window.location.reload()
+    localStorage.removeItem("account")
+  }
+
+  const { account }: any = useContext(UserContext);
   useEffect(() => {
-    const addr = localStorage.getItem("address");
-    console.log();
-    if (addr === null) {
-      setConnected(false);
-    } else setConnected(true);
-  }, [connected]);
+    console.log("Account changed:", account);
+  }, [account]);
 
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {
@@ -61,7 +65,7 @@ const Header = () => {
               {link.name}
             </a>
           ))}
-          {connected ? (
+          {account ? (
             <a
               href="/my-events"
               className={`text-white font-medium text-md lg:text-2xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
@@ -78,16 +82,16 @@ const Header = () => {
         </div>
 
         <div className="flex gap-4">
-          {connected ? (
-            <ConnectedUser setConnected={setConnected} />
-          ) : (
+          {account !== undefined ? (
+            <Button onClick={()=> disconnectWallet()} className="flex items-center gap-4 p-6 bg-transparent hover:bg-light-black">
+      {/* <p className="text-white font-medium text-lg">{data?.value}ETH</p> */}
+      <UserCircle color="#FF6932" size={25} />
+      <p className="text-white font-medium text-lg">{`0x${account
+        ?.split("x")[1]
+        .slice(0, 4)}...${account?.slice(-4)}`}</p>
+    </Button>          ) : (
             <>
-              <Button
-                onClick={() => ConnectWallet(setConnected)}
-                className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 hidden md:flex"
-              >
-                Log In
-              </Button>
+              <ConnectWalletButton />
               <Link href="/create-event">
                 <Button className="bg-primary text-light-black font-semibold text-sm lg:text-xl raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
                   Create Event
@@ -177,9 +181,14 @@ const Header = () => {
               </li>
             ))}
             <li className="block relative list-none group">
-              <Button className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6">
+              {/* <Button
+                onClick={() => ConnectWallet(setConnected)}
+                className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6"
+              >
                 Login
-              </Button>
+              </Button> */}
+
+              <ConnectWalletButton />
             </li>
             <li className="block relative list-none group">
               <Link href="/create-event">

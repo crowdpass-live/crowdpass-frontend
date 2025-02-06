@@ -1,41 +1,36 @@
-import { create } from "zustand";
-import { connect, disconnect } from "starknetkit";
-import RegModal from './RegModal';
-import ReactDOM from 'react-dom';
-import { WebWalletConnector } from "starknetkit/webwallet"
-import { useRouter } from "next/router";
+import { UserContext } from "@/app/layout";
+import { useContext } from "react";
+import { connect } from "starknetkit";
+import { WebWalletConnector } from "starknetkit/webwallet";
+import { Button } from "./ui/button";
 
-export const ConnectWallet = async (setConnected: any) => {
+const ConnectWalletButton = () => {
+  const { setAccount }: any = useContext(UserContext);
+  const handleConnectWallet = async () => {
+    const { connectorData } = await connect({
+      modalMode: "alwaysAsk",
+      modalTheme: "dark",
+      webWalletUrl: "https://web.argent.xyz",
+      argentMobileOptions: {
+        dappName: "CrowdPass",
+        url: "https://www.crowdpass.live",
+      },
+      connectors: [new WebWalletConnector()],
+    });
 
-  const { connector, connectorData } = await connect({
-    modalMode: "alwaysAsk",
-    modalTheme: "dark",
-    webWalletUrl: "https://web.argent.xyz",
-    argentMobileOptions: {
-      dappName: "CrowdPass",
-      url: "https://www.crowdpass.live",
-    },
-    connectors: [
-      new WebWalletConnector(),
-    ],
-  });
+    if (connectorData && connectorData.account) {
+      setAccount(connectorData.account);
+    }
+  };
 
-
-  if (connectorData && connectorData.account) {
-    localStorage.setItem("address", connectorData.account)
-
-  }
-
-  window.location.reload();
-
-
-  // const handleDialogSubmit = (name: string, email: string) => {
-  //   useUserStore.getState().setUser({ walletAddress: wallet.selectedAddress, name, email });
-  // };
-
-  // ReactDOM.render(
-  //   <RegModal onSubmit={handleDialogSubmit} />,
-  //   document.getElementById('dialog-root')
-  // );
+  return (
+    <Button
+      onClick={handleConnectWallet}
+      className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 hidden md:flex"
+    >
+      Log in
+    </Button>
+  );
 };
 
+export default ConnectWalletButton;
