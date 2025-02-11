@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@argent/webwallet-sdk": "^1.0.0-alpha.2",
+    "@argent/x-sessions": "^7.0.0",
     "@cartridge/connector": "^0.5.5",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",

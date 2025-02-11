@@ -9,7 +9,7 @@ import {
 } from "@starknet-react/core";
  
 export function StarknetProvider({ children }: { children: React.ReactNode }) {
-    const connector = new WebWalletConnector({ url: "https://web.argent.xyz" })
+    const connector = new WebWalletConnector({ url: "https://web-v2.hydrogen.argent47.net/email" })
     
   return (
     <StarknetConfig

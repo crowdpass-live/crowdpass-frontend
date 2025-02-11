@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import ConnectWalletButton from "../ConnectWallet";
 import ConnectedUser from "../ConnectedUser";
 import { UserContext } from "@/app/layout";
-import { disconnect } from "starknetkit";
 import { UserCircle } from "lucide-react";
 
 const Header = () => {
@@ -15,16 +14,18 @@ const Header = () => {
     { name: "Events", href: "/events" },
     { name: "Marketplace", href: "/marketplace" },
   ];
-  const disconnectWallet = async () => {
-    await disconnect()
-    window.location.reload()
-    localStorage.removeItem("account")
-  }
+  // const disconnectWallet = async () => {
+  //   await disconnect();
+  //   window.location.reload();
+  //   localStorage.removeItem("account");
+  // };
 
-  const { account }: any = useContext(UserContext);
-  useEffect(() => {
-    console.log("Account changed:", account);
-  }, [account]);
+  // useEffect(() => {
+  //   console.log("Account changed:", account);
+  // }, [account]);
+
+  const { address }: any = useContext(UserContext);
+
 
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {
@@ -35,6 +36,7 @@ const Header = () => {
     }
   });
   const pathname = usePathname();
+
 
   return (
     <>
@@ -65,7 +67,7 @@ const Header = () => {
               {link.name}
             </a>
           ))}
-          {account ? (
+          {address ? (
             <a
               href="/my-events"
               className={`text-white font-medium text-md lg:text-2xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
@@ -82,14 +84,17 @@ const Header = () => {
         </div>
 
         <div className="flex gap-4">
-          {account !== undefined ? (
-            <Button onClick={()=> disconnectWallet()} className="flex items-center gap-4 p-6 bg-transparent hover:bg-light-black">
-      {/* <p className="text-white font-medium text-lg">{data?.value}ETH</p> */}
-      <UserCircle color="#FF6932" size={25} />
-      <p className="text-white font-medium text-lg">{`0x${account
-        ?.split("x")[1]
-        .slice(0, 4)}...${account?.slice(-4)}`}</p>
-    </Button>          ) : (
+          {address !== undefined ? (
+            <Button
+              className="flex items-center gap-4 p-6 bg-transparent hover:bg-light-black"
+            >
+              {/* <p className="text-white font-medium text-lg">{data?.value}ETH</p> */}
+              <UserCircle color="#FF6932" size={25} />
+              <p className="text-white font-medium text-lg">{`0x${address
+                ?.split("x")[1]
+                .slice(0, 4)}...${address?.slice(-4)}`}</p>
+            </Button>
+          ) : (
             <>
               <ConnectWalletButton />
               <Link href="/create-event">

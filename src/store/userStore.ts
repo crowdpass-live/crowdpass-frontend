@@ -6,7 +6,7 @@ import { connect, disconnect } from "starknetkit";
 const connectWallet = async () => {
   const { wallet, connector, connectorData } = await connect({
     modalMode: "neverAsk",
-    webWalletUrl: "https://web.argent.xyz",
+    webWalletUrl: "https://web-v2.hydrogen.argent47.net/email",
     argentMobileOptions: {
       dappName: "CrowdPass",
       url: "https://www.crowdpass.live",
