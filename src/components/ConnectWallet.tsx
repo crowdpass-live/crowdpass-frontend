@@ -1,4 +1,4 @@
-import { UserContext } from "@/app/layout";
+import { UserContext } from "../app/layout";
 import { useContext } from "react";
 import { connect } from "starknetkit";
 import { WebWalletConnector } from "starknetkit/webwallet";

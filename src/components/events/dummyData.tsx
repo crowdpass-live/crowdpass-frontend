@@ -419,3 +419,29 @@ export const detailsTabs = [
     },
   ];
   
+  export const tabs = ["All Events", "Upcoming", "Ended"];
+
+  export const categories = [
+  "Sports",
+  "Festivals",
+  "Gaming",
+  "Wellness",
+  "Exhibition",
+  "Travels",
+  "Family",
+  "Fundraisers",
+  "Concerts",
+  "Climate",
+  "Theatre",
+  "Technology",
+  "Webinars",
+  "Corperate",
+  "Networking",
+  "Education",
+];
+
+export const payments = ["Paid", "Free"];
+
+export const locations = ["Remote", "In-Person"];
+
+export const dates = ["from", "to"];

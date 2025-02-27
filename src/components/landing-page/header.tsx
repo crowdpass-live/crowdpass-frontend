@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ConnectWalletButton from "../ConnectWallet";
 import ConnectedUser from "../ConnectedUser";
-import { UserContext } from "@/app/layout";
+import { UserContext } from "../../app/layout";
 import { UserCircle } from "lucide-react";
 
 const Header = () => {
@@ -40,7 +40,7 @@ const Header = () => {
 
   return (
     <>
-      <div className="rounded-3xl bg-deep-blue flex justify-between items-center py-2 px-4 md:py-4 lg:py-5 lg:px-10  w-full my-6 top-0 sticky overflow-hidden">
+      <div className="z-50 rounded-3xl bg-deep-blue flex justify-between items-center py-2 px-4 md:py-4 lg:py-5 lg:px-10  w-full my-6 top-0 sticky overflow-hidden">
         <Link href={"/"}>
           <img
             alt={"logo"}

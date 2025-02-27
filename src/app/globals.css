@@ -60,7 +60,7 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
 
-.clip-path-circle-progress {
+/* .clip-path-circle-progress {
   --size: 100%;
   --progress: 0%;
   clip-path: path(
@@ -79,4 +79,29 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     'A 50% 50% 0 0 1 50% 0'
     'Z'
   );
+} */
+
+html {
+  scroll-behavior: smooth;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis.stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis.smooth iframe {
+  pointer-events: none;
 }

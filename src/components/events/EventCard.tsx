@@ -15,7 +15,7 @@ const EventCard = ({ eachEvent }: any) => {
   const response = epochToDatetime(`${eventStartDate}`);
 
   return (
-    <Card className="bg-deep-blue rounded-xl max-w-96 border-0">
+    <Card className="bg-deep-blue rounded-xl md:w-96 w-full flex-grow border-0">
       <img
         src={eventImage}
         alt="event"

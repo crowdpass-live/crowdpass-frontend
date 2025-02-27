@@ -1,143 +1,471 @@
-// import { UserContext } from "@/app/layout";
-// import {
-//   SignSessionError,
-//   CreateSessionParams,
-//   createSession,
-//   buildSessionAccount,
-//   bytesToHexString,
-//   SessionKey,
-//   createSessionRequest,
-// } from "@argent/x-sessions";
-// import { useContext } from "react";
-// import { ec, constants, RpcProvider } from "starknet";
-// import { useSignTypedData } from "@starknet-react/core";
-
-
-// const privateKey = ec.starkCurve.utils.randomPrivateKey();
-
-// const sessionKey: SessionKey = {
-//   privateKey: bytesToHexString(privateKey), //string
-//   publicKey: ec.starkCurve.getStarkKey(privateKey), //string
-// };
-
-// const sessionParams: CreateSessionParams = {
-//   allowedMethods: [
-//     {
-//       "Contract Address":
-//         "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d",
-//       selector: "create_event",
-//     },
-//     {
-//       "Contract Address":
-//         "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d",
-//       selector: "update_event",
-//     },
-//     {
-//       "Contract Address":
-//         "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d",
-//       selector: "cancel_event",
-//     },
-//     {
-//       "Contract Address":
-//         "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d",
-//       selector: "add_organizer",
-//     },
-//     {
-//       "Contract Address":
-//         "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d",
-//       selector: "remove_organizer",
-//     },
-//   ],
-//   expiry: Math.floor((Date.now() + 1000 * 60 * 60 * 24 * 90) / 1000) as any,
-//   sessionKey: sessionKey,
-//   metaData: {
-//     projectID: "CrowdPass",
-//     txFees: [
-//       {
-//         tokenAddress:
-//           "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-//         maxAmount: (Number("1") * 1e18).toString(),
-//       },
-//     ],
-//   },
-// };
-
-// // Compute the typed data to be signed
-// const sessionRequest = createSessionRequest({
-//   sessionParams,
-//   chainId: constants.StarknetChainId.SN_SEPOLIA,
-// });
-
-// // wallet is a StarknetWindowObject. There are others ways to sign typed data.
-// // You could use the starknet-react hook useSignTypedData
-// const {signTypedDataAsync} = useSignTypedData({
-//   params: sessionRequest.sessionTypedData,
-// });
-
-// const signature = await  signTypedDataAsync()
-
-// // Build session request
-// const session = await createSession({
-//   sessionRequest, // SessionRequest
-//   address: "0x01ff8b59f9cd71ab51547b850e3ef151ebf1313ab800ac0fcb9c39b02adfac21", // Account address
-//   chainId: constants.StarknetChainId.SN_SEPOLIA,
-//   authorisationSignature: signature,
-// });
-
-// // Create session account. This is the account that will be used to execute transactions.
-// const sessionAccount = await buildSessionAccount({
-//   useCacheAuthorisation: false, // optional and defaulted to false, will be added in future developments
-//   session,
-//   sessionKey,
-//   provider: new RpcProvider({
-//     nodeUrl: "https://starknet-mainnet.g.alchemy.com/v2/demo",
-//     chainId: constants.StarknetChainId.SN_SEPOLIA,
-//   }),
-//   argentSessionServiceBaseUrl: "https://web-v2.hydrogen.argent47.net/email", // Optional: defaulted to mainnet url. This is basically the backend api.
-// });
-
-
-
-import { RpcProvider, constants } from "starknet";
+import { CallData, RpcProvider, byteArray, cairo, constants } from "starknet";
 import { ArgentWebWallet } from "@argent/webwallet-sdk";
+import { useCall } from "@starknet-react/core";
+import eventAbi from "../Abis/eventAbi.json";
 
-const CONTRACT_ADDRESS = "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d";
+const CONTRACT_ADDRESS =
+  "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d";
 
 export const provider = new RpcProvider({
-      nodeUrl: "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
-      chainId: constants.StarknetChainId.SN_SEPOLIA,
-    });
+  nodeUrl:
+    "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
+  chainId: constants.StarknetChainId.SN_SEPOLIA,
+});
 
 export const argentWebWallet = ArgentWebWallet.init({
-   appName: "CrowdPass",
-   environment: "sepolia",
-   sessionParams: {
+  appName: "CrowdPass",
+  environment: "sepolia",
+  sessionParams: {
     allowedMethods: [
-          {
-            contract:
-              CONTRACT_ADDRESS,
-            selector: "create_event",
-          },
-          {
-            contract:
-              CONTRACT_ADDRESS,
-            selector: "update_event",
-          },
-          {
-            contract:
-              CONTRACT_ADDRESS,
-            selector: "cancel_event",
-          },
-          {
-            contract:
-              CONTRACT_ADDRESS,
-            selector: "add_organizer",
-          },
-          {
-            contract:
-              CONTRACT_ADDRESS,
-            selector: "remove_organizer",
-          },
-        ],
-   },
+      {
+        contract: CONTRACT_ADDRESS,
+        selector: "create_event",
+      },
+      {
+        contract: CONTRACT_ADDRESS,
+        selector: "update_event",
+      },
+      {
+        contract: CONTRACT_ADDRESS,
+        selector: "cancel_event",
+      },
+      {
+        contract: CONTRACT_ADDRESS,
+        selector: "add_organizer",
+      },
+      {
+        contract: CONTRACT_ADDRESS,
+        selector: "remove_organizer",
+      },
+    ],
+  },
 });
+
+// Write Contract with Sessions
+export const handleCreateEvent = async (
+  contractAddr: any,
+  account: any,
+  setIsLoading: any
+) => {
+  try {
+    if (!account) {
+      throw new Error("Account not connected");
+    }
+    setIsLoading(true);
+
+    console.log(contractAddr);
+
+    try {
+      const call = {
+        contractAddress: contractAddr,
+        entrypoint: "create_event",
+        calldata: CallData.compile([
+          byteArray.byteArrayFromString("david"),
+          byteArray.byteArrayFromString("da"),
+          byteArray.byteArrayFromString("www"),
+          byteArray.byteArrayFromString("test event 2"),
+          byteArray.byteArrayFromString("iyana ipaja"),
+          1727830769,
+          1727830969,
+          cairo.uint256(100),
+          cairo.uint256(2),
+        ]),
+      };
+
+      console.log(call);
+      console.log(account);
+      const {
+        resourceBounds: estimatedResourceBounds,
+        suggestedMaxFee: estimatedFee1,
+      } = await account.estimateInvokeFee(call, {
+        version: "0x3",
+      });
+
+      console.log(estimatedFee1);
+      console.log(estimatedResourceBounds);
+
+      const resourceBounds = {
+        ...estimatedResourceBounds,
+        l1_gas: {
+          ...estimatedResourceBounds.l1_gas,
+          max_amount: "0x1388",
+        },
+      };
+
+      console.log(resourceBounds);
+
+      let { transaction_hash } = await account.execute(call, {
+        version: "0x3",
+        resourceBounds,
+      });
+
+      console.log(transaction_hash);
+
+      // // Wait for transaction to be mined
+      const sogo = await account.waitForTransaction(transaction_hash);
+
+      console.log(sogo);
+
+      setIsLoading(false);
+
+      return "success";
+    } catch (error) {
+      console.error(error);
+
+      setIsLoading(false);
+    }
+  } catch (err) {
+    console.error(err);
+    setIsLoading(false);
+  }
+};
+
+export const handleUpdateEvent = async (
+  contractAddr: any,
+  account: any,
+  setIsLoading: any
+) => {
+  try {
+    if (!account) {
+      throw new Error("Account not connected");
+    }
+    setIsLoading(true);
+
+    console.log(contractAddr);
+
+    try {
+      const call = {
+        contractAddress: contractAddr,
+        entrypoint: "update_event",
+        calldata: CallData.compile([
+          cairo.uint256(3),
+          byteArray.byteArrayFromString("mano"),
+          byteArray.byteArrayFromString("m"),
+          byteArray.byteArrayFromString("www"),
+          byteArray.byteArrayFromString("test event 3"),
+          byteArray.byteArrayFromString("iyana itire"),
+          1727830769,
+          1727830969,
+          cairo.uint256(100),
+          cairo.uint256(2),
+        ]),
+      };
+
+      console.log(call);
+      console.log(account);
+      const {
+        resourceBounds: estimatedResourceBounds,
+        suggestedMaxFee: estimatedFee1,
+      } = await account.estimateInvokeFee(call, {
+        version: "0x3",
+      });
+
+      console.log(estimatedFee1);
+      console.log(estimatedResourceBounds);
+
+      const resourceBounds = {
+        ...estimatedResourceBounds,
+        l1_gas: {
+          ...estimatedResourceBounds.l1_gas,
+          max_amount: "0x1388",
+        },
+      };
+
+      console.log(resourceBounds);
+
+      let { transaction_hash } = await account.execute(call, {
+        version: "0x3",
+        resourceBounds,
+      });
+
+      console.log(transaction_hash);
+
+      // // Wait for transaction to be mined
+      const sogo = await account.waitForTransaction(transaction_hash);
+
+      console.log(sogo);
+
+      setIsLoading(false);
+
+      return "success";
+    } catch (error) {
+      console.error(error);
+
+      setIsLoading(false);
+    }
+  } catch (err) {
+    console.error(err);
+    setIsLoading(false);
+  }
+};
+
+export const handleCancelEvent = async (
+  contractAddr: any,
+  account: any,
+  setIsLoading: any
+) => {
+  try {
+    if (!account) {
+      throw new Error("Account not connected");
+    }
+    setIsLoading(true);
+
+    console.log(contractAddr);
+
+    try {
+      const call = {
+        contractAddress: contractAddr,
+        entrypoint: "cancel_event",
+        calldata: CallData.compile([cairo.uint256(3)]),
+      };
+
+      console.log(call);
+      console.log(account);
+      const {
+        resourceBounds: estimatedResourceBounds,
+        suggestedMaxFee: estimatedFee1,
+      } = await account.estimateInvokeFee(call, {
+        version: "0x3",
+      });
+
+      console.log(estimatedFee1);
+      console.log(estimatedResourceBounds);
+
+      const resourceBounds = {
+        ...estimatedResourceBounds,
+        l1_gas: {
+          ...estimatedResourceBounds.l1_gas,
+          max_amount: "0x1388",
+        },
+      };
+
+      console.log(resourceBounds);
+
+      let { transaction_hash } = await account.execute(call, {
+        version: "0x3",
+        resourceBounds,
+      });
+
+      console.log(transaction_hash);
+
+      // // Wait for transaction to be mined
+      const sogo = await account.waitForTransaction(transaction_hash);
+
+      console.log(sogo);
+
+      setIsLoading(false);
+
+      return "success";
+    } catch (error) {
+      console.error(error);
+
+      setIsLoading(false);
+    }
+  } catch (err) {
+    console.error(err);
+    setIsLoading(false);
+  }
+};
+
+export const handleAddOrganizer = async (
+  contractAddr: any,
+  account: any,
+  setIsLoading: any
+) => {
+  try {
+    if (!account) {
+      throw new Error("Account not connected");
+    }
+    setIsLoading(true);
+
+    console.log(contractAddr);
+
+    try {
+      const call = {
+        contractAddress: contractAddr,
+        entrypoint: "add_organizer",
+        calldata: CallData.compile([
+          cairo.uint256(3),
+          "0x05F85a26306d00dEdfa0a43F224d49B84b1F326972288E6465e33fc4CeFC9190",
+        ]),
+      };
+
+      console.log(call);
+      console.log(account);
+      const {
+        resourceBounds: estimatedResourceBounds,
+        suggestedMaxFee: estimatedFee1,
+      } = await account.estimateInvokeFee(call, {
+        version: "0x3",
+      });
+
+      console.log(estimatedFee1);
+      console.log(estimatedResourceBounds);
+
+      const resourceBounds = {
+        ...estimatedResourceBounds,
+        l1_gas: {
+          ...estimatedResourceBounds.l1_gas,
+          max_amount: "0x1388",
+        },
+      };
+
+      console.log(resourceBounds);
+
+      let { transaction_hash } = await account.execute(call, {
+        version: "0x3",
+        resourceBounds,
+      });
+
+      console.log(transaction_hash);
+
+      // // Wait for transaction to be mined
+      const sogo = await account.waitForTransaction(transaction_hash);
+
+      console.log(sogo);
+
+      setIsLoading(false);
+
+      return "success";
+    } catch (error) {
+      console.error(error);
+
+      setIsLoading(false);
+    }
+  } catch (err) {
+    console.error(err);
+    setIsLoading(false);
+  }
+};
+
+export const handleRemoveOrganizer = async (
+  contractAddr: any,
+  account: any,
+  setIsLoading: any
+) => {
+  try {
+    if (!account) {
+      throw new Error("Account not connected");
+    }
+    setIsLoading(true);
+
+    console.log(contractAddr);
+
+    try {
+      const call = {
+        contractAddress: contractAddr,
+        entrypoint: "remove_organizer",
+        calldata: CallData.compile([
+          cairo.uint256(3),
+          "0x05F85a26306d00dEdfa0a43F224d49B84b1F326972288E6465e33fc4CeFC9190",
+        ]),
+      };
+
+      console.log(call);
+      console.log(account);
+      const {
+        resourceBounds: estimatedResourceBounds,
+        suggestedMaxFee: estimatedFee1,
+      } = await account.estimateInvokeFee(call, {
+        version: "0x3",
+      });
+
+      console.log(estimatedFee1);
+      console.log(estimatedResourceBounds);
+
+      const resourceBounds = {
+        ...estimatedResourceBounds,
+        l1_gas: {
+          ...estimatedResourceBounds.l1_gas,
+          max_amount: "0x1388",
+        },
+      };
+
+      console.log(resourceBounds);
+
+      let { transaction_hash } = await account.execute(call, {
+        version: "0x3",
+        resourceBounds,
+      });
+
+      console.log(transaction_hash);
+
+      // // Wait for transaction to be mined
+      const sogo = await account.waitForTransaction(transaction_hash);
+
+      console.log(sogo);
+
+      setIsLoading(false);
+
+      return "success";
+    } catch (error) {
+      console.error(error);
+
+      setIsLoading(false);
+    }
+  } catch (err) {
+    console.error(err);
+    setIsLoading(false);
+  }
+};
+const useEvents = () => {
+  const { data, isError, isLoading, error } = useCall({
+    functionName: "get_all_events",
+    abi: eventAbi,
+    args: [],
+    address: CONTRACT_ADDRESS,
+    watch: true,
+  });
+
+  return { data, isError, isLoading, error };
+};
+
+const useEvent = (eventId: number) => {
+  const { data, isError, isLoading, error } = useCall({
+    functionName: "get_event",
+    args: [cairo.uint256(eventId)],
+    abi: eventAbi,
+    address: CONTRACT_ADDRESS,
+    watch: true,
+  });
+
+  return { data, isError, isLoading, error };
+};
+
+const useEventCount = () => {
+  const { data, isError, isLoading, error } = useCall({
+    functionName: "get_event_count",
+    args: [],
+    abi: eventAbi,
+    address: CONTRACT_ADDRESS,
+    watch: true,
+  });
+
+  return { data, isError, isLoading, error };
+};
+
+const useHasRole = () => {
+  const { data, isError, isLoading, error } = useCall({
+    functionName: "has_role",
+    args: [],
+    abi: eventAbi,
+    address: CONTRACT_ADDRESS,
+    watch: true,
+  });
+
+  return { data, isError, isLoading, error };
+};
+
+const useGetRoleAdmin = () => {
+  const { data, isError, isLoading, error } = useCall({
+    functionName: "get_role_admin",
+    args: [],
+    abi: eventAbi,
+    address: CONTRACT_ADDRESS,
+    watch: true,
+  });
+
+  return { data, isError, isLoading, error };
+};
+
+export { useEvents, useEvent, useEventCount, useHasRole, useGetRoleAdmin };

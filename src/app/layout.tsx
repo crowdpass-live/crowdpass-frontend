@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { createContext } from "react";
 import { argentWebWallet, provider } from "@/components/AbiCalls";
 import { SessionAccountInterface } from "@argent/webwallet-sdk";
+import ReactLenis from "lenis/react";
 
 export const UserContext = createContext({});
 
@@ -24,19 +25,19 @@ export default function RootLayout({
   const contractAddr =
     "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d";
 
-  const [account, setAccount] = useState<SessionAccountInterface | undefined>(undefined);
+  const [account, setAccount] = useState<SessionAccountInterface | undefined>(
+    undefined
+  );
 
   const [address, setAddress] = useState<String | undefined>(undefined);
 
   const [isLoading, setIsLoading] = useState(false);
-
 
   // user connection to dapp
   useEffect(() => {
     argentWebWallet
       .connect()
       .then((res) => {
-
         if (!res) {
           console.log("Not connected");
           return;
@@ -51,15 +52,11 @@ export default function RootLayout({
 
         setAccount(account);
 
-        setAddress(account.address)
-
+        setAddress(account.address);
       })
       .catch((err) => {
-
         console.error("Failed to connect to Argent Web Wallet", err);
-
       });
-      
   }, []);
 
   const eventContract = new Contract(eventAbi, contractAddr, account);
@@ -68,29 +65,31 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body>
-        <UserContext.Provider
-          value={{
-            isLoading,
-            setIsLoading,
-            account,
-            setAccount,
-            contractAddr,
-            eventAbi,
-            eventContract,
-            readEventContract,
-            strkContract,
-            token_addr,
-            address,
-            setAddress
-          }}
-        >
-          <StarknetProvider>
-            {children}
-            <Toaster />
-          </StarknetProvider>
-        </UserContext.Provider>
-      </body>
+      <ReactLenis root>
+        <body>
+          <UserContext.Provider
+            value={{
+              isLoading,
+              setIsLoading,
+              account,
+              setAccount,
+              contractAddr,
+              eventAbi,
+              eventContract,
+              readEventContract,
+              strkContract,
+              token_addr,
+              address,
+              setAddress,
+            }}
+          >
+            <StarknetProvider>
+              {children}
+              <Toaster />
+            </StarknetProvider>
+          </UserContext.Provider>
+        </body>
+      </ReactLenis>
     </html>
   );
 }
