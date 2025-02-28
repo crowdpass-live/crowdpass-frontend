@@ -26,6 +26,7 @@ const ExploreEvents = () => {
   const itemsPerPage = 6;
 
   const filteredEvents = getFilteredEvents(data, tabIndex);
+  console.log(filteredEvents)
 
   const totalPages = Math.ceil(filteredEvents?.length / itemsPerPage);
 
@@ -71,7 +72,7 @@ const ExploreEvents = () => {
 
   return (
     <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-      <div className="flex flex-col md:flex-row items-center justify-between">
+      <div className="flex flex-col md:flex-row items-center justify-between" id="explore">
         <motion.h1
           className="text-4xl font-semibold text-white raleway my-6"
           initial="hidden"
@@ -103,7 +104,7 @@ const ExploreEvents = () => {
       </div>
 
       <div className="flex items-start justify-between">
-          <FilterEvent />
+        <FilterEvent />
         {/* Events Section */}
         <div className="flex flex-wrap flex-grow gap-8 justify-center items-center w-full">
           <AnimatePresence>

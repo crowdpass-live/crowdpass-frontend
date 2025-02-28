@@ -3,8 +3,8 @@ import { ArgentWebWallet } from "@argent/webwallet-sdk";
 import { useCall } from "@starknet-react/core";
 import eventAbi from "../Abis/eventAbi.json";
 
-const CONTRACT_ADDRESS =
-  "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d";
+
+const CONTRACT_ADDRESS = "0x01d32ac8aa93236fe6ce3934c631103d052d1af9e7b846fd6705cc08bebfb5bf";
 
 export const provider = new RpcProvider({
   nodeUrl:
@@ -408,6 +408,8 @@ export const handleRemoveOrganizer = async (
     setIsLoading(false);
   }
 };
+
+// Read Contract Hook calls 
 const useEvents = () => {
   const { data, isError, isLoading, error } = useCall({
     functionName: "get_all_events",

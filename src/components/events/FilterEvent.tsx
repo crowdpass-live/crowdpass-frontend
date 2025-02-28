@@ -10,7 +10,7 @@ const FilterEvent = (props: Props) => {
   return (
     <>
         {/* Filter Section (Hidden by default) */}
-        <div className="hidden  md:flex flex-col w-[45%] h-[1240px] bg-[#14141A] p-5 space-y-8 rounded-md">
+        <div className="hidden md:flex flex-col w-[45%] h-auto pb-10 bg-[#14141A] p-5 space-y-8 rounded-2xl">
           {/* Search BAR */}
           <div className="border w-full rounded-md border-[#B0B0B4] flex gap-3 text-white justify-between items-center">
             <input
@@ -27,7 +27,6 @@ const FilterEvent = (props: Props) => {
           <div>
             <div className="flex w-full text-[#B0B0B4] items-center justify-center gap-2 mb-4">
               <h1 className="text-[#B0B0B4] raleway font-semibold">
-                {" "}
                 Categories
               </h1>
               <hr className="border-white/50 w-full " />

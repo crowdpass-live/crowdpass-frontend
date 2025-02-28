@@ -23,7 +23,7 @@ export default function RootLayout({
   const token_addr =
     "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
   const contractAddr =
-    "0x03b6e892ebacbee65e8f944547207d3d97bf0ad044bd073436fcb33661339f0d";
+    "0x01d32ac8aa93236fe6ce3934c631103d052d1af9e7b846fd6705cc08bebfb5bf";
 
   const [account, setAccount] = useState<SessionAccountInterface | undefined>(
     undefined
@@ -57,7 +57,9 @@ export default function RootLayout({
       .catch((err) => {
         console.error("Failed to connect to Argent Web Wallet", err);
       });
-  }, []);
+  }, [account]);
+
+  
 
   const eventContract = new Contract(eventAbi, contractAddr, account);
   const readEventContract = new Contract(eventAbi, contractAddr, provider);

@@ -7,25 +7,13 @@ import { usePathname } from "next/navigation";
 import ConnectWalletButton from "../ConnectWallet";
 import ConnectedUser from "../ConnectedUser";
 import { UserContext } from "../../app/layout";
-import { UserCircle } from "lucide-react";
 
 const Header = () => {
   const navLinks = [
     { name: "Events", href: "/events" },
     { name: "Marketplace", href: "/marketplace" },
   ];
-  // const disconnectWallet = async () => {
-  //   await disconnect();
-  //   window.location.reload();
-  //   localStorage.removeItem("account");
-  // };
-
-  // useEffect(() => {
-  //   console.log("Account changed:", account);
-  // }, [account]);
-
   const { address }: any = useContext(UserContext);
-
 
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {
@@ -36,7 +24,6 @@ const Header = () => {
     }
   });
   const pathname = usePathname();
-
 
   return (
     <>
@@ -58,7 +45,7 @@ const Header = () => {
             <a
               key={index}
               href={link.href}
-              className={`text-white font-medium text-md lg:text-2xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
+              className={`text-white font-medium text-md lg:text-xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
                 pathname === link.href
                   ? "underline-offset-8 decoration-primary underline"
                   : ""
@@ -70,7 +57,7 @@ const Header = () => {
           {address ? (
             <a
               href="/my-events"
-              className={`text-white font-medium text-md lg:text-2xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
+              className={`text-white font-medium text-md lg:text-xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
                 pathname === "/my-events"
                   ? "underline-offset-8 decoration-primary underline"
                   : ""
@@ -84,25 +71,19 @@ const Header = () => {
         </div>
 
         <div className="flex gap-4">
+          {address !== undefined ? <ConnectedUser /> : <ConnectWalletButton />}
           {address !== undefined ? (
-            <Button
-              className="flex items-center gap-4 p-6 bg-transparent hover:bg-light-black"
-            >
-              {/* <p className="text-white font-medium text-lg">{data?.value}ETH</p> */}
-              <UserCircle color="#FF6932" size={25} />
-              <p className="text-white font-medium text-lg">{`0x${address
-                ?.split("x")[1]
-                .slice(0, 4)}...${address?.slice(-4)}`}</p>
-            </Button>
+            <Link href="/dashboard/create-event">
+              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
+                Create Event
+              </Button>
+            </Link>
           ) : (
-            <>
-              <ConnectWalletButton />
-              <Link href="/create-event">
-                <Button className="bg-primary text-light-black font-semibold text-sm lg:text-xl raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
-                  Create Event
-                </Button>
-              </Link>
-            </>
+            <Link href="/create-event">
+              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
+                Create Event
+              </Button>
+            </Link>
           )}
         </div>
 
@@ -186,13 +167,6 @@ const Header = () => {
               </li>
             ))}
             <li className="block relative list-none group">
-              {/* <Button
-                onClick={() => ConnectWallet(setConnected)}
-                className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6"
-              >
-                Login
-              </Button> */}
-
               <ConnectWalletButton />
             </li>
             <li className="block relative list-none group">

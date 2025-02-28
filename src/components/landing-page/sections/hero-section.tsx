@@ -6,6 +6,7 @@ import Header from "../header";
 import { Button } from "../../ui/button";
 import { UserContext } from "../../../app/layout";
 import { handleRemoveOrganizer } from "@/components/AbiCalls";
+import Link from "next/link";
 
 const HeroSection = () => {
   const { contractAddr, account, setIsLoading }: any = useContext(UserContext);
@@ -32,7 +33,7 @@ const HeroSection = () => {
       initial="hidden"
       animate="visible"
       whileInView="visible"
-      viewport={{ once: false }} 
+      viewport={{ once: false }}
       variants={containerVariants}
     >
       <Header />
@@ -58,14 +59,11 @@ const HeroSection = () => {
             <span className="text-primary">CrowdPass</span>
           </motion.h1>
           <motion.div variants={itemVariants}>
-            <Button
-              onClick={() => {
-                handleRemoveOrganizer(contractAddr, account, setIsLoading);
-              }}
-              className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4"
-            >
-              Get Started
-            </Button>
+            <Link href={"/events"}>
+              <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4">
+                Get Started
+              </Button>
+            </Link>
           </motion.div>
         </motion.div>
         <motion.div

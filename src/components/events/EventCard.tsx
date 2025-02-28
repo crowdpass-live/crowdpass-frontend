@@ -8,11 +8,11 @@ const EventCard = ({ eachEvent }: any) => {
     eventId,
     eventImage,
     eventName,
-    eventStartDate,
+    start_date,
     description,
-    paid,
+    ticket_price
   } = eachEvent;
-  const response = epochToDatetime(`${eventStartDate}`);
+  const response = epochToDatetime(`${start_date}`);
 
   return (
     <Card className="bg-deep-blue rounded-xl md:w-96 w-full flex-grow border-0">
@@ -29,7 +29,7 @@ const EventCard = ({ eachEvent }: any) => {
             </p>
             <p className="text-lg text-white">{eventName}</p>
           </div>
-          <p className="text-sm text-white">{paid ? "PAID" : "FREE"}</p>
+          <p className="text-sm text-white">{Number(ticket_price) > 0  ? "PAID" : "FREE"}</p>
         </div>
         <p className="line-clamp-2 text-sm text-white px-3">{description}</p>
         <div className="flex justify-end items-center py-2">

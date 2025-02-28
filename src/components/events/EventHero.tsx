@@ -3,6 +3,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 type Props = {};
 
@@ -40,9 +41,11 @@ const EventHero = (props: Props) => {
           <span className="text-primary">Place</span>.
         </motion.h1>
         <motion.div variants={textVariants}>
+          <Link href={"#explore"}>
           <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4">
             Get Started
           </Button>
+          </Link>
         </motion.div>
       </motion.div>
 

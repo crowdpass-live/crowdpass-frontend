@@ -3,14 +3,8 @@
 import { dummyEvents } from "@/components/events/dummyData";
 import EventDetails from "@/components/events/EventDetails";
 import EventDetailsBody from "@/components/events/EventDetailsBody";
-import EventScheduleItem from "@/components/events/EventScheduleItem";
-import EventTicketPrice from "@/components/events/EventTicktetPrice";
-import EventWorkshopItem from "@/components/events/EventWorkshopItem";
-import { MapPin } from "lucide-react";
-import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
-import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
+import React from "react";
 
 type Props = {};
 

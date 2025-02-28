@@ -7,26 +7,6 @@ import { argentWebWallet } from "./AbiCalls";
 
 const ConnectWalletButton = () => {
   const { token_addr, contractAddr }: any = useContext(UserContext);
-  // const handleConnectWallet = async () => {
-  //   const { connectorData } = await connect({
-  //     modalMode: "alwaysAsk",
-  //     modalTheme: "dark",
-  //     // webWalletUrl: "https://web-v2.hydrogen.argent47.net",
-  //     argentMobileOptions: {
-  //       dappName: "CrowdPass",
-  //       url: "https://www.crowdpass.live",
-  //     },
-  //     connectors: [
-  //       new WebWalletConnector({
-  //         url: "https://web-v2.hydrogen.argent47.net",
-  //       }),
-  //     ],
-  //   });
-
-  //   if (connectorData && connectorData.account) {
-  //     setAccount(connectorData.account);
-  //   }
-  // };
 
   const handleConnect = async () => {
     try {
@@ -35,16 +15,12 @@ const ConnectWalletButton = () => {
           approvalRequests: [
              {
                 tokenAddress: token_addr,
-                amount: BigInt("100000000000000000").toString(),
+                amount: BigInt("1000000000000000000").toString(),
                 // Your dapp contract
                 spender: contractAddr,
              },
           ],
        });
-       
-      console.log(response);
-      //  console.log(sessionTypedData);
-      //  setAccount(sessionAccount);
     } catch (err) {
        console.error(err);
     }
@@ -53,7 +29,7 @@ const ConnectWalletButton = () => {
   return (
     <Button
       onClick={handleConnect}
-      className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-xl raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 hidden md:flex"
+      className="bg-transaparent text-white font-semibold border border-white text-sm lg:text-base raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 hidden md:flex"
     >
       Log in
     </Button>
