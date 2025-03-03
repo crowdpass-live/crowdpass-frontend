@@ -1,22 +1,21 @@
 import { Bookmark, Calendar, Share2 } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
+import { handlePurchaseFreeEventTicket } from "../AbiCalls";
+import { UserContext } from "@/app/layout";
 
-const EventDetails = ({ eventDetails }: any) => {
-  const {
-    eventName,
-    eventStartDate,
-    numberOfTickets,
-    paid,
-    workshops,
-    speakers,
-    sponsors,
-    eventImage,
-  }: any = eventDetails;
 
-  const response = epochToDatetime(`${eventStartDate}`);
+const EventDetails = ({ eventDetails, id }: any) => {
+  const { contractAddr, account, setIsLoading }: any = useContext(UserContext);
+
+  const { data }: any = eventDetails
+
+
+  const imgBase =  process.env.NEXT_PUBLIC_BASE_IMG_URL as string || "0x0";
+
+  const response = epochToDatetime(`${Number(data?.start_date)}`);
 
   function convertTime(time: string) {
     let hours = time.substring(0, 2);
@@ -31,11 +30,11 @@ const EventDetails = ({ eventDetails }: any) => {
 
     return hours + ":" + minutes + " " + ampm;
   }
-
+  
   return (
     <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
       <Image
-        src={eventImage}
+        src={`${imgBase}${data?.uri}`}
         alt="event-image"
         width={384}
         height={467}
@@ -43,9 +42,13 @@ const EventDetails = ({ eventDetails }: any) => {
       />
       <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
         <div>
-          <p className="text-primary">{paid ? "PAID" : "FREE"}</p>
+          <p className="text-primary">
+            {Number(data?.ticket_price) > 0
+              ? Number(data?.ticket_price)
+              : "FREE"}
+          </p>
           <h1 className="raleway text-2xl md:text-4xl text-white font-semibold">
-            {eventName}
+            {data?.name}
           </h1>
         </div>
         <div className="bg-[#CBCACF66] flex gap-2 rounded-lg lg:max-w-80 py-2 px-3">
@@ -98,7 +101,7 @@ const EventDetails = ({ eventDetails }: any) => {
                 className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
               />
               <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
-                {numberOfTickets - 5}+
+                {Number(data?.total_tickets) - 5}+
               </p>
             </div>
             <div className="flex flex-col">
@@ -106,7 +109,7 @@ const EventDetails = ({ eventDetails }: any) => {
               <p className="font-medium text-sm text-white">Across the globe</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <h1 className="text-white text-sm md:text-base font-medium">
               {speakers.length}+ Speakers
             </h1>
@@ -128,16 +131,19 @@ const EventDetails = ({ eventDetails }: any) => {
             <h1 className="text-white text-sm md:text-base font-medium">
               {workshops.length}+ Workshops
             </h1>
-          </div>
+          </div> */}
         </div>
         <div className="flex justify-end lg:w-full gap-8 items-center">
           <div className="pt-4 flex gap-4">
             <Share2 size={40} fill="#ffffff" color="#ffffff" />
             <Bookmark size={40} fill="#ffffff" color="#ffffff" />
           </div>
+          {Number(data?.ticket_price) > 0 ?
           <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center">
             Register
-          </Button>
+          </Button> :  <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center" onClick={()=>{handlePurchaseFreeEventTicket(contractAddr, account, setIsLoading, id)}}>
+            Register
+          </Button> }
         </div>
       </div>
     </div>

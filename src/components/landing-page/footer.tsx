@@ -62,7 +62,7 @@ const Footer = () => {
 
           {/* Right Column */}
           <motion.div
-            className="grid md:grid-cols-3 gap-evenly w-full mx-4 gap-3 md:gap-x-20 lg:w-2/5 lg:gap-10"
+            className="grid sm:grid-cols-3 gap-evenly w-full mx-4 gap-3 md:gap-x-20 lg:w-2/5 lg:gap-10"
             variants={containerVariants}
           >
             <motion.div

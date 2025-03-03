@@ -1,34 +1,26 @@
-import { MapPin } from 'lucide-react';
-import Image from 'next/image';
-import React, { useState } from 'react'
-import EventTicketPrice from './EventTicktetPrice';
-import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
-import EventScheduleItem from './EventScheduleItem';
-import EventWorkshopItem from './EventWorkshopItem';
+import { MapPin } from "lucide-react";
+import Image from "next/image";
+import React, { useState } from "react";
+// import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+// import EventScheduleItem from './EventScheduleItem';
+// import EventWorkshopItem from './EventWorkshopItem';
 
-type Props = {}
+type Props = {};
 
-const EventDetailsBody = ({eventDetails}:any) => {
-    const [tabIndex, setTabIndex] = useState(0);
-    const detailsTabs = ["Schedule", "Workshops", "Speakers"];
-    const {
-        eventLocation,
-        description,
-        schedule,
-        workshops,
-        speakers,
-      }: any = eventDetails;
+const EventDetailsBody = ({ eventDetails }: any) => {
+  // const [tabIndex, setTabIndex] = useState(0);
+  // const detailsTabs = ["Schedule", "Workshops", "Speakers"];
+  const { data }: any = eventDetails;
+
   return (
-
-        <>
+    <>
       <hr className="text-white " />
       <h1 className="raleway text-2xl md:text-4xl text-white font-semibold my-4">
         Description
       </h1>
-      <hr className="text-white"/>
-      <p className="text-white my-6">{description}</p>
-      <hr className="text-white"/>
-
+      <hr className="text-white" />
+      <p className="text-white my-6">{data?.description}</p>
+      <hr className="text-white" />
       <div className="flex flex-col md:flex-row gap-10">
         <div className="flex flex-col lg:w-[384px] my-6">
           <h1 className="text-3xl text-white raleway mb-2 font-semibold">
@@ -45,10 +37,10 @@ const EventDetailsBody = ({eventDetails}:any) => {
             <div className="bg-[#14141A] p-2 rounded-xl">
               <MapPin size={30} color="#FF6932" />
             </div>
-            {eventLocation}
+            {data?.location}
           </div>
         </div>
-        <div className="lg:w-[600px] lg:mt-8">
+        {/* <div className="lg:w-[600px] lg:mt-8">
           <Tabs
             selectedIndex={tabIndex}
             onSelect={(index) => setTabIndex(index)}
@@ -147,10 +139,10 @@ const EventDetailsBody = ({eventDetails}:any) => {
               </div>
             </TabPanel>
           </Tabs>
-        </div>
+        </div> */}
       </div>
-      </>
-  )
-}
+    </>
+  );
+};
 
-export default EventDetailsBody
+export default EventDetailsBody;

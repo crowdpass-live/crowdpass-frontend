@@ -1,5 +1,6 @@
 "use client";
 
+import { useEvent } from "@/components/AbiCalls";
 import { dummyEvents } from "@/components/events/dummyData";
 import EventDetails from "@/components/events/EventDetails";
 import EventDetailsBody from "@/components/events/EventDetailsBody";
@@ -10,13 +11,12 @@ type Props = {};
 
 const page = (props: Props) => {
   const params = useParams<{ id: string }>();
-  const eventDetails = dummyEvents.find(
-    (event) => event.eventId === Number(params.id)
-  );
+ 
+  const eventDetails = useEvent(Number(params.id));
 
   return (
     <div>
-      <EventDetails eventDetails={eventDetails} />
+      <EventDetails eventDetails={eventDetails} id={params.id}/>
       <div className="bg-deep-blue max-w-[1280px] pt-28 -mt-16">
         <div className="mx-4 lg:mx-28">
           <EventDetailsBody eventDetails={eventDetails} />

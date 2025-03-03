@@ -9,10 +9,13 @@ import ConnectedUser from "../ConnectedUser";
 import { UserContext } from "../../app/layout";
 
 const Header = () => {
+  
+
   const navLinks = [
     { name: "Events", href: "/events" },
     { name: "Marketplace", href: "/marketplace" },
   ];
+
   const { address }: any = useContext(UserContext);
 
   const [showMobileNav, setShowMobileNav] = useState(false);
@@ -32,15 +35,15 @@ const Header = () => {
           <img
             alt={"logo"}
             src="/assets/crowdpass_logo.png"
-            className="w-60 h-10 hidden md:block"
+            className="w-44 h-8 hidden sm:block"
           />
           <img
-            src="/assets/crowdpass_logo.png"
-            className="h-6 w-40 md:hidden"
+            src="/assets/logo-mobile.png"
+            className="h-6 w-10 sm:hidden"
             alt={"mobile-logo"}
           />
         </Link>
-        <div className="md:flex gap-8 hidden">
+        <div className="md:flex md:gap-3 lg:gap-8 hidden">
           {navLinks.map((link, index) => (
             <a
               key={index}
@@ -69,10 +72,13 @@ const Header = () => {
             ""
           )}
         </div>
-
-        <div className="flex gap-4">
-          {address !== undefined ? <ConnectedUser /> : <ConnectWalletButton />}
-          {address !== undefined ? (
+        <div className="hidden md:flex gap-4">
+          {address ? (
+            <ConnectedUser showMobileNav={showMobileNav} />
+          ) : (
+            <ConnectWalletButton showMobileNav={showMobileNav} />
+          )}
+          {address ? (
             <Link href="/dashboard/create-event">
               <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
                 Create Event
@@ -112,7 +118,7 @@ const Header = () => {
 
       {/* Mobile Header*/}
       <div
-        className={`fixed top-0 z-[99] w-full h-[100dvh] bg-gradient-to-b from-[#14141A] to-[#14141A]/50 transition-all duration-[500ms] ease-[cubic-bezier(0.86,0,0.07,1)] lg:hidden flex justify-end ${
+        className={`fixed top-0 z-[79] w-full h-[100dvh] bg-gradient-to-b from-[#14141A] to-[#14141A]/50 transition-all duration-[500ms] ease-[cubic-bezier(0.86,0,0.07,1)] lg:hidden flex justify-end ${
           showMobileNav ? "left-0" : "left-[100%]"
         }`}
       >
@@ -155,26 +161,35 @@ const Header = () => {
             {navLinks.map((link, index) => (
               <li className="block relative list-none group" key={index}>
                 <Link
-                  className={`text-sm font-bold uppercase text-gray-100 block leading-none relative tracking-[0.8px] z-[1] font-barlow before:content-[''] before:absolute before:w-[7px] before:h-[7px]
-                                            before:rounded-full before:opacity-0 before:transition-all before:duration-[0.3s] before:ease-[ease-out] before:delay-[0s]  before:top-1 before:-left-3 before:bg-primary group-hover:text-primary  group-hover:before:opacity-100 ${
-                                              pathname === link.href &&
-                                              "text-primary before:opacity-100"
-                                            }`}
+                  className={`text-sm font-bold uppercase text-gray-100 block leading-none relative tracking-[0.8px] z-[1] font-barlow before:content-[''] before:absolute before:w-[7px] before:h-[7px] before:rounded-full before:opacity-0 before:transition-all before:duration-[0.3s] before:ease-[ease-out] before:delay-[0s]  before:top-1 before:-left-3 before:bg-primary group-hover:text-primary  group-hover:before:opacity-100 ${
+                    pathname === link.href && "text-primary before:opacity-100"
+                  }`}
                   href={link.href}
                 >
                   {link.name}
                 </Link>
               </li>
             ))}
+
             <li className="block relative list-none group">
-              <ConnectWalletButton />
-            </li>
-            <li className="block relative list-none group">
-              <Link href="/create-event">
-                <Button className="bg-primary text-light-black font-semibold text-sm lg:text-xl raleway hover:bg-transparent hover:text-white hover:border hover:border-white lg:ml-4 lg:py-6 lg:px-6">
-                  Create Event
-                </Button>
-              </Link>
+              {address ? (
+                <ConnectedUser showMobileNav={showMobileNav} />
+              ) : (
+                <ConnectWalletButton showMobileNav={showMobileNav} />
+              )}
+              {address ? (
+            <Link href="/dashboard/create-event">
+              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 flex md:hidden">
+                Create Event
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/create-event">
+              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 flex md:hidden">
+                Create Event
+              </Button>
+            </Link>
+          )}
             </li>
           </ul>
         </div>

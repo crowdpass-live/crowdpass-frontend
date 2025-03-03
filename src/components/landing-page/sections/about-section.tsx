@@ -55,8 +55,8 @@ const AboutSection = () => {
       </motion.div>
 
       {/* Card Section */}
-      <motion.div variants={itemVariants} className="z-50">
-        <Card className="w-[95%] md:w-[470px] gap-12 py-14  bg-deep-blue px-6 border-deep-blue rounded-2xl">
+      <motion.div variants={itemVariants} className="z-50 flex justify-center">
+        <Card className="w-[95%] md:w-[470px] gap-12 py-6 md:py-14  bg-deep-blue px-2 md:px-6 border-deep-blue rounded-2xl">
           <CardHeader>
             <CardTitle className="text-white text-4xl raleway font-medium">
               About Us

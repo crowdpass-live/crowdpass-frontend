@@ -2,27 +2,51 @@ import React, { useContext } from "react";
 import { Button } from "./ui/button";
 import { UserCircle } from "lucide-react";
 import { UserContext } from "../app/layout";
-import { argentWebWallet } from "./AbiCalls";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-const ConnectedUser = () => {
-  const { address, setAccount }: any = useContext(UserContext);
+const ConnectedUser = ({showMobileNav}:any) => {
+  const { address, handleClearSession }: any = useContext(UserContext);
 
-  const handleClearSession = async () => {
-    await argentWebWallet.clearSession();
-    setAccount(undefined);
-    console.log("clicked");
-  };
   return (
-    <Button
-      onClick={() => handleClearSession()}
-      className="flex items-center gap-4 p-6 bg-transparent hover:bg-light-black"
-    >
-      {/* <p className="text-white font-medium text-lg">{data?.value}ETH</p> */}
-      <UserCircle color="#FF6932" size={25} />
-      <p className="text-white font-medium text-base">{`0x${address
-        ?.split("x")[1]
-        .slice(0, 4)}...${address?.slice(-4)}`}</p>
-    </Button>
+    <Dialog>
+      <DialogTrigger className={`${showMobileNav ? "block mb-3": ""}`}>
+        <Button className={`flex items-center gap-4 p-4 bg-transparent hover:bg-light-black`}>
+          <UserCircle color="#FF6932" size={25} />
+          <p className="text-white font-medium text-sm">{`0x${address
+            ?.split("x")[1]
+            .slice(0, 4)}...${address?.slice(-4)}`}</p>
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="bg-deep-blue border-none z-[99] shadow-2xl ">
+        <DialogHeader className="text-neutral-100">
+          Do you want to disconnect your Wallet?
+        </DialogHeader>
+        <DialogFooter className="sm:justify-center mb-1">
+          <DialogClose asChild>
+            <Button onClick={()=>{handleClearSession()
+              
+            }}>Yes</Button>
+          </DialogClose>
+
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant="secondary"
+              className="text-white shadow-black shadow-sm"
+            >
+              No
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

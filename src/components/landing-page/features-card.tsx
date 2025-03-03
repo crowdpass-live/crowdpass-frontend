@@ -10,7 +10,7 @@ type Props = {
 
 const FeaturesCard = ({ icon, title, description }: Props) => {
   return (
-    <Card className="w-full md:w-[300px] lg:w-[400px] flex flex-col justify-center items-center border-deep-blue bg-deep-blue px-4 pb-4 rounded-2xl mb-16 ">
+    <Card className="w-full md:w-[300px] lg:w-[400px] flex flex-col justify-center items-center border-deep-blue bg-deep-blue px-4 pb-8 rounded-2xl mb-16 shadow-xl">
       <div className="bg-light-black p-4 -mt-14 rounded-full">
         {icon}
       </div>

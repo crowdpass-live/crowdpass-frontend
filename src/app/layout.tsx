@@ -1,16 +1,20 @@
 "use client";
 
 import "./globals.css";
-import { Toaster } from "react-hot-toast";
 import { StarknetProvider } from "@/components/StarknetProvider";
-import { Contract } from "starknet";
+import { constants, Contract, RpcProvider } from "starknet";
 import eventAbi from "../Abis/eventAbi.json";
-import strkAbi from "../Abis/strkAbi.json";
 import { useEffect, useState } from "react";
 import { createContext } from "react";
-import { argentWebWallet, provider } from "@/components/AbiCalls";
-import { SessionAccountInterface } from "@argent/webwallet-sdk";
+import { argentWebWallet } from "@/components/AbiCalls";
+import {
+  deployAndExecuteWithPaymaster,
+  SessionAccountInterface,
+} from "@argent/webwallet-sdk";
 import ReactLenis from "lenis/react";
+import { Toaster } from "@/components/ui/sonner";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const UserContext = createContext({});
 
@@ -19,12 +23,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const provider = new RpcProvider({
+    nodeUrl:
+      "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
+    chainId: constants.StarknetChainId.SN_SEPOLIA,
+  });
+
+  const router = useRouter();
+
   // Contract Addresses
   const token_addr =
-    "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d";
+    (process.env.NEXT_PUBLIC_TOKEN_ADDRESS as `0x${string}`) || "0x0";
   const contractAddr =
-    "0x01d32ac8aa93236fe6ce3934c631103d052d1af9e7b846fd6705cc08bebfb5bf";
+    (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || "0x0";
 
+  // User States
   const [account, setAccount] = useState<SessionAccountInterface | undefined>(
     undefined
   );
@@ -32,6 +45,73 @@ export default function RootLayout({
   const [address, setAddress] = useState<String | undefined>(undefined);
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleClearSession = async () => {
+    try {
+      await argentWebWallet.clearSession();
+      setAccount(undefined);
+      setAddress(undefined);
+      router.push("/");
+      toast.success("Wallet Disconnected Successfully");
+    } catch (err) {
+      toast.error(`Error disconnecting:${err}`);
+    }
+  };
+
+  const handleConnect = async () => {
+    try {
+      const response = await argentWebWallet.requestConnection({
+        callbackData: "custom_callback_data",
+        approvalRequests: [
+          {
+            tokenAddress:
+              "0x049D36570D4e46f48e99674bd3fcc84644DdD6b96F7C741B1562B82f9e004dC7",
+            amount: BigInt("100000000000000000").toString(),
+            // Your dapp contract
+            spender:
+              "0x7e00d496e324876bbc8531f2d9a82bf154d1a04a50218ee74cdd372f75a551a",
+          },
+        ],
+      });
+
+      if (response) {
+        const { account: sessionAccount } = response;
+
+        if (response.deploymentPayload) {
+          console.log("Deploying an account");
+          const isDeployed = await sessionAccount.isDeployed();
+
+          if (!isDeployed && response.approvalRequestsCalls) {
+            // @note If you're not willing to sponsor deployment, notify user to fund his wallet
+            const resp = await deployAndExecuteWithPaymaster(
+              sessionAccount,
+              {
+                apiKey: "c6a2dd57-fa65-4daf-87a7-2361611df07a",
+              },
+              response.deploymentPayload,
+              response.approvalRequestsCalls
+            );
+
+            if (resp) {
+              console.log("Deployment hash: ", resp.transaction_hash);
+
+              await provider.waitForTransaction(resp.transaction_hash);
+
+              console.log("Account deployed");
+            }
+          } else {
+            console.log("Account already deployed");
+          }
+        }
+
+        setAccount(sessionAccount);
+      } else {
+        console.log("requestConnection response is undefined");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // user connection to dapp
   useEffect(() => {
@@ -57,13 +137,7 @@ export default function RootLayout({
       .catch((err) => {
         console.error("Failed to connect to Argent Web Wallet", err);
       });
-  }, [account]);
-
-  
-
-  const eventContract = new Contract(eventAbi, contractAddr, account);
-  const readEventContract = new Contract(eventAbi, contractAddr, provider);
-  const strkContract = new Contract(strkAbi, token_addr, account);
+  }, []);
 
   return (
     <html lang="en">
@@ -77,17 +151,16 @@ export default function RootLayout({
               setAccount,
               contractAddr,
               eventAbi,
-              eventContract,
-              readEventContract,
-              strkContract,
               token_addr,
               address,
+              handleClearSession,
+              handleConnect,
               setAddress,
             }}
           >
             <StarknetProvider>
               {children}
-              <Toaster />
+              <Toaster richColors={true} />
             </StarknetProvider>
           </UserContext.Provider>
         </body>

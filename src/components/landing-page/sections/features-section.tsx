@@ -76,7 +76,7 @@ const FeaturesSection = () => {
           Our Features
         </motion.h1>
         <motion.div
-          className='flex justify-center items-center flex-wrap gap-6'
+          className='flex w-[95%] md:w-full justify-center items-center flex-wrap gap-3'
           variants={containerVariants} 
         >
           {cards}

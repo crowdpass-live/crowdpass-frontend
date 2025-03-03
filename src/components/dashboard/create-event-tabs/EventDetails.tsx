@@ -34,7 +34,7 @@ const EventDetails = ({ setActiveStep }: any) => {
           id="eventLocation"
           className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-14"
         />
-        <a href="" className="flex justify-end text-[#B0B0B4] underline">
+        <a href="#" className="flex justify-end text-[#B0B0B4] underline">
           select from map
         </a>
       </div>

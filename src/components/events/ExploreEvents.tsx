@@ -26,7 +26,7 @@ const ExploreEvents = () => {
   const itemsPerPage = 6;
 
   const filteredEvents = getFilteredEvents(data, tabIndex);
-  console.log(filteredEvents)
+  console.log(data)
 
   const totalPages = Math.ceil(filteredEvents?.length / itemsPerPage);
 
@@ -106,8 +106,8 @@ const ExploreEvents = () => {
       <div className="flex items-start justify-between">
         <FilterEvent />
         {/* Events Section */}
-        <div className="flex flex-wrap flex-grow gap-8 justify-center items-center w-full">
-          <AnimatePresence>
+        <div className="flex flex-wrap gap-8 justify-center items-center w-full">
+          <AnimatePresence >
             {filteredEvents?.length > 0 ? (
               filteredEvents.map((eachEvent: any, index: any) => (
                 <motion.div

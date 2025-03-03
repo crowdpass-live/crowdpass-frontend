@@ -1,16 +1,11 @@
-import { CallData, RpcProvider, byteArray, cairo, constants } from "starknet";
+import { CallData, byteArray, cairo } from "starknet";
 import { ArgentWebWallet } from "@argent/webwallet-sdk";
 import { useCall } from "@starknet-react/core";
 import eventAbi from "../Abis/eventAbi.json";
+import { toast } from "sonner";
 
-
-const CONTRACT_ADDRESS = "0x01d32ac8aa93236fe6ce3934c631103d052d1af9e7b846fd6705cc08bebfb5bf";
-
-export const provider = new RpcProvider({
-  nodeUrl:
-    "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
-  chainId: constants.StarknetChainId.SN_SEPOLIA,
-});
+const CONTRACT_ADDRESS =
+  (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || "0x0";
 
 export const argentWebWallet = ArgentWebWallet.init({
   appName: "CrowdPass",
@@ -37,8 +32,15 @@ export const argentWebWallet = ArgentWebWallet.init({
         contract: CONTRACT_ADDRESS,
         selector: "remove_organizer",
       },
+      {
+        contract: CONTRACT_ADDRESS,
+        selector: "purchase_ticket",
+      },
     ],
   },
+  paymasterParams: {
+	   apiKey: "c6a2dd57-fa65-4daf-87a7-2361611df07a"
+	},
 });
 
 // Write Contract with Sessions
@@ -53,36 +55,31 @@ export const handleCreateEvent = async (
     }
     setIsLoading(true);
 
-    console.log(contractAddr);
-
     try {
       const call = {
         contractAddress: contractAddr,
         entrypoint: "create_event",
         calldata: CallData.compile([
-          byteArray.byteArrayFromString("david"),
-          byteArray.byteArrayFromString("da"),
-          byteArray.byteArrayFromString("www"),
-          byteArray.byteArrayFromString("test event 2"),
-          byteArray.byteArrayFromString("iyana ipaja"),
-          1727830769,
-          1727830969,
+          byteArray.byteArrayFromString("Starknet Africa MeetUp"),
+          byteArray.byteArrayFromString("SAM"),
+          byteArray.byteArrayFromString(
+            "bafkreie6uzxpuf36wyjtzfw7ueskjne2me5o5gwdx5hcfsxdlxpwxdgyyq"
+          ),
+          byteArray.byteArrayFromString("This is a test event for crowdpass"),
+          byteArray.byteArrayFromString("Lagos, Nigeria"),
+          1741024000,
+          1741072000,
           cairo.uint256(100),
-          cairo.uint256(2),
+          cairo.uint256(1),
         ]),
       };
 
-      console.log(call);
-      console.log(account);
       const {
         resourceBounds: estimatedResourceBounds,
-        suggestedMaxFee: estimatedFee1,
       } = await account.estimateInvokeFee(call, {
         version: "0x3",
       });
 
-      console.log(estimatedFee1);
-      console.log(estimatedResourceBounds);
 
       const resourceBounds = {
         ...estimatedResourceBounds,
@@ -92,29 +89,25 @@ export const handleCreateEvent = async (
         },
       };
 
-      console.log(resourceBounds);
-
       let { transaction_hash } = await account.execute(call, {
         version: "0x3",
         resourceBounds,
       });
 
-      console.log(transaction_hash);
-
       // // Wait for transaction to be mined
-      const sogo = await account.waitForTransaction(transaction_hash);
-
-      console.log(sogo);
+      const waitForTransaction = await account.waitForTransaction(transaction_hash);
 
       setIsLoading(false);
-
+      toast.success("Event Created");
       return "success";
     } catch (error) {
       console.error(error);
+      toast.error(`${error}`);
 
       setIsLoading(false);
     }
   } catch (err) {
+    toast.error(`Error creating event`);
     console.error(err);
     setIsLoading(false);
   }
@@ -130,8 +123,6 @@ export const handleUpdateEvent = async (
       throw new Error("Account not connected");
     }
     setIsLoading(true);
-
-    console.log(contractAddr);
 
     try {
       const call = {
@@ -151,17 +142,12 @@ export const handleUpdateEvent = async (
         ]),
       };
 
-      console.log(call);
-      console.log(account);
       const {
         resourceBounds: estimatedResourceBounds,
-        suggestedMaxFee: estimatedFee1,
       } = await account.estimateInvokeFee(call, {
         version: "0x3",
       });
 
-      console.log(estimatedFee1);
-      console.log(estimatedResourceBounds);
 
       const resourceBounds = {
         ...estimatedResourceBounds,
@@ -171,21 +157,16 @@ export const handleUpdateEvent = async (
         },
       };
 
-      console.log(resourceBounds);
-
       let { transaction_hash } = await account.execute(call, {
         version: "0x3",
         resourceBounds,
       });
 
-      console.log(transaction_hash);
-
       // // Wait for transaction to be mined
-      const sogo = await account.waitForTransaction(transaction_hash);
-
-      console.log(sogo);
+      const waitForTransaction = await account.waitForTransaction(transaction_hash);
 
       setIsLoading(false);
+      toast.success("Event Updated");
 
       return "success";
     } catch (error) {
@@ -194,6 +175,8 @@ export const handleUpdateEvent = async (
       setIsLoading(false);
     }
   } catch (err) {
+    toast.error("Error updating event");
+
     console.error(err);
     setIsLoading(false);
   }
@@ -210,8 +193,6 @@ export const handleCancelEvent = async (
     }
     setIsLoading(true);
 
-    console.log(contractAddr);
-
     try {
       const call = {
         contractAddress: contractAddr,
@@ -219,17 +200,12 @@ export const handleCancelEvent = async (
         calldata: CallData.compile([cairo.uint256(3)]),
       };
 
-      console.log(call);
-      console.log(account);
       const {
         resourceBounds: estimatedResourceBounds,
-        suggestedMaxFee: estimatedFee1,
       } = await account.estimateInvokeFee(call, {
         version: "0x3",
       });
 
-      console.log(estimatedFee1);
-      console.log(estimatedResourceBounds);
 
       const resourceBounds = {
         ...estimatedResourceBounds,
@@ -239,21 +215,16 @@ export const handleCancelEvent = async (
         },
       };
 
-      console.log(resourceBounds);
-
       let { transaction_hash } = await account.execute(call, {
         version: "0x3",
         resourceBounds,
       });
 
-      console.log(transaction_hash);
-
       // // Wait for transaction to be mined
-      const sogo = await account.waitForTransaction(transaction_hash);
-
-      console.log(sogo);
+      const waitForTransaction = await account.waitForTransaction(transaction_hash);
 
       setIsLoading(false);
+      toast.success("Event Cancelled");
 
       return "success";
     } catch (error) {
@@ -262,6 +233,8 @@ export const handleCancelEvent = async (
       setIsLoading(false);
     }
   } catch (err) {
+    toast.error("Error cancelling event");
+
     console.error(err);
     setIsLoading(false);
   }
@@ -278,8 +251,6 @@ export const handleAddOrganizer = async (
     }
     setIsLoading(true);
 
-    console.log(contractAddr);
-
     try {
       const call = {
         contractAddress: contractAddr,
@@ -290,17 +261,12 @@ export const handleAddOrganizer = async (
         ]),
       };
 
-      console.log(call);
-      console.log(account);
       const {
         resourceBounds: estimatedResourceBounds,
-        suggestedMaxFee: estimatedFee1,
       } = await account.estimateInvokeFee(call, {
         version: "0x3",
       });
 
-      console.log(estimatedFee1);
-      console.log(estimatedResourceBounds);
 
       const resourceBounds = {
         ...estimatedResourceBounds,
@@ -310,21 +276,16 @@ export const handleAddOrganizer = async (
         },
       };
 
-      console.log(resourceBounds);
-
       let { transaction_hash } = await account.execute(call, {
         version: "0x3",
         resourceBounds,
       });
 
-      console.log(transaction_hash);
-
       // // Wait for transaction to be mined
-      const sogo = await account.waitForTransaction(transaction_hash);
-
-      console.log(sogo);
+      const waitForTransaction = await account.waitForTransaction(transaction_hash);
 
       setIsLoading(false);
+      toast.success("Organizer Added");
 
       return "success";
     } catch (error) {
@@ -333,6 +294,8 @@ export const handleAddOrganizer = async (
       setIsLoading(false);
     }
   } catch (err) {
+    toast.error("Error Adding organiser");
+
     console.error(err);
     setIsLoading(false);
   }
@@ -349,8 +312,6 @@ export const handleRemoveOrganizer = async (
     }
     setIsLoading(true);
 
-    console.log(contractAddr);
-
     try {
       const call = {
         contractAddress: contractAddr,
@@ -361,17 +322,12 @@ export const handleRemoveOrganizer = async (
         ]),
       };
 
-      console.log(call);
-      console.log(account);
       const {
         resourceBounds: estimatedResourceBounds,
-        suggestedMaxFee: estimatedFee1,
       } = await account.estimateInvokeFee(call, {
         version: "0x3",
       });
 
-      console.log(estimatedFee1);
-      console.log(estimatedResourceBounds);
 
       const resourceBounds = {
         ...estimatedResourceBounds,
@@ -381,21 +337,16 @@ export const handleRemoveOrganizer = async (
         },
       };
 
-      console.log(resourceBounds);
-
       let { transaction_hash } = await account.execute(call, {
         version: "0x3",
         resourceBounds,
       });
 
-      console.log(transaction_hash);
-
       // // Wait for transaction to be mined
-      const sogo = await account.waitForTransaction(transaction_hash);
-
-      console.log(sogo);
+      const waitForTransaction = await account.waitForTransaction(transaction_hash);
 
       setIsLoading(false);
+      toast.success("Organizer removed");
 
       return "success";
     } catch (error) {
@@ -404,12 +355,63 @@ export const handleRemoveOrganizer = async (
       setIsLoading(false);
     }
   } catch (err) {
+    toast.error("Error removing organiser");
     console.error(err);
     setIsLoading(false);
   }
 };
 
-// Read Contract Hook calls 
+export const handlePurchaseFreeEventTicket =async (
+  contractAddr: any,
+  account: any,
+  setIsLoading: any,
+  eventId: String
+) => {
+  try {
+    if (!account) {
+      throw new Error("Account not connected");
+    }
+    setIsLoading(true);
+    try {
+      const call = {
+        contractAddress: contractAddr,
+        entrypoint: "purchase_ticket",
+        calldata: CallData.compile([cairo.uint256(Number(eventId))]),
+      };
+      const {
+        resourceBounds: estimatedResourceBounds,
+      } = await account.estimateInvokeFee(call, {
+        version: "0x3",
+      });
+      const resourceBounds = {
+        ...estimatedResourceBounds,
+        l1_gas: {
+          ...estimatedResourceBounds.l1_gas,
+          max_amount: "0x1388",
+        },
+      };
+      let { transaction_hash } = await account.execute(call, {
+        version: "0x3",
+        resourceBounds,
+      });
+
+      // // Wait for transaction to be mined
+      const waitForTransaction = await account.waitForTransaction(transaction_hash);
+      setIsLoading(false);
+      toast.success("Event Ticket Purchased");
+      return "success";
+    } catch (error) {
+      console.error(error);
+      setIsLoading(false);
+    }
+  } catch (err) {
+    toast.error("Error purchasing ticket");
+    console.error(err);
+    setIsLoading(false);
+  }
+};
+
+// Read Contract Hook calls
 const useEvents = () => {
   const { data, isError, isLoading, error } = useCall({
     functionName: "get_all_events",
