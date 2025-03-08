@@ -1,9 +1,9 @@
-import { UserContext } from "../app/layout";
 import { useContext } from "react";
 import { Button } from "./ui/button";
+import { StarknetContext } from "@/contexts/UserContext";
 
 const ConnectWalletButton = ({showMobileNav}: any) => {
-  const { handleConnect }: any = useContext(UserContext);
+  const { handleConnect }: any = useContext(StarknetContext);
 
  
   return (
@@ -17,3 +17,4 @@ const ConnectWalletButton = ({showMobileNav}: any) => {
 };
 
 export default ConnectWalletButton;
+

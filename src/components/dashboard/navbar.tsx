@@ -3,8 +3,10 @@
 import React from "react";
 import { BiSolidMessageDetail } from "react-icons/bi";
 import { FaBell } from "react-icons/fa";
-import ConnectedUser from "../ConnectedUser";
-
+import dynamic from "next/dynamic";
+const ConnectedUser = dynamic(() => import("../ConnectedUser"), {
+  ssr: false,
+});
 const Navbar = () => {
 
   return (

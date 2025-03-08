@@ -1,12 +1,12 @@
-import { UserContext } from "@/app/layout";
 import axios from "axios";
 import { handleCreateEvent } from "@/components/AbiCalls";
 import { Button } from "@/components/ui/button";
 import React, { useContext, useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
+import { StarknetContext } from "@/contexts/UserContext";
 
 const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
-  const { contractAddr, account, setIsLoading }: any = useContext(UserContext);
+  const { contractAddr, account, setIsLoading }: any = useContext(StarknetContext);
   const [localEventData, setLocalEventData] = useState({...eventData});
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 

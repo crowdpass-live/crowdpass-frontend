@@ -4,19 +4,23 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import ConnectWalletButton from "../ConnectWallet";
-import ConnectedUser from "../ConnectedUser";
-import { UserContext } from "../../app/layout";
+import dynamic from "next/dynamic";
+const ConnectWalletButton = dynamic(() => import("../ConnectWallet"), {
+  ssr: false,
+});
+const ConnectedUser = dynamic(() => import("../ConnectedUser"), {
+  ssr: false,
+});
+import { StarknetContext } from "@/contexts/UserContext";
 
 const Header = () => {
-  
 
   const navLinks = [
     { name: "Events", href: "/events" },
     { name: "Marketplace", href: "/marketplace" },
   ];
 
-  const { address }: any = useContext(UserContext);
+  const { address }: any = useContext(StarknetContext);
 
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {

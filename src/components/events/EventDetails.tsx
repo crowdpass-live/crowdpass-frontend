@@ -4,11 +4,11 @@ import React, { useContext } from "react";
 import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
 import { handlePurchaseFreeEventTicket } from "../AbiCalls";
-import { UserContext } from "@/app/layout";
+import { StarknetContext } from "@/contexts/UserContext";
 
 
 const EventDetails = ({ eventDetails, id }: any) => {
-  const { contractAddr, account, setIsLoading }: any = useContext(UserContext);
+  const { contractAddr, account, setIsLoading }: any = useContext(StarknetContext);
 
   const { data }: any = eventDetails
 

@@ -1,47 +1,14 @@
+"use client"
+
 import { CallData, byteArray, cairo } from "starknet";
-import { ArgentWebWallet } from "@argent/webwallet-sdk";
 import { useCall } from "@starknet-react/core";
 import eventAbi from "../Abis/eventAbi.json";
 import { toast } from "sonner";
 
+
 const CONTRACT_ADDRESS =
   (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || "0x0";
 
-export const argentWebWallet = ArgentWebWallet.init({
-  appName: "CrowdPass",
-  environment: "sepolia",
-  sessionParams: {
-    allowedMethods: [
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "create_event",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "update_event",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "cancel_event",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "add_organizer",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "remove_organizer",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "purchase_ticket",
-      },
-    ],
-  },
-  paymasterParams: {
-	   apiKey: "c6a2dd57-fa65-4daf-87a7-2361611df07a"
-	},
-});
 
 // Write Contract with Sessions
 export const handleCreateEvent = async (

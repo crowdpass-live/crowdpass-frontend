@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { Button } from "./ui/button";
 import { UserCircle } from "lucide-react";
-import { UserContext } from "../app/layout";
 import {
   Dialog,
   DialogClose,
@@ -10,9 +9,10 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { StarknetContext } from "@/contexts/UserContext";
 
 const ConnectedUser = ({showMobileNav}:any) => {
-  const { address, handleClearSession }: any = useContext(UserContext);
+  const { address, handleClearSession }: any = useContext(StarknetContext);
 
   return (
     <Dialog>

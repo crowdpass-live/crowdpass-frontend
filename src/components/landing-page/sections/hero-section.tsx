@@ -1,15 +1,12 @@
 "use client";
 
-import React, { useContext } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import Header from "../header";
 import { Button } from "../../ui/button";
-import { UserContext } from "../../../app/layout";
-import { handleRemoveOrganizer } from "@/components/AbiCalls";
 import Link from "next/link";
 
 const HeroSection = () => {
-  const { contractAddr, account, setIsLoading }: any = useContext(UserContext);
 
   // Define animation variants
   const containerVariants = {
