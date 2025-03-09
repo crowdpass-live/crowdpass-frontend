@@ -162,7 +162,6 @@ export const StarknetContextProvider = ({
     }
   };
 
-  // Check for existing wallet connection on component mount
   useEffect(() => {
     argentWebWallet
       .connect()
