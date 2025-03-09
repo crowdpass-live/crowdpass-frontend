@@ -3,51 +3,19 @@
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { constants, RpcProvider } from "starknet";
 import eventAbi from "../Abis/eventAbi.json";
-import {
-  ArgentWebWallet,
-  deployAndExecuteWithPaymaster,
-  SessionAccountInterface,
-} from "@argent/invisible-sdk";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
+// Define types to avoid direct imports that cause SSR issues
+type SessionAccountInterface = any;
+type ArgentWebWalletType = any;
+
+// Dynamically import browser-only modules
+let argentWebWallet: any = null;
+let deployAndExecuteWithPaymaster: any = null;
+
 const CONTRACT_ADDRESS =
   (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || "0x0";
-const argentWebWallet = ArgentWebWallet.init({
-  appName: "CrowdPass",
-  environment: "sepolia",
-  sessionParams: {
-    allowedMethods: [
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "create_event",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "update_event",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "cancel_event",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "add_organizer",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "remove_organizer",
-      },
-      {
-        contract: CONTRACT_ADDRESS,
-        selector: "purchase_ticket",
-      },
-    ],
-  },
-  paymasterParams: {
-    apiKey: "c6a2dd57-fa65-4daf-87a7-2361611df07a",
-  },
-});
 
 interface StarknetContextType {
   isLoading: boolean;
@@ -80,13 +48,7 @@ export const StarknetContextProvider = ({
     undefined
   );
   const [address, setAddress] = useState<String | undefined>(undefined);
-
-  // Provider setup
-  const provider = new RpcProvider({
-    nodeUrl:
-      "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
-    chainId: constants.StarknetChainId.SN_SEPOLIA,
-  });
+  const [isClient, setIsClient] = useState(false);
 
   // Contract Addresses
   const token_addr =
@@ -94,7 +56,76 @@ export const StarknetContextProvider = ({
   const contractAddr =
     (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || "0x0";
 
+  // Initialize client-side only modules
+  useEffect(() => {
+    setIsClient(true);
+    
+    const initArgentSDK = async () => {
+      try {
+        // Dynamically import browser-only modules
+        const { ArgentWebWallet, deployAndExecuteWithPaymaster: deployExecuteWithPaymaster } = await import("@argent/invisible-sdk");
+        
+        // Initialize the wallet
+        argentWebWallet = ArgentWebWallet.init({
+          appName: "CrowdPass",
+          environment: "sepolia",
+          sessionParams: {
+            allowedMethods: [
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "create_event",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "update_event",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "cancel_event",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "add_organizer",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "remove_organizer",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "purchase_ticket",
+              },
+            ],
+          },
+          paymasterParams: {
+            apiKey: "c6a2dd57-fa65-4daf-87a7-2361611df07a",
+          },
+        });
+
+        deployAndExecuteWithPaymaster = deployExecuteWithPaymaster;
+        
+        // Try to connect to an existing session
+        tryConnect();
+      } catch (error) {
+        console.error("Failed to initialize Argent SDK:", error);
+      }
+    };
+
+    initArgentSDK();
+  }, []);
+
+  // Provider setup - only initialize in client environment
+  const provider = isClient
+    ? new RpcProvider({
+        nodeUrl:
+          "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
+        chainId: constants.StarknetChainId.SN_SEPOLIA,
+      })
+    : null;
+
   const handleClearSession = async () => {
+    if (!argentWebWallet) return;
+    
     try {
       await argentWebWallet.clearSession();
       setAccount(undefined);
@@ -106,7 +137,36 @@ export const StarknetContextProvider = ({
     }
   };
 
+  const tryConnect = async () => {
+    if (!argentWebWallet) return;
+    
+    try {
+      const res = await argentWebWallet.connect();
+      if (!res) {
+        console.log("Not connected");
+        return;
+      }
+
+      const { account } = res;
+
+      if (account.getSessionStatus() !== "VALID") {
+        console.log("Session is not valid");
+        return;
+      }
+
+      setAccount(account);
+      setAddress(account.address);
+    } catch (err) {
+      console.error("Failed to connect to Argent Web Wallet", err);
+    }
+  };
+
   const handleConnect = async () => {
+    if (!argentWebWallet || !provider || !deployAndExecuteWithPaymaster) {
+      toast.error("Wallet functionality not available yet. Please try again.");
+      return;
+    }
+    
     try {
       const response = await argentWebWallet.requestConnection({
         callbackData: "custom_callback_data",
@@ -154,37 +214,16 @@ export const StarknetContextProvider = ({
         }
 
         setAccount(sessionAccount);
+        setAddress(sessionAccount.address);
+        toast.success("Wallet Connected Successfully");
       } else {
         console.log("requestConnection response is undefined");
       }
     } catch (err) {
       console.error(err);
+      toast.error("Failed to connect wallet");
     }
   };
-
-  useEffect(() => {
-    argentWebWallet
-      .connect()
-      .then((res: any) => {
-        if (!res) {
-          console.log("Not connected");
-          return;
-        }
-
-        const { account } = res;
-
-        if (account.getSessionStatus() !== "VALID") {
-          console.log("Session is not valid");
-          return;
-        }
-
-        setAccount(account);
-        setAddress(account.address);
-      })
-      .catch((err: any) => {
-        console.error("Failed to connect to Argent Web Wallet", err);
-      });
-  }, []);
 
   return (
     <StarknetContext.Provider

@@ -5,13 +5,13 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
+import { StarknetContext } from "@/contexts/UserContext";
 const ConnectWalletButton = dynamic(() => import("../ConnectWallet"), {
   ssr: false,
 });
 const ConnectedUser = dynamic(() => import("../ConnectedUser"), {
   ssr: false,
 });
-import { StarknetContext } from "@/contexts/UserContext";
 
 const Header = () => {
 
