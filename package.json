@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@argent/webwallet-sdk": "^1.0.0-alpha.14",
+    "@argent/invisible-sdk": "^1.0.0",
     "@argent/x-sessions": "^7.0.0",
     "@cartridge/connector": "^0.5.5",
     "@emotion/react": "^11.14.0",

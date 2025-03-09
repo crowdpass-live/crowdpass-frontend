@@ -7,7 +7,7 @@ import {
   ArgentWebWallet,
   deployAndExecuteWithPaymaster,
   SessionAccountInterface,
-} from "@argent/webwallet-sdk";
+} from "@argent/invisible-sdk";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -116,17 +116,22 @@ export const StarknetContextProvider = ({
               "0x049D36570D4e46f48e99674bd3fcc84644DdD6b96F7C741B1562B82f9e004dC7",
             amount: BigInt("100000000000000000").toString(),
             spender:
-              "0x7e00d496e324876bbc8531f2d9a82bf154d1a04a50218ee74cdd372f75a551a",
+              "0x0144cfdfabe90c5e0819277d2ee524c1b71ccb09f38599404cc89c6e970ea0fb",
           },
         ],
       });
+      console.log(response);
 
       if (response) {
         const { account: sessionAccount } = response;
-
+        const isDeployed = await sessionAccount.isDeployed();
+        console.log(isDeployed);
+        console.log(sessionAccount);
+        console.log(response.deploymentPayload);
         if (response.deploymentPayload) {
           console.log("Deploying an account");
           const isDeployed = await sessionAccount.isDeployed();
+          console.log("isDeployed", isDeployed);
 
           if (!isDeployed && response.approvalRequestsCalls) {
             const resp = await deployAndExecuteWithPaymaster(
