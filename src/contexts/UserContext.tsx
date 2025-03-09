@@ -180,18 +180,11 @@ export const StarknetContextProvider = ({
           },
         ],
       });
-      console.log(response);
 
       if (response) {
-        const { account: sessionAccount } = response;
-        const isDeployed = await sessionAccount.isDeployed();
-        console.log(isDeployed);
-        console.log(sessionAccount);
-        console.log(response.deploymentPayload);
+        const { account: sessionAccount } = response;        
         if (response.deploymentPayload) {
-          console.log("Deploying an account");
           const isDeployed = await sessionAccount.isDeployed();
-          console.log("isDeployed", isDeployed);
 
           if (!isDeployed && response.approvalRequestsCalls) {
             const resp = await deployAndExecuteWithPaymaster(
