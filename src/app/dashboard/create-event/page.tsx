@@ -14,12 +14,20 @@ const page = () => {
     eventOrganizer: "",
     eventUri: "",
     eventDescription: "",
-    eventImage: null as File | null, 
+    eventImage: "", 
     eventLocation: "",
+    eventStartDate: "",
+    eventEndDate: "",
+    eventCategory: "",
+    eventType: "",
     ticketQuantity: "",
-   
-
+    ticketPrice: "",
   });
+
+  const jsonFile = new File([JSON.stringify(eventData)], eventData.eventName, {
+    type: "application/json",
+  });
+
   const ActiveStepComponent = ({setActiveStep}:any) => {
     switch (activeStep) {
       case 0:

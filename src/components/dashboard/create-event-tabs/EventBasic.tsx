@@ -1,15 +1,13 @@
 import axios from "axios";
-import { handleCreateEvent } from "@/components/AbiCalls";
 import { Button } from "@/components/ui/button";
-import React, { useContext, useState, useMemo, useEffect } from "react";
-import { toast } from "sonner";
-import { StarknetContext } from "@/contexts/UserContext";
+import React, { useState, useMemo, useEffect } from "react";
+
 
 const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
-  const { contractAddr, account, setIsLoading }: any = useContext(StarknetContext);
   const [localEventData, setLocalEventData] = useState({...eventData});
   const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
-
+  const imageBaseUrl = 
+  (process.env.NEXT_PUBLIC_BASE_IMG_URL as string) || "";
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -66,17 +64,18 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
             },
           }
         );
+        console.log(response.data)
         const cid = response.data.IpfsHash;
         
         // Update both local and parent state with the URI
         setLocalEventData((prevData: any) => ({
           ...prevData,
-          eventUri: cid,
+          eventUri: `${imageBaseUrl}${cid}`,
         }));
         
         setEventData((prevData: any) => ({
           ...prevData,
-          eventUri: cid,
+          eventUri: `${imageBaseUrl}${cid}`,
         }));
       } catch (error) {
         // Handle error (could add toast notification here)

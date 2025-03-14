@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import React from "react";
 
 const TicketingOptions = ({setActiveStep}:any) => {
-  const eventTypes = ["Paid", "Free"];
   const isSpokAvailable = ["false", "true"];
   return (
     <div className="w-[655px] h-full flex flex-col gap-8">
@@ -19,15 +18,14 @@ const TicketingOptions = ({setActiveStep}:any) => {
           />
         </div>
         <div className="flex flex-col gap-4 w-[50%] text-white/70">
-          <h1 className="raleway font-medium text-xl text-white">Event Type</h1>
-          <select name="eventType" id="eventType" className="bg-transparent rounded-lg">
-            {eventTypes.map((eventType) => (
-              <option value={eventType} className="text-[#B0B0B4] m-2">
-                {eventType}
-              </option>
-            ))}
-          </select>
-        </div>
+          <h1 className="raleway font-medium text-xl text-white">Ticket Price</h1>
+          <input
+            type="number"
+            name="ticketPrice"
+            id="ticketPrice"
+            className="w-full bg-transparent border-white/70 rounded-lg"
+          />
+        </div> 
       </div>
       <div className="flex gap-10 w-full">
         <div className="flex flex-col gap-4 w-[50%] text-white/70">
@@ -49,17 +47,6 @@ const TicketingOptions = ({setActiveStep}:any) => {
             name="spokAmount"
             id="spokAmount"
             className="w-full bg-transparent border-white/70 rounded-lg"
-          />
-        </div>
-      </div>
-      <div className="flex gap-10 w-full">
-        <div className="flex flex-col gap-4 w-[50%] text-white/70">
-          <h1 className="raleway font-medium text-xl text-white">Set Ticket Options</h1>
-          <input
-            type="time"
-            name="eventStartTime"
-            id="eventStartTime"
-            className="w-full bg-transparent border-white/70"
           />
         </div>
       </div>
