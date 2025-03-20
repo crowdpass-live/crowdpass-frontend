@@ -31,36 +31,6 @@ export async function POST(request: Request) {
       schedule,
     });
 
-    const eventJson = {
-      platform: "Crowdpass",
-      name: event.name,
-      image: `https://ipfs.io/ipfs/${event.image}`,
-      description: event.description,
-      external_url: "https://www.crowdpass.live/",
-      attributes: [
-        {
-          trait_type: "Organizer Name",
-          value: event.organizer_name,
-        },
-        {
-          trait_type: "Event Type",
-          value: event.event_type,
-        },
-        {
-          trait_type: "Event Category",
-          value: event.event_category,
-        },
-        {
-          trait_type: "Location",
-          value: event.location,
-        },
-        {
-          trait_type: "Schedule",
-          value: event.schedule,
-        },
-      ],
-    };
-
     const jsonLink = `${baseJsonUrl}api/events/${event._id}`;
 
     return NextResponse.json({ link: jsonLink }, { status: 201 });
@@ -72,7 +42,7 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     } else {
-      console.error("An unknown error occurred:", error);
+      console.error("An unknown error occurred:", error);    
       return NextResponse.json(
         { message: "An unknown error occurred" },
         { status: 500 }

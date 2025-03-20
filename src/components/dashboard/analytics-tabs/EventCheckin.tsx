@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import EventDay from "./EventDay";
 import { Button } from "@/components/ui/button";
 import { LuScanLine } from "react-icons/lu";
 import { Doughnut } from "react-chartjs-2";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
+import useCheckIn from "@/hooks/write-hooks/useCheckIn";
+import { useParams } from "next/navigation";
 
 type Props = {};
 
 const EventCheckin = (props: Props) => {
+  const params = useParams<{ id: string }>();
+  const checkUserIn = useCheckIn()
+  const [checkInEmail, setCheckInEmail] = useState("")
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setCheckInEmail(e.target.value)
+  };
+
+  const handleCheckIn = ()=>{
+    checkUserIn(Number(params.id), checkInEmail as `0x${string}`)
+  }
+
   Chart.register(CategoryScale);
 
   const DoughnutData = {
@@ -55,8 +71,10 @@ const EventCheckin = (props: Props) => {
               type="text"
               placeholder="Search email address"
               className="raleway w-full bg-transparent border border-deep-blue rounded-lg text-deep-blue py-2 px-8"
+              value={checkInEmail}
+              onChange={handleInputChange}
             />
-            <Button className="bg-primary raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue h-full">
+            <Button className="bg-primary raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue h-full" onClick={handleCheckIn}>
               Search
             </Button>
           </div>

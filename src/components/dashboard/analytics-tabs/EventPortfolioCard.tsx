@@ -6,14 +6,18 @@ import { CiShare1 } from "react-icons/ci";
 
 const EventPortfolioCard = ({ eachEvent }: any) => {
 
-  const { eventId, eventImage, eventName, eventStartDate, paid } = eachEvent;
+  const {  id,
+    name,
+    start_date,
+    ticket_price,
+    image } = eachEvent;
 
-  const response = epochToDatetime(`${eventStartDate}`);
+  const response = epochToDatetime(`${start_date}`);
 
   return (
     <Card className="bg-deep-blue rounded-xl w-80 border-0">
       <img
-        src={eventImage}
+        src={image}
         alt="event"
         className="w-full h-[200px] object-cover rounded-t-xl"
       />
@@ -23,13 +27,13 @@ const EventPortfolioCard = ({ eachEvent }: any) => {
             <p className="text-sm text-white">
               {response.day} {response.month}, {response.year}
             </p>
-            <p className="text-lg text-white">{eventName}</p>
+            <p className="text-lg text-white">{name}</p>
           </div>
-          <p className="text-sm text-white">{paid ? "PAID" : "FREE"}</p>
+          <p className="text-sm text-white">{Number(ticket_price) > 0? "PAID" : "FREE"}</p>
         </div>
         <div className="flex justify-end items-center py-2">
           <Link
-            href={`/dashboard/analytics/${eventId}`}
+            href={`/dashboard/analytics/${id}`}
             className="text-white hover:underline hover:text-primary px-3 text-right raleway font-light flex items-center gap-2"
           >
             VIEW DETAILS <CiShare1 size={18} color="#ffffff" />

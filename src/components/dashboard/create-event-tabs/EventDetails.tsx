@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import React, { useState, useMemo, useEffect } from "react";
-import { datetimeToEpochTime } from "datetime-epoch-conversion";
+import React, { useState, useMemo } from "react";
+import Autocomplete from "react-google-autocomplete";
 
 const EventDetails = ({ setActiveStep, eventData, setEventData }: any) => {
+  const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
+
   const [localEventData, setLocalEventData] = useState({ ...eventData });
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const categories = [
     "Sports",
@@ -30,24 +31,12 @@ const EventDetails = ({ setActiveStep, eventData, setEventData }: any) => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    let processedValue = value;
-
-    // Convert datetime to epoch if applicable
-    // if (name === "eventStartDate" || name === "eventEndDate") {
-    //   processedValue = datetimeToEpochTime(value).toString();
-    // }
-
-    setLocalEventData((prevData: any) => ({ ...prevData, [name]: processedValue }));
-    if (typingTimeout) clearTimeout(typingTimeout);
-    const timeout = setTimeout(() => {
-      setEventData((prevData: any) => ({ ...prevData, [name]: processedValue }));
-    }, 2000);
-    setTypingTimeout(timeout);
+    
+    setLocalEventData((prevData: any) => ({ 
+      ...prevData, 
+      [name]: value 
+    }));
   };
-
-  useEffect(() => {
-    setLocalEventData(eventData);
-  }, [eventData]);
 
   const isFormValid = useMemo(() => {
     return (
@@ -64,31 +53,33 @@ const EventDetails = ({ setActiveStep, eventData, setEventData }: any) => {
     setActiveStep(2);
   };
 
+  const handlePreviousClick = () => {
+    setEventData(localEventData);
+    setActiveStep(0);
+  };
+
   return (
-    <div className="w-[655px] h-full flex flex-col gap-8">
+    <div className="w-[655px] h-full overflow-y-auto flex flex-col gap-8">
       <div className="flex flex-col gap-4 w-full">
         <h1 className="raleway font-semibold text-xl text-white">Event Location</h1>
         <input
           type="text"
           name="eventLocation"
           id="eventLocation"
-          className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-14"
-          value={localEventData.eventLocation}
+          className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-10 md:h-14"
+          value={localEventData.eventLocation || ""}
           onChange={handleInputChange}
         />
-        <a href="#" className="flex justify-end text-[#B0B0B4] underline">
-          select from map
-        </a>
       </div>
 
-      <div className="flex gap-10 w-full">
-        <div className="flex flex-col gap-4 w-[50%] text-white/70">
+      <div className="flex flex-col md:flex-row gap-10 w-full">
+        <div className="flex flex-col gap-4 w-full md:w-[50%] text-white/70">
           <h1 className="raleway font-semibold text-xl text-white">Event Category</h1>
           <select
             name="eventCategory"
             id="eventCategory"
-            className="bg-transparent rounded-lg"
-            value={localEventData.eventCategory}
+            className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-10 md:h-14"
+            value={localEventData.eventCategory || ""}
             onChange={handleInputChange}
           >
             <option value="" disabled>Select Category</option>
@@ -100,13 +91,13 @@ const EventDetails = ({ setActiveStep, eventData, setEventData }: any) => {
           </select>
         </div>
 
-        <div className="flex flex-col gap-4 w-[50%] text-white/70">
+        <div className="flex flex-col gap-4 w-full md:w-[50%]">
           <h1 className="raleway font-semibold text-xl text-white">Event Type</h1>
           <select
             name="eventType"
             id="eventType"
-            className="bg-transparent rounded-lg"
-            value={localEventData.eventType}
+            className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-10 md:h-14"
+            value={localEventData.eventType || ""}
             onChange={handleInputChange}
           >
             <option value="" disabled>Select Type</option>
@@ -119,26 +110,26 @@ const EventDetails = ({ setActiveStep, eventData, setEventData }: any) => {
         </div>
       </div>
 
-      <div className="flex gap-10 w-full">
-        <div className="flex flex-col gap-4 w-[50%] text-white/70">
+      <div className="flex flex-col md:flex-row gap-10 w-full">
+        <div className="flex flex-col gap-4 w-full md:w-[50%]">
           <h1 className="raleway font-semibold text-xl text-white">Start Date and Time</h1>
           <input
             type="datetime-local"
             name="eventStartDate"
             id="eventStartDate"
-            className="w-full bg-transparent border-white/70 rounded-lg"
-            value={localEventData.eventStartDate}
+            className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-10 md:h-14"
+            value={localEventData.eventStartDate || ""}
             onChange={handleInputChange}
           />
         </div>
-        <div className="flex flex-col gap-4 w-[50%] text-white/70">
+        <div className="flex flex-col gap-4 w-full md:w-[50%]">
           <h1 className="raleway font-semibold text-xl text-white">End Date and Time</h1>
           <input
             type="datetime-local"
             name="eventEndDate"
             id="eventEndDate"
-            className="w-full bg-transparent border-white/70 rounded-lg"
-            value={localEventData.eventEndDate}
+            className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-10 md:h-14"
+            value={localEventData.eventEndDate || ""}
             onChange={handleInputChange}
           />
         </div>
@@ -147,7 +138,7 @@ const EventDetails = ({ setActiveStep, eventData, setEventData }: any) => {
       <div className="flex justify-end gap-5">
         <Button
           className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-7 text-xl mt-4 font-semibold"
-          onClick={() => setActiveStep(0)}
+          onClick={handlePreviousClick}
         >
           Previous
         </Button>

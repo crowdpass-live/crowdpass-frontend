@@ -67,14 +67,6 @@
         "type": "core::starknet::contract_address::ContractAddress"
       },
       {
-        "name": "description",
-        "type": "core::byte_array::ByteArray"
-      },
-      {
-        "name": "location",
-        "type": "core::byte_array::ByteArray"
-      },
-      {
         "name": "created_at",
         "type": "core::integer::u64"
       },
@@ -133,14 +125,6 @@
         "type": "core::byte_array::ByteArray"
       },
       {
-        "name": "description",
-        "type": "core::byte_array::ByteArray"
-      },
-      {
-        "name": "location",
-        "type": "core::byte_array::ByteArray"
-      },
-      {
         "name": "created_at",
         "type": "core::integer::u64"
       },
@@ -191,14 +175,6 @@
             "type": "core::byte_array::ByteArray"
           },
           {
-            "name": "description",
-            "type": "core::byte_array::ByteArray"
-          },
-          {
-            "name": "location",
-            "type": "core::byte_array::ByteArray"
-          },
-          {
             "name": "start_date",
             "type": "core::integer::u64"
           },
@@ -240,14 +216,6 @@
           },
           {
             "name": "uri",
-            "type": "core::byte_array::ByteArray"
-          },
-          {
-            "name": "description",
-            "type": "core::byte_array::ByteArray"
-          },
-          {
-            "name": "location",
             "type": "core::byte_array::ByteArray"
           },
           {
@@ -939,6 +907,33 @@
   },
   {
     "type": "event",
+    "name": "crowd_pass::event_factory::event_factory::EventFactory::Refunded",
+    "kind": "struct",
+    "members": [
+      {
+        "name": "event_id",
+        "type": "core::integer::u256",
+        "kind": "key"
+      },
+      {
+        "name": "attendee",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "key"
+      },
+      {
+        "name": "tba",
+        "type": "core::starknet::contract_address::ContractAddress",
+        "kind": "data"
+      },
+      {
+        "name": "amount",
+        "type": "core::integer::u256",
+        "kind": "data"
+      }
+    ]
+  },
+  {
+    "type": "event",
     "name": "crowd_pass::event_factory::event_factory::EventFactory::Event",
     "kind": "enum",
     "variants": [
@@ -990,6 +985,11 @@
       {
         "name": "PayoutCollected",
         "type": "crowd_pass::event_factory::event_factory::EventFactory::PayoutCollected",
+        "kind": "nested"
+      },
+      {
+        "name": "Refunded",
+        "type": "crowd_pass::event_factory::event_factory::EventFactory::Refunded",
         "kind": "nested"
       }
     ]

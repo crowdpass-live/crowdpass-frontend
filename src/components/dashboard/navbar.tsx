@@ -16,10 +16,10 @@ const Navbar = () => {
       <div className="flex gap-4 items-center">
        <ConnectedUser />
         <div className="p-2.5 bg-primary rounded-full">
-          <BiSolidMessageDetail size={25} className="text-light-black" />
+          <BiSolidMessageDetail className="text-light-black md:text-2xl" />
         </div>
         <div className="p-2.5 bg-primary rounded-full">
-          <FaBell size={25} className="text-light-black " />
+          <FaBell className="text-light-black md:text-2xl" />
         </div>
       </div>
     </div>

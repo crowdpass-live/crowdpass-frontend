@@ -20,7 +20,7 @@ export async function GET(
     const eventJson = {
       platform: "Crowdpass",
       name: event.name,
-      image: event.image,
+      image: `https://ipfs.io/ipfs/${event.image}`,
       description: event.description,
       external_url: "https://www.crowdpass.live/events/" + event._id,
       attributes: [

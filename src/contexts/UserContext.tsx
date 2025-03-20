@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 
 // Define types to avoid direct imports that cause SSR issues
 type SessionAccountInterface = any;
-type ArgentWebWalletType = any;
 
 // Dynamically import browser-only modules
 let argentWebWallet: any = null;
@@ -26,6 +25,7 @@ interface StarknetContextType {
   eventAbi: any;
   token_addr: `0x${string}`;
   address: String | undefined;
+  argentWebWallet: any;
   handleClearSession: () => Promise<void>;
   handleConnect: () => Promise<void>;
   setAddress: (address: String | undefined) => void;
@@ -93,6 +93,18 @@ export const StarknetContextProvider = ({
               },
               {
                 contract: CONTRACT_ADDRESS,
+                selector: "refund_ticket",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "collect_event_payout",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
+                selector: "check_in",
+              },
+              {
+                contract: CONTRACT_ADDRESS,
                 selector: "purchase_ticket",
               },
             ],
@@ -143,21 +155,21 @@ export const StarknetContextProvider = ({
     try {
       const res = await argentWebWallet.connect();
       if (!res) {
-        console.log("Not connected");
+        toast("Not connected");
         return;
       }
 
       const { account } = res;
 
       if (account.getSessionStatus() !== "VALID") {
-        console.log("Session is not valid");
+        toast("Session is not valid");
         return;
       }
 
       setAccount(account);
       setAddress(account.address);
     } catch (err) {
-      console.error("Failed to connect to Argent Web Wallet", err);
+      toast.error(`Failed to connect to Argent Web Wallet: ${err}`);
     }
   };
 
@@ -178,6 +190,11 @@ export const StarknetContextProvider = ({
             spender:
               "0x0144cfdfabe90c5e0819277d2ee524c1b71ccb09f38599404cc89c6e970ea0fb",
           },
+          {
+                tokenAddress: token_addr,
+                amount: (10 * 1e18).toString(),
+                spender: contractAddr,
+          }
         ],
       });
 
@@ -197,12 +214,11 @@ export const StarknetContextProvider = ({
             );
 
             if (resp) {
-              console.log("Deployment hash: ", resp.transaction_hash);
               await provider.waitForTransaction(resp.transaction_hash);
-              console.log("Account deployed");
+              toast.success("Account deployed");
             }
           } else {
-            console.log("Account already deployed");
+            toast("Account already deployed");
           }
         }
 
@@ -210,7 +226,7 @@ export const StarknetContextProvider = ({
         setAddress(sessionAccount.address);
         toast.success("Wallet Connected Successfully");
       } else {
-        console.log("requestConnection response is undefined");
+        toast.error("requestConnection response is undefined");
       }
     } catch (err) {
       console.error(err);
@@ -230,6 +246,7 @@ export const StarknetContextProvider = ({
         token_addr,
         address,
         handleClearSession,
+        argentWebWallet,
         handleConnect,
         setAddress,
       }}

@@ -3,19 +3,18 @@ import Image from "next/image";
 import React, { useContext } from "react";
 import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
-import { handlePurchaseFreeEventTicket } from "../AbiCalls";
+import useBuyTicket from "@/hooks/write-hooks/useBuyTicket";
 import { StarknetContext } from "@/contexts/UserContext";
 
 
 const EventDetails = ({ eventDetails, id }: any) => {
-  const { contractAddr, account, setIsLoading }: any = useContext(StarknetContext);
+  const handlePurchase = useBuyTicket()
 
-  const { data }: any = eventDetails
+  const { event }: any = eventDetails
 
+  const { isLoading }: any = useContext(StarknetContext);
 
-  const imgBase =  process.env.NEXT_PUBLIC_BASE_IMG_URL as string || "0x0";
-
-  const response = epochToDatetime(`${Number(data?.start_date)}`);
+  const response = epochToDatetime(`${Number(event?.start_date)}`);
 
   function convertTime(time: string) {
     let hours = time.substring(0, 2);
@@ -33,8 +32,13 @@ const EventDetails = ({ eventDetails, id }: any) => {
   
   return (
     <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="text-white text-2xl">Purchasing Tickets...</div>
+        </div>
+      )}
       <Image
-        src={`${imgBase}${data?.uri}`}
+        src={event?.image}
         alt="event-image"
         width={384}
         height={467}
@@ -43,12 +47,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
       <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
         <div>
           <p className="text-primary">
-            {Number(data?.ticket_price) > 0
-              ? Number(data?.ticket_price)
+            {Number(event?.ticket_price) > 0
+              ? `${Number(event?.ticket_price)} STRK`
               : "FREE"}
           </p>
           <h1 className="raleway text-2xl md:text-4xl text-white font-semibold">
-            {data?.name}
+            {event?.name}
           </h1>
         </div>
         <div className="bg-[#CBCACF66] flex gap-2 rounded-lg lg:max-w-80 py-2 px-3">
@@ -101,7 +105,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
               />
               <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
-                {Number(data?.total_tickets) - 5}+
+                {Number(event?.total_tickets) - 5}+
               </p>
             </div>
             <div className="flex flex-col">
@@ -138,10 +142,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
             <Share2 size={40} fill="#ffffff" color="#ffffff" />
             <Bookmark size={40} fill="#ffffff" color="#ffffff" />
           </div>
-          {Number(data?.ticket_price) > 0 ?
-          <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center">
+          {Number(event?.ticket_price) > 0 ?
+          <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center" onClick={async()=> {await handlePurchase(id, Number(event?.ticket_price))}}>
             Register
-          </Button> :  <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center" onClick={()=>{handlePurchaseFreeEventTicket(contractAddr, account, setIsLoading, id)}}>
+          </Button> :  <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center" onClick={async()=> {await handlePurchase(id, Number(event?.ticket_price))
+          }}>
             Register
           </Button> }
         </div>
