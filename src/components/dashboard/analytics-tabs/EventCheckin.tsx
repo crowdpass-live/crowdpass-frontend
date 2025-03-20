@@ -8,7 +8,9 @@ import { CategoryScale } from "chart.js";
 import useCheckIn from "@/hooks/write-hooks/useCheckIn";
 import { useParams } from "next/navigation";
 
-type Props = {};
+type Props = {
+  id: number
+};
 
 const EventCheckin = (props: Props) => {
   const params = useParams<{ id: string }>();
@@ -22,7 +24,7 @@ const EventCheckin = (props: Props) => {
   };
 
   const handleCheckIn = ()=>{
-    checkUserIn(Number(params.id), checkInEmail as `0x${string}`)
+    checkUserIn(props.id, checkInEmail as `0x${string}`)
   }
 
   Chart.register(CategoryScale);

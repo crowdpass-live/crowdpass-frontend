@@ -1,6 +1,6 @@
 "use client"
 
-import { CallData, byteArray } from "starknet";
+import { CallData, cairo } from "starknet";
 import { toast } from "sonner";
 import { useCallback, useContext } from "react";
 import { StarknetContext } from "@/contexts/UserContext";
@@ -11,7 +11,7 @@ const useAddOrganizer = () => {
 
     return useCallback(
         async (
-          event_id: string,
+          event_id: number,
           organizer_address: `0x${string}`
         ) => {
           try {
@@ -25,7 +25,7 @@ const useAddOrganizer = () => {
                   contractAddress: contractAddr,
                   entrypoint: "add_organizer",
                   calldata: CallData.compile([
-                    byteArray.byteArrayFromString(event_id),
+                    cairo.uint256(event_id),
                     organizer_address
                   ]),
                 };
