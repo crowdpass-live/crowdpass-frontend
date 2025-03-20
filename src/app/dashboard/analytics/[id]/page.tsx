@@ -1,7 +1,9 @@
 "use client";
 
 import AnalyticsEventDetails from "@/components/dashboard/analytics-tabs/AnalyticsEventDetails";
+import EventAnalytics from "@/components/dashboard/analytics-tabs/EventAnalytics";
 import EventCheckin from "@/components/dashboard/analytics-tabs/EventCheckin";
+import GrantOrganizerRole from "@/components/dashboard/analytics-tabs/GrantOrganizerRole";
 import EventDetailsBody from "@/components/events/EventDetailsBody";
 import { StarknetContext } from "@/contexts/UserContext";
 import useGetEventById from "@/hooks/read-hooks/useGetEventById";
@@ -12,7 +14,7 @@ type Props = {};
 
 const page = (props: Props) => {
   const [tabIndex, setTabIndex] = useState(0);
-  const detailsTabs = ["Details", "Analytics", "Checkin"];
+  const detailsTabs = ["Details", "Analytics", "Checkin", "Delegate"];
   const params = useParams<{ id: string }>();
   const eventDetails = useGetEventById(Number(params.id));
   const { isLoading }: any = useContext(StarknetContext);
@@ -22,21 +24,29 @@ const page = (props: Props) => {
       case 0:
         return (
           <>
-            <AnalyticsEventDetails eventDetails={eventDetails} id={Number(params.id)} />
+            <AnalyticsEventDetails
+              eventDetails={eventDetails}
+              id={Number(params.id)}
+            />
             <EventDetailsBody eventDetails={eventDetails} />
           </>
         );
-      // case 1:
-      //   return <EventPortfolio setActiveComponent={setActiveComponent} />;
+      case 1:
+        return <EventAnalytics />;
       case 2:
-        return <EventCheckin  />;
+        return <EventCheckin id={Number(params.id)} />;
+      case 3:
+        return <GrantOrganizerRole id={Number(params.id)} />;
       default:
         return (
-        <>
-          <AnalyticsEventDetails eventDetails={eventDetails} id={Number(params.id)} />
-          <EventDetailsBody eventDetails={eventDetails} />
-        </>
-        )
+          <>
+            <AnalyticsEventDetails
+              eventDetails={eventDetails}
+              id={Number(params.id)}
+            />
+            <EventDetailsBody eventDetails={eventDetails} />
+          </>
+        );
     }
   };
   return (
@@ -46,10 +56,12 @@ const page = (props: Props) => {
           Event Portfolio
         </h1>
         {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="text-white text-2xl">Perfroming your operation...</div>
-        </div>
-      )}
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="text-white text-2xl">
+              Perfroming your operation...
+            </div>
+          </div>
+        )}
         <ul className="flex justify-between underline underline-offset-4 gap-4">
           {detailsTabs.map((tab, index) => (
             <li
