@@ -13,7 +13,7 @@ const page = () => {
       case 0:
         return <AnalyticsHome setActiveComponent={setActiveComponent}/>;
       case 1:
-        return <EventPortfolio setActiveComponent={setActiveComponent}/>;
+        return <EventPortfolio/>;
       default:
         return <AnalyticsHome setActiveComponent={setActiveComponent}/>;
     }

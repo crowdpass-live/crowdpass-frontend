@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import useCancelEvent from '@/hooks/write-hooks/useCancelEvent';
 import { epochToDatetime } from 'datetime-epoch-conversion';
 import { Calendar } from 'lucide-react';
 import Image from 'next/image'
@@ -6,20 +7,15 @@ import React from 'react'
 
 type Props = {}
 
-const AnalyticsEventDetails = ({eventDetails}:any) => {
+const AnalyticsEventDetails = ({eventDetails, id}:any) => {
     const {
-        eventName,
-        eventStartDate,
-        numberOfTickets,
-        paid,
-        workshops,
-        speakers,
-        sponsors,
-        eventImage,
+   event
       }: any = eventDetails;
     
-      const response = epochToDatetime(`${eventStartDate}`);
+      const response = epochToDatetime(`${Number(event?.start_date)}`);
     
+      const handleCancelEvent = useCancelEvent();
+
       function convertTime(time: string) {
         let hours = time.substring(0, 2);
         let minutes = time.substring(3, 5);
@@ -36,7 +32,7 @@ const AnalyticsEventDetails = ({eventDetails}:any) => {
   return (
     <div className="flex flex-col md:flex-row gap-4">
       <Image
-        src={eventImage}
+        src={event?.image}
         alt="event-image"
         width={240}
         height={240}
@@ -44,9 +40,9 @@ const AnalyticsEventDetails = ({eventDetails}:any) => {
       />
       <div className="flex flex-col gap-4 lg:w-full lg:gap-3">
         <div>
-          <p className="text-primary">{paid ? "PAID" : "FREE"}</p>
+          <p className="text-primary">{Number(event?.ticket_price) > 0 ? "PAID" : "FREE"}</p>
           <h1 className="raleway text-xl text-white font-semibold">
-            {eventName}
+            {event?.name}
           </h1>
         </div>
         <div className="bg-[#CBCACF66] w-60 md:w-80 flex gap-2 rounded-lg py-2 px-3">
@@ -99,7 +95,7 @@ const AnalyticsEventDetails = ({eventDetails}:any) => {
                 className="-ml-3 w-8 h-8 md:w-[30px] md:h-[30px]"
               />
               <p className="text-primary flex justify-center items-center text-xs p-1 bg-white rounded-full -ml-3 border-2 border-primary">
-                {numberOfTickets - 5}+
+              {Number(event?.total_tickets)- 5}+
               </p>
             </div>
             <div className="flex flex-col">
@@ -107,7 +103,7 @@ const AnalyticsEventDetails = ({eventDetails}:any) => {
               <p className="font-medium text-sm text-white">Across the globe</p>
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          {/* <div className="flex items-center gap-1">
             <h1 className="text-white text-xs md:text-base font-medium">
               {speakers.length}+ Speakers
             </h1>
@@ -129,14 +125,14 @@ const AnalyticsEventDetails = ({eventDetails}:any) => {
             <h1 className="text-white text-xs md:text-base font-medium">
               {workshops.length}+ Workshops
             </h1>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className='flex gap-4'>
         <Button className="bg-primary raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue">
           Edit Event   
         </Button>
-        <Button className="bg-primary raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue">
+        <Button className="bg-primary raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue" onClick={async()=> await handleCancelEvent(id)}>
           Cancel Event   
         </Button>
       </div>

@@ -13,72 +13,67 @@ import {
   PaginationPrevious,
 } from "../ui/pagination";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEvents } from "../AbiCalls";
 import FilterEvent from "./FilterEvent";
+import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
 
-
+type FilterState = {
+  categories: string[];
+  locations: string[];
+  payments: string[];
+  startDate: string;
+  endDate: string;
+  searchQuery: string;
+};
 
 const ExploreEvents = () => {
-  const { data, isError, isLoading, error } = useEvents();
+  const { events, isLoading } = useGetAllEvents();
   const [tabIndex, setTabIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
   const itemsPerPage = 6;
 
-  const filteredEvents = getFilteredEvents(data, tabIndex);
-  console.log(data)
+  // Consolidated filter state
+  const [filterState, setFilterState] = useState<FilterState>({
+    categories: [],
+    locations: [],
+    payments: [],
+    startDate: "",
+    endDate: "",
+    searchQuery: "",
+  });
 
-  const totalPages = Math.ceil(filteredEvents?.length / itemsPerPage);
+  // Filter events based on tab and filter parameters
+  const filteredEvents = getFilteredEvents(events || [], tabIndex, filterState);
+
+  // Paginate the filtered events
+  const paginatedEvents = filteredEvents.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredEvents.length / itemsPerPage);
 
   const handleChangePage = (page: number) => {
     setCurrentPage(page);
   };
 
-  const headingVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
-  };
-
-  const tabListVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut", delay: 0.3 },
-    },
-  };
-
-  const eventCardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
-  };
-
-  const paginationVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
-  };
+  // Reset pagination to page 1 when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [filterState]);
 
   return (
     <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
+       {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="text-white text-2xl">Fetching Events...</div>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row items-center justify-between" id="explore">
         <motion.h1
           className="text-4xl font-semibold text-white raleway my-6"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.5 }}
-          variants={headingVariants}
         >
           Explore
         </motion.h1>
@@ -87,7 +82,6 @@ const ExploreEvents = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: false, amount: 0.5 }}
-          variants={tabListVariants}
         >
           <TabList className={"flex items-center justify-evenly gap-6 my-2"}>
             {tabs.map((tab, index) => (
@@ -104,18 +98,17 @@ const ExploreEvents = () => {
       </div>
 
       <div className="flex items-start justify-between">
-        <FilterEvent />
+        <FilterEvent filterState={filterState} setFilterState={setFilterState} />
         {/* Events Section */}
         <div className="flex flex-wrap gap-8 justify-center items-center w-full">
-          <AnimatePresence >
-            {filteredEvents?.length > 0 ? (
-              filteredEvents.map((eachEvent: any, index: any) => (
+          <AnimatePresence>
+            {paginatedEvents.length > 0 ? (
+              paginatedEvents.map((eachEvent: any, index: number) => (
                 <motion.div
                   key={index}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: false, amount: 0.5 }}
-                  variants={eventCardVariants}
                   transition={{ delay: index * 0.1 }}
                 >
                   <EventCard eachEvent={eachEvent} />
@@ -131,7 +124,6 @@ const ExploreEvents = () => {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: false, amount: 0.5 }}
-              variants={paginationVariants}
             >
               <Pagination className="flex justify-end text-white">
                 <PaginationContent>
@@ -180,21 +172,73 @@ const ExploreEvents = () => {
   );
 };
 
-const getFilteredEvents = (data: any, tabIndex: number) => {
+const getFilteredEvents = (
+  data: any[],
+  tabIndex: number,
+  filterState: FilterState
+) => {
+  let filteredData = data;
+
+  // Tab-based filtering
   switch (tabIndex) {
     case 0:
-      return data;
+      filteredData = data; 
+      break;
     case 1:
-      return data.filter(
+      filteredData = data.filter(
         (event: any) => Number(event.start_date) > Date.now() / 1000
-      );
+      ); 
+      break;
     case 2:
-      return data.filter(
+      filteredData = data.filter(
         (event: any) => Number(event.end_date) <= Date.now() / 1000
-      );
+      ); 
+      break;
     default:
-      return [];
+      filteredData = [];
   }
+
+  // Filter by categories
+  if (filterState.categories.length > 0) {
+    filteredData = filteredData.filter((event: any) =>
+      filterState.categories.includes(event.category)
+    );
+  }
+
+  // Filter by locations
+  if (filterState.locations.length > 0) {
+    filteredData = filteredData.filter((event: any) =>
+      filterState.locations.includes(event.location)
+    );
+  }
+
+  // Filter by payment types
+  if (filterState.payments.length > 0) {
+    filteredData = filteredData.filter((event: any) =>
+      filterState.payments.includes(event.payment_type)
+    );
+  }
+
+  // Filter by date range
+  if (filterState.startDate) {
+    filteredData = filteredData.filter(
+      (event: any) => event.start_date >= new Date(filterState.startDate).getTime() / 1000
+    );
+  }
+  if (filterState.endDate) {
+    filteredData = filteredData.filter(
+      (event: any) => event.end_date <= new Date(filterState.endDate).getTime() / 1000
+    );
+  }
+
+  // Filter by search query
+  if (filterState.searchQuery) {
+    filteredData = filteredData.filter((event: any) =>
+      event.name.toLowerCase().includes(filterState.searchQuery.toLowerCase())
+    );
+  }
+
+  return filteredData;
 };
 
 export default ExploreEvents;

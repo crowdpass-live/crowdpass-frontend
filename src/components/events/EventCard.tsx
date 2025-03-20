@@ -7,18 +7,17 @@ const EventCard = ({ eachEvent }: any) => {
   const {
     id,
     name,
-    uri,
     start_date,
     description,
-    ticket_price
+    ticket_price,
+    image
   } = eachEvent;
   const response = epochToDatetime(`${start_date}`);
-  const imgBase =  process.env.NEXT_PUBLIC_BASE_IMG_URL as string || "0x0";
 
   return (
     <Card className="bg-deep-blue rounded-xl w-80 sm:w-96 flex-grow border-0">
       <img
-        src={`${imgBase}${uri}`}
+        src={image}
         alt="event"
         className="w-full h-[200px] object-cover rounded-t-xl"
       />
@@ -30,7 +29,7 @@ const EventCard = ({ eachEvent }: any) => {
             </p>
             <p className="text-lg text-white">{name}</p>
           </div>
-          <p className="text-sm text-white">{Number(ticket_price) > 0  ? "PAID" : "FREE"}</p>
+          <p className={`text-sm ${Number(ticket_price) > 0  ? "text-primary" :"text-white"}`}>{Number(ticket_price) > 0  ? "PAID" : "FREE"}</p>
         </div>
         <p className="line-clamp-2 text-sm text-white px-3">{description}</p>
         <div className="flex justify-end items-center py-2">

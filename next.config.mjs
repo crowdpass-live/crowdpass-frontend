@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-      domains: ['scarlet-calm-porcupine-918.mypinata.cloud'],
+      domains: ['ipfs.io'],
     },
   };
 export default nextConfig;

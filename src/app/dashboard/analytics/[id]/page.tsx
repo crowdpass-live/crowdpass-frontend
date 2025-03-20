@@ -2,10 +2,11 @@
 
 import AnalyticsEventDetails from "@/components/dashboard/analytics-tabs/AnalyticsEventDetails";
 import EventCheckin from "@/components/dashboard/analytics-tabs/EventCheckin";
-import { dummyEvents } from "@/components/events/dummyData";
 import EventDetailsBody from "@/components/events/EventDetailsBody";
+import { StarknetContext } from "@/contexts/UserContext";
+import useGetEventById from "@/hooks/read-hooks/useGetEventById";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 type Props = {};
 
@@ -13,15 +14,15 @@ const page = (props: Props) => {
   const [tabIndex, setTabIndex] = useState(0);
   const detailsTabs = ["Details", "Analytics", "Checkin"];
   const params = useParams<{ id: string }>();
-  const eventDetails = dummyEvents.find(
-    (event) => event.eventId === Number(params.id)
-  );
+  const eventDetails = useGetEventById(Number(params.id));
+  const { isLoading }: any = useContext(StarknetContext);
+
   const ActiveComponent = () => {
     switch (tabIndex) {
       case 0:
         return (
           <>
-            <AnalyticsEventDetails eventDetails={eventDetails} />
+            <AnalyticsEventDetails eventDetails={eventDetails} id={Number(params.id)} />
             <EventDetailsBody eventDetails={eventDetails} />
           </>
         );
@@ -32,7 +33,7 @@ const page = (props: Props) => {
       default:
         return (
         <>
-          <AnalyticsEventDetails eventDetails={eventDetails} />
+          <AnalyticsEventDetails eventDetails={eventDetails} id={Number(params.id)} />
           <EventDetailsBody eventDetails={eventDetails} />
         </>
         )
@@ -44,6 +45,11 @@ const page = (props: Props) => {
         <h1 className="text-white text-xl raleway font-medium">
           Event Portfolio
         </h1>
+        {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="text-white text-2xl">Perfroming your operation...</div>
+        </div>
+      )}
         <ul className="flex justify-between underline underline-offset-4 gap-4">
           {detailsTabs.map((tab, index) => (
             <li

@@ -10,7 +10,7 @@ type Props = {};
 const EventDetailsBody = ({ eventDetails }: any) => {
   // const [tabIndex, setTabIndex] = useState(0);
   // const detailsTabs = ["Schedule", "Workshops", "Speakers"];
-  const { data }: any = eventDetails;
+  const { event }: any = eventDetails;
 
   return (
     <>
@@ -19,7 +19,7 @@ const EventDetailsBody = ({ eventDetails }: any) => {
         Description
       </h1>
       <hr className="text-white" />
-      <p className="text-white my-6">{data?.description}</p>
+      <p className="text-white my-6">{event?.description}</p>
       <hr className="text-white" />
       <div className="flex flex-col md:flex-row gap-10">
         <div className="flex flex-col lg:w-[384px] my-6">
@@ -37,7 +37,7 @@ const EventDetailsBody = ({ eventDetails }: any) => {
             <div className="bg-[#14141A] p-2 rounded-xl">
               <MapPin size={30} color="#FF6932" />
             </div>
-            {data?.location}
+            {event?.attributes[3].value}
           </div>
         </div>
         {/* <div className="lg:w-[600px] lg:mt-8">
