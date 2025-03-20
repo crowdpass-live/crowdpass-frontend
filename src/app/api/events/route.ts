@@ -31,7 +31,7 @@ export async function POST(request: Request) {
       schedule,
     });
 
-    const jsonLink = `${baseJsonUrl}api/events/${event._id}`;
+    const jsonLink = `https://www.crowdpass.live/api/events/${event._id}`;
 
     return NextResponse.json({ link: jsonLink }, { status: 201 });
   } catch (error: unknown) {
