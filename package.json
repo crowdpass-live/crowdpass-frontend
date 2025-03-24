@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@argent/invisible-sdk": "^1.0.0",
+    "@argent/invisible-sdk": "^1.1.1",
     "@argent/x-sessions": "^7.0.0",
     "@cartridge/connector": "^0.5.5",
     "@emotion/react": "^11.14.0",

@@ -130,7 +130,7 @@ const ExploreEvents = () => {
               whileInView="visible"
               viewport={{ once: false, amount: 0.5 }}
             >
-              <Pagination className="flex justify-end text-white">
+              <Pagination className="flex justify-end text-white my-4">
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious

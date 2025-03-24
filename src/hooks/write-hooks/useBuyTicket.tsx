@@ -12,18 +12,20 @@ const useBuyTicket = () => {
     account,
     setIsLoading,
     isLoading,
+    token_addr,
+    argentWebWallet
   }: any = useContext(StarknetContext);
   const router = useRouter();
   return useCallback(
     async (event_id: number, amount: number) => {
-      // const approvalRequests = [
-      //   {
-      //     tokenAddress: token_addr,
-      //     amount: (amount * 1e18).toString(),
-      //     spender: contractAddr,
-      //   },
-      // ];
-      // const res = await argentWebWallet.requestApprovals(approvalRequests);
+      const approvalRequests = [
+        {
+          tokenAddress: token_addr,
+          amount: (amount * 1e18).toString(),
+          spender: contractAddr,
+        },
+      ];
+      const res = await argentWebWallet.requestApprovals(approvalRequests);
 
       try {
         if (!account) {

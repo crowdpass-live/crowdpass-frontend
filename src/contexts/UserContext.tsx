@@ -190,11 +190,11 @@ export const StarknetContextProvider = ({
             spender:
               "0x0144cfdfabe90c5e0819277d2ee524c1b71ccb09f38599404cc89c6e970ea0fb",
           },
-          {
-                tokenAddress: token_addr,
-                amount: (10 * 1e18).toString(),
-                spender: contractAddr,
-          }
+          // {
+          //       tokenAddress: token_addr,
+          //       amount: (10 * 1e18).toString(),
+          //       spender: contractAddr,
+          // }
         ],
       });
 
