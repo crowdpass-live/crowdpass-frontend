@@ -102,8 +102,8 @@ const ExploreEvents = () => {
         {/* Events Section */}
         <div className="flex flex-wrap gap-8 justify-between items-center w-full">
           <AnimatePresence>
-            {paginatedEvents.length > 0 ? (
-              paginatedEvents.map((eachEvent: any, index: number) => (
+            {paginatedEvents?.length > 0 ? (
+              paginatedEvents?.map((eachEvent: any, index: number) => (
                 <motion.div
                   key={index}
                   initial="hidden"
