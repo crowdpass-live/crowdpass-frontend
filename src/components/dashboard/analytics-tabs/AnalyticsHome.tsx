@@ -4,11 +4,8 @@ import { FaSquare } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
 import { MdCelebration } from "react-icons/md";
 import { TbMessageCircleUser } from "react-icons/tb";
-import Chart from "chart.js/auto";
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { CategoryScale } from "chart.js";
 
-Chart.register(CategoryScale);
 
 const DoughnutData = {
   data: [
@@ -38,15 +35,14 @@ const data = [
 ];
 
 type Props = {
-  setActiveComponent: (component: number) => void;
 };
 
-const AnalyticsHome = ({ setActiveComponent }: Props) => {
+const AnalyticsHome = (props: Props) => {
   return (
     <div className="flex flex-col gap-4 p-4">
-      {/* Top Row */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4">
+      {/* Top Row - First div takes 2 columns, others take 1 column each */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-2 p-4">
           <h1 className="text-base xl:text-2xl text-white font-semibold raleway">Daily Ticket Count</h1>
           <div className="bg-[#5B5959] h-3 rounded-3xl w-full mt-2">
             <div className="bg-primary h-full rounded-3xl w-[10%]"></div>
@@ -57,7 +53,7 @@ const AnalyticsHome = ({ setActiveComponent }: Props) => {
             <p className="text-white text-sm font-thin">180 left</p>
           </div>
         </div>
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4 flex flex-col justify-between">
+        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col justify-between">
           <div className="flex justify-between items-center">
             <p className="text-white text-sm font-thin">Free: 1</p>
             <p className="text-white text-sm font-thin">Paid: 1</p>
@@ -66,24 +62,24 @@ const AnalyticsHome = ({ setActiveComponent }: Props) => {
             <p className="text-white text-sm font-thin">Events</p>
             <h1 className="text-3xl text-white font-semibold">2</h1>
           </div>
-          <div className="flex gap-2 items-center hover:cursor-pointer hover:text-primary" onClick={() => setActiveComponent(1)}>
+          <div className="flex gap-2 items-center hover:cursor-pointer hover:text-primary">
             <p className="text-white text-xs font-thin">Sold: 20 Tickets</p>
             <CiShare1 size={18} color="#ffffff" />
           </div>
         </div>
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
           <p className="text-sm text-white/80">Ticket Revenue</p>
           <h1 className="text-3xl text-white font-semibold">$4000</h1>
         </div>
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
           <p className="text-sm text-white/80">Total Attendees</p>
           <h1 className="text-3xl text-white font-semibold">452</h1>
         </div>
       </div>
 
-      {/* Middle Row */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4">
+      {/* Middle Row - First div takes 3 columns, second div takes 2 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-4">
           <ResponsiveContainer width="100%" height={400}>
             <ScatterChart>
               <XAxis type="number" dataKey="x" name="stature" unit="cm" />
@@ -93,7 +89,7 @@ const AnalyticsHome = ({ setActiveComponent }: Props) => {
             </ScatterChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4 flex flex-col justify-start gap-10">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-2 p-4 flex flex-col justify-start gap-10">
           <h1 className="text-white text-3xl raleway font-medium">Event stats</h1>
           <div className="flex justify-center">
             <ResponsiveContainer width="100%" height={300}>
@@ -118,9 +114,9 @@ const AnalyticsHome = ({ setActiveComponent }: Props) => {
         </div>
       </div>
 
-      {/* Bottom Row */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4 flex flex-col gap-4">
+      {/* Bottom Row - First div takes 3 columns, others take 1 column each */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-4 flex flex-col gap-4">
           <div className="flex gap-4 items-center">
             <h1 className="text-white text-2xl raleway font-medium">SPOK History</h1>
             <div className="flex justify-center items-center p-2 border border-white border-dashed rounded-full mb-1">
@@ -154,14 +150,14 @@ const AnalyticsHome = ({ setActiveComponent }: Props) => {
             </div>
           </div>
         </div>
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
           <div className="flex justify-center items-center p-3 border border-white border-dashed rounded-full mb-1">
             <IoIosPeople size={30} color="#ffffff" />
           </div>
           <p className="text-sm text-white/80">Delegates</p>
           <h1 className="text-white text-3xl">100</h1>
         </div>
-        <div className="bg-[#14141A] rounded-xl flex-1 p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
           <div className="flex justify-center items-center p-3 border border-white border-dashed rounded-full mb-1">
             <TbMessageCircleUser size={30} color="#ffffff" />
           </div>

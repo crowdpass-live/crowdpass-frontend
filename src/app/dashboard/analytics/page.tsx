@@ -11,11 +11,11 @@ const page = () => {
   const ActiveComponent = () => {
     switch (activeComponent) {
       case 0:
-        return <AnalyticsHome setActiveComponent={setActiveComponent}/>;
+        return <AnalyticsHome />;
       case 1:
         return <EventPortfolio/>;
       default:
-        return <AnalyticsHome setActiveComponent={setActiveComponent}/>;
+        return <AnalyticsHome />;
     }
   };
 

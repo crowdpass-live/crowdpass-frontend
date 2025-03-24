@@ -33,7 +33,7 @@ const EventPortfolioCard = ({ eachEvent }: any) => {
         </div>
         <div className="flex justify-end items-center py-2">
           <Link
-            href={`/dashboard/analytics/${id}`}
+            href={`/dashboard/analytics/events/${id}`}
             className="text-white hover:underline hover:text-primary px-3 text-right raleway font-light flex items-center gap-2"
           >
             VIEW DETAILS <CiShare1 size={18} color="#ffffff" />

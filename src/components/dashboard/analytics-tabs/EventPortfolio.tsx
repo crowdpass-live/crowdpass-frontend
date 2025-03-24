@@ -27,7 +27,7 @@ const EventPortfolio = () => {
         <h1 className="text-white text-xl raleway font-medium">
           Event Portfolio
         </h1>
-        <div className="flex justify-center flex-flow flex-wrap flex-grow gap-6">
+        <div className="flex justify-start flex-flow flex-wrap flex-grow gap-6">
           {myEvents.map((eachEvent: any, index: any) => (
             <EventPortfolioCard eachEvent={eachEvent} key={index} />
           ))}

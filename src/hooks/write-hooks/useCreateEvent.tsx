@@ -103,7 +103,7 @@ const useCreateEvent = () => {
 
                 setIsLoading(false);
                 toast.success("Event Created");
-                router.push("/dashboard/analytics");
+                router.push("/dashboard/analytics/overview");
 
                 return "success";
               } catch (error) {
