@@ -97,10 +97,10 @@ const ExploreEvents = () => {
         </motion.div>
       </div>
 
-      <div className="flex items-start justify-between">
+      <div className="flex gap-16 items-start justify-between">
         <FilterEvent filterState={filterState} setFilterState={setFilterState} />
         {/* Events Section */}
-        <div className="flex flex-wrap gap-8 justify-center items-center w-full">
+        <div className="flex flex-wrap gap-8 justify-between items-center w-full">
           <AnimatePresence>
             {paginatedEvents.length > 0 ? (
               paginatedEvents.map((eachEvent: any, index: number) => (
@@ -118,6 +118,11 @@ const ExploreEvents = () => {
               <p className="text-white">No events to show</p>
             )}
           </AnimatePresence>
+
+        </div>
+      </div>
+      <div>
+
 
           {totalPages > 1 && (
             <motion.div
@@ -166,8 +171,7 @@ const ExploreEvents = () => {
               </Pagination>
             </motion.div>
           )}
-        </div>
-      </div>
+          </div>
     </Tabs>
   );
 };

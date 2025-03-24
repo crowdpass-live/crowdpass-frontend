@@ -39,8 +39,11 @@ const useCreateEvent = () => {
               setIsLoading(true);
               {isLoading == true && toast.loading("creating event")}
 
-              const hashRes = await fetch(`${baseUrl}api/events`, {
+              const hashRes = await fetch(`https://www.crowdpass.live/api/events`, {
                 method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
                     name: event_name,
                     image: img_uri,

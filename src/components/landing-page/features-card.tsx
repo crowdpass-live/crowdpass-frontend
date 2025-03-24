@@ -11,7 +11,7 @@ type Props = {
 const FeaturesCard = ({ icon, title, description }: Props) => {
   return (
     <Card className="w-full md:w-[300px] lg:w-[400px] flex flex-col justify-center items-center border-deep-blue bg-deep-blue px-4 pb-8 rounded-2xl mb-16 shadow-xl">
-      <div className="bg-light-black p-4 -mt-14 rounded-full">
+      <div className="bg-light-black p-4 -mt-12 rounded-full">
         {icon}
       </div>
       <h3 className="text-white font-semibold raleway mt-2">{title}</h3>

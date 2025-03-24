@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Button } from "../ui/button";
 import { BsSendFill } from "react-icons/bs";
 import Link from "next/link";
+import { AiFillCopyrightCircle } from "react-icons/ai";
+import { FaSquareXTwitter } from "react-icons/fa6";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -22,7 +24,7 @@ const itemVariants = {
 const Footer = () => {
   return (
     <motion.div
-      className="bg-deep-blue flex flex-col justify-center items-center py-10 mt-10 rounded-md raleway"
+      className="bg-deep-blue flex flex-col justify-center items-center py-10 rounded-md raleway"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: false, amount: 0.2 }}
@@ -156,8 +158,8 @@ const Footer = () => {
           className="flex flex-col-reverse md:flex-row gap-2 md:gap-6 w-full justify-between items-center px-4"
           variants={containerVariants}
         >
-          <motion.div className="flex gap-2" variants={itemVariants}>
-            <img src="/assets/copyright.png" alt="copyright" />
+          <motion.div className="flex gap-2 items-center" variants={itemVariants}>
+          <AiFillCopyrightCircle size={24} color={"#FFFFFF"}/>
             <p className="text-lg text-white">
               All Rights Reserved, CrowdPass 2024.
             </p>
@@ -165,7 +167,7 @@ const Footer = () => {
 
           <motion.div className="flex gap-3" variants={itemVariants}>
             <Link href={"https://x.com/crowd_pass"} target="_blank">
-              <img src="/assets/x-icon.png" alt="x-icon" />
+              <FaSquareXTwitter size={36} color={"#ff6932"}/>
             </Link>
           </motion.div>
         </motion.div>

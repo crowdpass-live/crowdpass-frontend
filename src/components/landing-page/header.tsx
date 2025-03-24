@@ -38,11 +38,11 @@ const Header = () => {
         <Link href={"/"}>
           <img
             alt={"logo"}
-            src="/assets/crowdpass_logo.png"
+            src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/crowdpass_logo_a2f8bq.png"
             className="w-44 h-8 hidden sm:block"
           />
           <img
-            src="/assets/logo-mobile.png"
+            src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633483/logo-mobile_bewfoo.png"
             className="h-6 w-10 sm:hidden"
             alt={"mobile-logo"}
           />
@@ -134,7 +134,7 @@ const Header = () => {
           <header className="flex justify-between items-center w-full">
             <Link href={"/"}>
               <img
-                src="/assets/logo-mobile.png"
+                src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633483/logo-mobile_bewfoo.png"
                 className="h-6 w-12 md:hidden"
                 alt={"mobile-logo"}
               />

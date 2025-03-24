@@ -11,7 +11,6 @@ const Page = (props: Props) => {
   return (
     <>
       <EventHero />
-      <SpolightEvent />
       <ExploreEvents />
     </>
   );

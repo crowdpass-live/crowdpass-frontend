@@ -18,9 +18,6 @@ const Navbar = () => {
         <div className="p-2.5 bg-primary rounded-full">
           <BiSolidMessageDetail className="text-light-black md:text-2xl" />
         </div>
-        <div className="p-2.5 bg-primary rounded-full">
-          <FaBell className="text-light-black md:text-2xl" />
-        </div>
       </div>
     </div>
   );
