@@ -21,8 +21,9 @@ const useGetEventById = (eventId: number) => {
     try {
       const response = await fetch(event.uri);
       const uriData = await response.json();
+      const backData = uriData.data
       
-      return { ...event, ...uriData };
+      return { ...event, ...backData };
     } catch (error) {
       console.error(`Failed to fetch data for event ${event.id}:`, error);
       return event; 
