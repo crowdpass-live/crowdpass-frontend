@@ -1,11 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import Event from "../../models/eventModel";
 import { connectDB } from "@/app/lib/db";
-import { NextResponse } from "next/server";
 
-const baseJsonUrl = process.env.NEXT_PUBLIC_BASE_JSON_URL;
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
@@ -20,6 +17,24 @@ export async function POST(request: Request) {
       schedule,
     } = await request.json();
 
+    // Input validation
+    if (
+      !name ||
+      !image ||
+      !description ||
+      !organizer_name ||
+      !event_type ||
+      !event_category ||
+      !location ||
+      !schedule
+    ) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Create the event in the database
     const event = await Event.create({
       name,
       image,
@@ -31,8 +46,10 @@ export async function POST(request: Request) {
       schedule,
     });
 
+    // Generate the JSON link for the created event
     const jsonLink = `https://www.crowdpass.live/api/events/${event._id}`;
 
+    // Return the response with the JSON link
     return NextResponse.json({ link: jsonLink }, { status: 201 });
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -42,7 +59,7 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     } else {
-      console.error("An unknown error occurred:", error);    
+      console.error("An unknown error occurred:", error);
       return NextResponse.json(
         { message: "An unknown error occurred" },
         { status: 500 }

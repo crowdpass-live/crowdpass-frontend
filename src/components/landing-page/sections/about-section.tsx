@@ -28,7 +28,7 @@ const itemVariants = {
 const AboutSection = () => {
   return (
     <motion.div
-      className="flex justify-center items-center py-12"
+      className="flex justify-center items-center py-12 px-2"
       initial="hidden"
       animate="visible"
       whileInView="visible"
@@ -41,13 +41,13 @@ const AboutSection = () => {
         variants={itemVariants}
       >
         <motion.img
-          src="/assets/about-image-podcast.jpg"
+          src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/about-image-podcast_plyjax.jpg"
           alt="podcast-image"
           className="w-96 h-64 rounded-t-2xl"
           variants={itemVariants}
         />
         <motion.img
-          src="/assets/about-image-concert.jpg"
+          src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/about-image-concert_h95xom.jpg"
           alt="concert-image"
           className="w-96 h-64 rounded-b-2xl"
           variants={itemVariants}
@@ -56,7 +56,7 @@ const AboutSection = () => {
 
       {/* Card Section */}
       <motion.div variants={itemVariants} className="z-50 flex justify-center">
-        <Card className="w-[95%] md:w-[470px] gap-12 py-6 md:py-14  bg-deep-blue px-2 md:px-6 border-deep-blue rounded-2xl">
+        <Card className="w-[95%] md:w-[470px] gap-12 py-6 bg-deep-blue px-2 md:px-6 border-deep-blue rounded-2xl">
           <CardHeader>
             <CardTitle className="text-white text-4xl raleway font-medium">
               About Us
@@ -74,6 +74,11 @@ const AboutSection = () => {
               dedicated to providing a seamless and secure ticketing experience
               for attendees, while also offering a range of tools and resources
               to help event organizers succeed.
+            </motion.p>
+            <motion.p className="text-white text-base" variants={itemVariants}>
+              CrowdPass helps you transform your event into an unforgettable
+              experience. With seamless attendee management, secure ticketing,
+              and enhanced engagement tools,{" "}
             </motion.p>
           </CardContent>
           <CardFooter className="w-full">
@@ -94,13 +99,13 @@ const AboutSection = () => {
         variants={itemVariants}
       >
         <motion.img
-          src="/assets/about-image-get-together.jpg"
+          src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/about-image-get-together_wfjxno.jpg"
           alt="get-together-image"
           className="w-96 h-64 rounded-t-2xl"
           variants={itemVariants}
         />
         <motion.img
-          src="/assets/about-image-dinner.jpg"
+          src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/about-image-dinner_j8yp3o.jpg"
           alt="dinner-image"
           className="w-96 h-64 rounded-b-2xl"
           variants={itemVariants}

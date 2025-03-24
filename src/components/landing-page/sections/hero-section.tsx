@@ -26,7 +26,7 @@ const HeroSection = () => {
 
   return (
     <motion.div
-      className="max-w-[1280px] mx-auto relative"
+      className="max-w-[1280px] mx-auto relative px-2"
       initial="hidden"
       animate="visible"
       whileInView="visible"
@@ -69,21 +69,13 @@ const HeroSection = () => {
         >
           <motion.div className="flex gap-4 flex-col" variants={itemVariants}>
             <motion.img
-              src="/assets/top-left.png"
+              src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633481/top-left_xrlwwf.png"
               alt="hero-inage"
               className=" md:flex"
               variants={itemVariants}
             />
             <motion.img
-              src="/assets/bottom-left.png"
-              alt="hero-inage"
-              className=" md:flex"
-              variants={itemVariants}
-            />
-          </motion.div>
-          <motion.div className="flex gap-4 flex-col" variants={itemVariants}>
-            <motion.img
-              src="/assets/hero-image.png"
+              src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/bottom-left_dz7dtu.png"
               alt="hero-inage"
               className=" md:flex"
               variants={itemVariants}
@@ -91,13 +83,21 @@ const HeroSection = () => {
           </motion.div>
           <motion.div className="flex gap-4 flex-col" variants={itemVariants}>
             <motion.img
-              src="/assets/bottom-left.png"
+              src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633484/hero-image_dgd01t.png"
+              alt="hero-inage"
+              className=" md:flex"
+              variants={itemVariants}
+            />
+          </motion.div>
+          <motion.div className="flex gap-4 flex-col" variants={itemVariants}>
+            <motion.img
+              src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/bottom-left_dz7dtu.png"
               alt="hero-inage"
               className=" md:flex rotate-180"
               variants={itemVariants}
             />
             <motion.img
-              src="/assets/bottom-right.png"
+              src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/bottom-right_karh2x.png"
               alt="hero-inage"
               className=" md:flex"
               variants={itemVariants}

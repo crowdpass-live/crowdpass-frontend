@@ -31,7 +31,7 @@ const HiwAccordion = ({ HiwAccordionData }: HiwAccordionProps) => {
             key={index}
           >
             <AccordionTrigger>
-              <div className="p-4 rounded-full flex gap-4 justify-center items-center">
+              <div className="p-4 rounded-full flex gap-4 justify-center items-center h-16">
                 <div className="bg-light-black p-2 lg:p-4 rounded-full">
                   {icon}
                 </div>
