@@ -21,9 +21,9 @@ const useGetAllEvents = () => {
     try {
       const response = await fetch(event.uri);
       const uriData = await response.json();
-      
+      const backData = uriData.data
       // Merge the fetched data with the existing event object
-      return { ...event, ...uriData };
+      return { ...event, ...backData};
     } catch (error) {
       console.error(`Failed to fetch data for event ${event.id}:`, error);
       return event; // Return the original event if the fetch fails
