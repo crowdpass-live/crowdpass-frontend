@@ -3,7 +3,6 @@
 import AnalyticsEventDetails from "@/components/dashboard/analytics-tabs/AnalyticsEventDetails";
 import EventAnalytics from "@/components/dashboard/analytics-tabs/EventAnalytics";
 import EventCheckin from "@/components/dashboard/analytics-tabs/EventCheckin";
-import GrantOrganizerRole from "@/components/dashboard/analytics-tabs/GrantOrganizerRole";
 import EventDetailsBody from "@/components/events/EventDetailsBody";
 import { StarknetContext } from "@/contexts/UserContext";
 import useGetEventById from "@/hooks/read-hooks/useGetEventById";
@@ -14,7 +13,7 @@ type Props = {};
 
 const page = (props: Props) => {
   const [tabIndex, setTabIndex] = useState(0);
-  const detailsTabs = ["Details", "Analytics", "Checkin", "Delegate"];
+  const detailsTabs = ["Details", "Analytics", "Checkin"];
   const params = useParams<{ id: string }>();
   const eventDetails = useGetEventById(Number(params.id));
   const { isLoading }: any = useContext(StarknetContext);
@@ -35,8 +34,6 @@ const page = (props: Props) => {
         return <EventAnalytics />;
       case 2:
         return <EventCheckin id={Number(params.id)} />;
-      case 3:
-        return <GrantOrganizerRole />;
       default:
         return (
           <>
