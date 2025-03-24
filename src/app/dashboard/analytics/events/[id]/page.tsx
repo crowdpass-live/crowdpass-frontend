@@ -36,7 +36,7 @@ const page = (props: Props) => {
       case 2:
         return <EventCheckin id={Number(params.id)} />;
       case 3:
-        return <GrantOrganizerRole id={Number(params.id)} />;
+        return <GrantOrganizerRole />;
       default:
         return (
           <>
