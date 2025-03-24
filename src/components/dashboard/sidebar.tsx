@@ -9,23 +9,41 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useDisconnect } from "@starknet-react/core";
 import { usePathname, useRouter } from "next/navigation";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
+import { FaDotCircle } from "react-icons/fa";
 
 const Sidebar = () => {
+  const [open, setOpen] = React.useState(false);
   const eventMainSidebarData = [
     {
       url: "/dashboard/create-event",
       icon: <MdCreateNewFolder className="w-6 h-6" />,
       title: "Create event",
     },
-    {
-      url: "/dashboard/analytics",
-      icon: <BiSolidBarChartAlt2 className="w-6 h-6" />,
-      title: "Analytics",
-    },
   ];
-
+  const dropDownLink = {
+    icon: <BiSolidBarChartAlt2 className="w-6 h-6" />,
+    title: "Analytics",
+    sublinks: [
+      {
+        url: "/dashboard/analytics/overview",
+        icon: <FaDotCircle className="w-6 h-6" />,
+        title: "Overview",
+      },
+      {
+        url: "/dashboard/analytics/events",
+        icon: <FaDotCircle className="w-6 h-6" />,
+        title: "Events",
+      },
+      {
+        url: "/dashboard/analytics/delegation",
+        icon: <FaDotCircle className="w-6 h-6" />,
+        title: "Delegation",
+      },
+    ],
+  };
   const { disconnect, status } = useDisconnect({});
-  
+
   const router = useRouter();
 
   const pathname = usePathname();
@@ -54,6 +72,39 @@ const Sidebar = () => {
             {eventMainSidebarData.map((menu, index) => (
               <SidebarItem key={index} menu={menu} pathname={pathname} />
             ))}
+            <div className="w-full">
+              <div className="flex items-center w-full">
+                <div
+                  className={`w-full py-4 px-6 mt-2 flex items-center mx-6 group rounded-xl hover:bg-light-black hover:text-primary`}
+                  onClick={() => setOpen(!open)}
+                >
+                  <div className="text-white group-hover:text-primary">
+                    {dropDownLink.icon}
+                  </div>
+                  <div className="text-white ml-3 lg:text-lg xl:text-xl font-semibold raleway group-hover:text-primary mr-auto">
+                    {dropDownLink.title}
+                  </div>
+                  {open ? (
+                    <FaChevronUp
+                      size={20}
+                      className="text-white text-right group-hover:text-primary flex justify-end"
+                    />
+                  ) : (
+                    <FaChevronDown
+                      size={20}
+                      className="text-white text-right group-hover:text-primary flex justify-end"
+                    />
+                  )}
+                </div>
+               
+              </div>
+              {open && dropDownLink.sublinks.map((menu, index) => (
+                <div className="ml-10">
+
+                  <SidebarItem key={index} menu={menu} pathname={pathname} />
+                </div>
+            ))}
+            </div>
           </div>
         </div>
         <div className="flex flex-col items-center gap-3 mx-3">
