@@ -48,7 +48,7 @@ const FilterEvent = ({ filterState, setFilterState }: any) => {
   };
 
   return (
-    <div className="hidden md:flex flex-col w-[40%] h-auto pb-10 bg-[#14141A] p-5 space-y-8 rounded-2xl">
+    <div className="hidden md:flex flex-col w-[40%] h-auto pb-10 bg-[#14141A] p-5 space-y-8 rounded-2xl mb-4">
       {/* Search BAR */}
       <div className="border w-full rounded-md border-[#B0B0B4] flex gap-3 text-white justify-between items-center">
         <input

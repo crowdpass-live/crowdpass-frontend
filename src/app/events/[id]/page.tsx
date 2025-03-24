@@ -24,7 +24,7 @@ const page = (props: Props) => {
         </div>
       )}
       <EventDetails eventDetails={eventDetails} id={params.id} />
-      <div className="bg-deep-blue max-w-[1280px] pt-28 -mt-16">
+      <div className="bg-deep-blue max-w-[1280px] pt-28 -mt-16 mb-4">
         <div className="mx-4 lg:mx-28">
           <EventDetailsBody eventDetails={eventDetails} />
         </div>
