@@ -12,8 +12,13 @@ const EventDetailsBody = ({ eventDetails }: any) => {
         Description
       </h1>
       <hr className="text-white" />
-      <div className="flex flex-col md:flex-row">
-        <p className="text-white my-6 md:basis-4/6">{event?.description}</p>
+      <div className="flex flex-col md:flex-row gap-10">
+        <div
+          className="prose prose-invert max-w-full text-white my-6 md:basis-4/6"
+          dangerouslySetInnerHTML={{
+            __html: event?.eventDescription,
+          }}
+        />
         <div className="flex flex-col my-6 md:basis-2/6">
           <Image
             src={"/assets/MapImage.png"}
