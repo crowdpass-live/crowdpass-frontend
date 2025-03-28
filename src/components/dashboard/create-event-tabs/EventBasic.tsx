@@ -1,18 +1,27 @@
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import React, { useState, useMemo } from "react";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
   const [localEventData, setLocalEventData] = useState({...eventData});
   
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: any
   ) => {
     const { name, value } = e.target;
 
     setLocalEventData((prevData: any) => ({
       ...prevData,
       [name]: value,
+    }));
+  };
+
+  const handleDescriptionChange = (content: string) => {
+    setLocalEventData((prevData: any) => ({
+      ...prevData,
+      eventDescription: content,
     }));
   };
 
@@ -45,6 +54,7 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
           eventUri: `${cid}`,
         }));
       } catch (error) {
+        console.error("Image upload error", error);
       }
     }
   };
@@ -130,15 +140,14 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
         <h1 className="raleway font-semibold text-xl text-white">
           Event Description
         </h1>
-        <textarea
-          name="eventDescription"
-          id="eventDescription"
-          className="w-full bg-transparent border-white/70 text-white/70 rounded-lg h-28"
+        <ReactQuill 
+          theme="snow" 
           value={localEventData.eventDescription || ""}
-          onChange={handleInputChange}
+          onChange={handleDescriptionChange}
+          className="bg-transparent text-white/70 h-48"
         />
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-4">
         <Button
           className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-5 md:py-7 text-xl mt-4 font-semibold"
           onClick={handleNextClick}

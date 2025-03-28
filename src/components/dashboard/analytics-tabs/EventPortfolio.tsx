@@ -8,7 +8,7 @@ import { num } from "starknet";
 const EventPortfolio = () => {
   const {address} = useContext(StarknetContext)
 
-  const { events } = useGetAllEvents();
+  const { events, isLoading } = useGetAllEvents();
 
   function normalizeHex(hexString: string) {
     hexString = hexString.startsWith('0x') ? hexString.slice(2) : hexString;
@@ -27,6 +27,13 @@ const EventPortfolio = () => {
         <h1 className="text-white text-xl raleway font-medium">
           Event Portfolio
         </h1>
+        {isLoading && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="text-white text-2xl">
+              Fetching Events...
+            </div>
+          </div>
+        )}
         <div className="flex justify-start flex-flow flex-wrap flex-grow gap-6">
           {myEvents.map((eachEvent: any, index: any) => (
             <EventPortfolioCard eachEvent={eachEvent} key={index} />
