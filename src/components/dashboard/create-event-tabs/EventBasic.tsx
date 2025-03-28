@@ -1,8 +1,12 @@
+import dynamic from 'next/dynamic';
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import React, { useState, useMemo } from "react";
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill'), {
+  ssr: false
+});
 
 const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
   const [localEventData, setLocalEventData] = useState({...eventData});
@@ -144,10 +148,10 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
           theme="snow" 
           value={localEventData.eventDescription || ""}
           onChange={handleDescriptionChange}
-          className="bg-transparent text-white/70 h-48"
+          className="bg-transparent text-white/70"
         />
       </div>
-      <div className="flex justify-end mt-4">
+      <div className="flex justify-end">
         <Button
           className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-5 md:py-7 text-xl mt-4 font-semibold"
           onClick={handleNextClick}
