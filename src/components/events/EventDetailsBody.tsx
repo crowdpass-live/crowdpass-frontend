@@ -16,7 +16,7 @@ const EventDetailsBody = ({ eventDetails }: any) => {
         <div
           className="prose prose-invert max-w-full text-white my-6 md:basis-4/6"
           dangerouslySetInnerHTML={{
-            __html: event?.eventDescription,
+            __html: event?.description,
           }}
         />
         <div className="flex flex-col my-6 md:basis-2/6">
