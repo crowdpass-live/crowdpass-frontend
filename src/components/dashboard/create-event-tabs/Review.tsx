@@ -2,13 +2,17 @@ import { Button } from "@/components/ui/button";
 import { datetimeToEpochTime } from "datetime-epoch-conversion";
 import React from "react";
 
-const Review = ({setActiveStep, eventData, handleCreateEvent}:any) => {
-  
-  const durationMilliseconds = (datetimeToEpochTime(eventData?.eventEndDate) - datetimeToEpochTime(eventData?.eventStartDate)) * 1000;
+const Review = ({ setActiveStep, eventData, handleCreateEvent }: any) => {
+  const durationMilliseconds =
+    (datetimeToEpochTime(eventData?.eventEndDate) -
+      datetimeToEpochTime(eventData?.eventStartDate)) *
+    1000;
 
-  const durationDays = Math.floor(durationMilliseconds / (1000 * 60 * 60 * 24)) ;
+  const durationDays = Math.floor(durationMilliseconds / (1000 * 60 * 60 * 24));
 
-  const durationHours = Math.floor((durationMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+  const durationHours = Math.floor(
+    (durationMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
 
   return (
     <div className="w-full md:w-[655px] h-full overflow-y-auto flex flex-col gap-8">
@@ -23,9 +27,12 @@ const Review = ({setActiveStep, eventData, handleCreateEvent}:any) => {
           Description
         </h1>
         <hr className="text-white" />
-        <p className="text-white my-4">
-        {eventData?.eventDescription}
-        </p>
+        <div
+          className="prose prose-invert max-w-full text-white"
+          dangerouslySetInnerHTML={{
+            __html: eventData?.eventDescription,
+          }}
+        />
       </div>
       <div className="w-full">
         <hr className="text-white " />
@@ -50,12 +57,18 @@ const Review = ({setActiveStep, eventData, handleCreateEvent}:any) => {
             <hr className="text-[#FFFAFA]" />
             <div className="flex justify-between items-center">
               <p className="text-[#FFFAFA]">Duration</p>
-              <p className="text-[#FFFAFA]">{durationDays >= 1 ? `${durationDays} days and ${durationHours} hours` : `${durationHours} hours`}</p>
+              <p className="text-[#FFFAFA]">
+                {durationDays >= 1
+                  ? `${durationDays} days and ${durationHours} hours`
+                  : `${durationHours} hours`}
+              </p>
             </div>
             <hr className="text-[#FFFAFA]" />
 
             <ul className="space-y-4">
-              <li className="text-[#B0B0B4]">Price - {eventData?.ticketPrice} Strk</li>
+              <li className="text-[#B0B0B4]">
+                Price - {eventData?.ticketPrice} Strk
+              </li>
             </ul>
           </div>
           <div className="w-full md:w-64 flex flex-col justify-between">
@@ -65,11 +78,12 @@ const Review = ({setActiveStep, eventData, handleCreateEvent}:any) => {
                 alt="map image"
                 className="w-full h-40 object-cover"
               />
-              <p className="text-white">
-              {eventData?.eventLocation}
-              </p>
+              <p className="text-white">{eventData?.eventLocation}</p>
             </div>
-            <p className="text-white"><span className="font-bold ">Organized By:</span> {eventData?.eventOrganizer}</p>
+            <p className="text-white">
+              <span className="font-bold ">Organized By:</span>{" "}
+              {eventData?.eventOrganizer}
+            </p>
           </div>
         </div>
       </div>
@@ -83,7 +97,7 @@ const Review = ({setActiveStep, eventData, handleCreateEvent}:any) => {
         <Button
           className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-7 text-xl mt-4 font-semibold"
           onClick={() => {
-            handleCreateEvent()
+            handleCreateEvent();
           }}
         >
           Submit
