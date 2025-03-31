@@ -33,7 +33,7 @@ const EventCard = ({ eachEvent }: any) => {
           <p className={`text-sm ${Number(ticket_price) > 0  ? "text-primary" :"text-white"}`}>{Number(ticket_price) > 0  ? "PAID" : "FREE"}</p>
         </div>
         <div
-          className="text-sm p-3 prose prose-invert max-w-full text-white"
+          className="text-sm p-3 prose prose-invert max-w-full text-white line-clamp-2"
           dangerouslySetInnerHTML={{
             __html: description,
           }}
