@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { categories, locations, payments } from "./dummyData";
-import { Search } from "lucide-react";
-
-
+import { Search, Filter, X } from "lucide-react";
 
 const FilterEvent = ({ filterState, setFilterState }: any) => {
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
   const handleCategoryChange = (category: string) => {
     setFilterState((prev: { categories: string[]; }) => ({
       ...prev,
@@ -47,8 +47,8 @@ const FilterEvent = ({ filterState, setFilterState }: any) => {
     }));
   };
 
-  return (
-    <div className="hidden md:flex flex-col w-[40%] h-auto pb-10 bg-[#14141A] p-5 space-y-8 rounded-2xl mb-4">
+  const FilterContent = () => (
+    <div className="flex flex-col w-full h-auto pb-10 bg-[#14141A] p-5 space-y-8 rounded-2xl mb-4">
       {/* Search BAR */}
       <div className="border w-full rounded-md border-[#B0B0B4] flex gap-3 text-white justify-between items-center">
         <input
@@ -97,25 +97,23 @@ const FilterEvent = ({ filterState, setFilterState }: any) => {
           <hr className="border-white/50 w-full" />
         </div>
         <div className="flex flex-wrap">
-          <div className="flex gap-2">
-            <div className="flex gap-2">
-              <input
-                type="date"
-                name="startDate"
-                id="startDate"
-                value={filterState.startDate}
-                onChange={(e) => handleDateChange("start", e.target.value)}
-                className="w-40 bg-transparent text-[#B0B0B4] rounded-md border-2"
-              />
-              <input
-                type="date"
-                name="endDate"
-                id="endDate"
-                value={filterState.endDate}
-                onChange={(e) => handleDateChange("end", e.target.value)}
-                className="w-40 bg-transparent text-[#B0B0B4] rounded-md border-2"
-              />
-            </div>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+              type="date"
+              name="startDate"
+              id="startDate"
+              value={filterState.startDate}
+              onChange={(e) => handleDateChange("start", e.target.value)}
+              className="w-full sm:w-40 bg-transparent text-[#B0B0B4] rounded-md border-2"
+            />
+            <input
+              type="date"
+              name="endDate"
+              id="endDate"
+              value={filterState.endDate}
+              onChange={(e) => handleDateChange("end", e.target.value)}
+              className="w-full sm:w-40 bg-transparent text-[#B0B0B4] rounded-md border-2"
+            />
           </div>
         </div>
       </div>
@@ -174,6 +172,45 @@ const FilterEvent = ({ filterState, setFilterState }: any) => {
         </div>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* Mobile Filter Button - Visible on mobile and tablet */}
+      <div className="lg:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+        <Button 
+          onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+          className="bg-primary text-white flex items-center gap-2"
+        >
+          {isMobileFilterOpen ? (
+            <>
+              <X size={20} /> Close Filters
+            </>
+          ) : (
+            <>
+              <Filter size={20} /> Click to Filter
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* Desktop Filter - Always visible on large screens */}
+      <div className="hidden lg:flex flex-col w-[40%] h-auto pb-10 bg-[#14141A] p-5 space-y-8 rounded-2xl mb-4">
+        <FilterContent />
+      </div>
+
+      {/* Mobile Filter Overlay */}
+      {isMobileFilterOpen && (
+        <div className="lg:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setIsMobileFilterOpen(false)}>
+          <div 
+            className="absolute bottom-0 w-full bg-[#14141A] rounded-t-2xl p-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <FilterContent />
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
