@@ -110,6 +110,7 @@ const ExploreEvents = () => {
                   whileInView="visible"
                   viewport={{ once: false, amount: 0.5 }}
                   transition={{ delay: index * 0.1 }}
+                  className="w-full md:w-[48%]"
                 >
                   <EventCard eachEvent={eachEvent} />
                 </motion.div>
@@ -122,9 +123,7 @@ const ExploreEvents = () => {
         </div>
       </div>
       <div>
-
-
-          {totalPages > 1 && (
+        {totalPages > 1 && (
             <motion.div
               initial="hidden"
               whileInView="visible"

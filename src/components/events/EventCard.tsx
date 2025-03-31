@@ -16,7 +16,7 @@ const EventCard = ({ eachEvent }: any) => {
   const response = epochToDatetime(`${start_date}`);
 
   return (
-    <Card className="bg-deep-blue rounded-xl w-80 sm:w-[400px] flex-grow border-0">
+    <Card className="bg-deep-blue rounded-xl w-full flex-grow border-0">
       <img
         src={image}
         alt="event"
@@ -28,11 +28,16 @@ const EventCard = ({ eachEvent }: any) => {
             <p className="text-sm text-white">
               {response.day} {response.month}, {response.year}
             </p>
-            <p className="text-lg text-white">{name}</p>
+            <p className="text-lg text-white line-clamp-1">{name}</p>
           </div>
           <p className={`text-sm ${Number(ticket_price) > 0  ? "text-primary" :"text-white"}`}>{Number(ticket_price) > 0  ? "PAID" : "FREE"}</p>
         </div>
-        <p className="line-clamp-2 text-sm text-white px-3">{description}</p>
+        <div
+          className="text-sm p-3 prose prose-invert max-w-full text-white"
+          dangerouslySetInnerHTML={{
+            __html: description,
+          }}
+        />
         <div className="flex justify-end items-center py-2">
           <Link
             href={`/events/${id}`}

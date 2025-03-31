@@ -27,7 +27,7 @@ const EventPortfolioCard = ({ eachEvent }: any) => {
             <p className="text-sm text-white">
               {response.day} {response.month}, {response.year}
             </p>
-            <p className="text-lg text-white">{name}</p>
+            <p className="text-lg text-white line-clamp-1">{name}</p>
           </div>
           <p className="text-sm text-white">{Number(ticket_price) > 0? "PAID" : "FREE"}</p>
         </div>
