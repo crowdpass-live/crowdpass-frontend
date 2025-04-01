@@ -6,6 +6,7 @@ import { StarknetContext } from "@/contexts/UserContext";
 import useGetEventById from "@/hooks/read-hooks/useGetEventById";
 import { useParams } from "next/navigation";
 import React, { useContext } from "react";
+import HashLoader from "react-spinners/HashLoader";
 
 type Props = {};
 
@@ -19,7 +20,14 @@ const page = (props: Props) => {
   return (
     <div>
       {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+          <HashLoader
+              color={"#FF6932"}
+              loading={loading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
           <div className="text-white text-2xl">Fetching Event Details...</div>
         </div>
       )}

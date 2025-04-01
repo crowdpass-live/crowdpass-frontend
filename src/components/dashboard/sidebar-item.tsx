@@ -7,7 +7,6 @@ const SidebarItem = ({ menu, pathname}: any) => {
   return (
     <Link
       href={menu.url}
-      className={``}
     >
       <div
         className={`py-4 px-6 mt-2 flex items-center mx-6 rounded-xl hover:bg-light-black hover:text-primary ${pathname === menu.url ? "bg-light-black text-primary shadow-md" :"text-white" }`}

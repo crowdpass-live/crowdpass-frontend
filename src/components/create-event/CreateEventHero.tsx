@@ -20,7 +20,7 @@ const CreateEventHero = (props: Props) => {
       </div>
       <div className="lg:flex gap-4 w-full m-4 lg:min-w-[50%]">
         <video autoPlay>
-          <source src="/assets/hero-video.mp4" type="video/mp4" className="w-full h-full"/>
+          <source src="https://res.cloudinary.com/dnohqlmjc/video/upload/v1742633484/hero-video_eyd4mr.mp4" type="video/mp4" className="w-full h-full"/>
         </video>
       </div>
     </div>

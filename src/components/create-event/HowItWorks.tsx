@@ -2,7 +2,6 @@ import React from 'react'
 import HiwAccordion from '../landing-page/hiw-accordion'
 import {  FaWallet } from "react-icons/fa";
 import { IoTicket } from "react-icons/io5";
-import { BsCalendarEvent } from "react-icons/bs";
 import { IoMdAnalytics } from 'react-icons/io';
 import { TbAdjustmentsSearch } from "react-icons/tb";
 
@@ -41,7 +40,7 @@ const HowItWorks = (props: Props) => {
         <div className='flex flex-col justify-center items-center max-w-[1280px]'>
             <h1 className='text-white text-4xl lg:text-6xl font-nedium py-4 raleway lg:pt-12 lg:pb-12'>How it works</h1>
             <div className='flex justify-center items-center gap-12'>
-                <img src="/assets/hiw-create.png" alt="image-1" className='hidden lg:flex md:w-[500px] md:h-[500px] xl:h-[620px] xl:w-[620px]' />
+                <img src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633484/hiw-create_dzaqeu.png" alt="image-1" className='hidden lg:flex md:w-[500px] md:h-[500px] xl:h-[620px] xl:w-[620px]' />
                 <HiwAccordion HiwAccordionData={HiwAccordionData} />
             </div>
         </div>

@@ -57,7 +57,7 @@ const EventHero = (props: Props) => {
         variants={imageVariants}
       >
         <motion.img
-          src="/assets/event-hero.png"
+          src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633485/event-hero_a3esfv.png"
           alt="hero-image"
           className="md:flex"
           variants={imageVariants}

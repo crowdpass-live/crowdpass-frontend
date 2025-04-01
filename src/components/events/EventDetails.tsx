@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
 import useBuyTicket from "@/hooks/write-hooks/useBuyTicket";
 import { StarknetContext } from "@/contexts/UserContext";
+import HashLoader from "react-spinners/HashLoader";
 
 
 const EventDetails = ({ eventDetails, id }: any) => {
@@ -33,7 +34,14 @@ const EventDetails = ({ eventDetails, id }: any) => {
   return (
     <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+          <HashLoader
+              color={"#FF6932"}
+              loading={isLoading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
           <div className="text-white text-2xl">Purchasing Tickets...</div>
         </div>
       )}
@@ -70,35 +78,35 @@ const EventDetails = ({ eventDetails, id }: any) => {
           <div className="flex gap-4">
             <div className="flex items-center justify-center">
               <Image
-                src={"/assets/attendee1.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee1_hvftrx.png"}
                 alt="attendee1"
                 width={50}
                 height={50}
                 className="w-8 h-8 md:w-[50px] md:h-[50px]"
               />
               <Image
-                src={"/assets/attendee2.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee2_fuynig.png"}
                 alt="attendee2"
                 width={50}
                 height={50}
                 className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
               />
               <Image
-                src={"/assets/attendee3.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee3_pwpu24.png"}
                 alt="attendee3"
                 width={50}
                 height={50}
                 className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
               />
               <Image
-                src={"/assets/attendee4.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee5_b81v8c.png"}
                 alt="attendee4"
                 width={50}
                 height={50}
                 className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
               />
               <Image
-                src={"/assets/attendee5.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png"}
                 alt="attendee5"
                 width={50}
                 height={50}
@@ -113,29 +121,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
               <p className="font-medium text-sm text-white">Across the globe</p>
             </div>
           </div>
-          {/* <div className="flex items-center gap-3">
-            <h1 className="text-white text-sm md:text-base font-medium">
-              {speakers.length}+ Speakers
-            </h1>
-            <Image
-              src={"/assets/oui_dot.png"}
-              alt="dot"
-              width={18}
-              height={18}
-            />
-            <h1 className="text-white text-sm md:text-base  font-medium">
-              {sponsors.length}+ Sponsors
-            </h1>
-            <Image
-              src={"/assets/oui_dot.png"}
-              alt="dot"
-              width={18}
-              height={18}
-            />
-            <h1 className="text-white text-sm md:text-base font-medium">
-              {workshops.length}+ Workshops
-            </h1>
-          </div> */}
         </div>
         <div className="flex justify-end lg:w-full gap-8 items-center">
           <div className="pt-4 flex gap-4">

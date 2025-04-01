@@ -41,7 +41,7 @@ const Footer = () => {
             className="flex flex-col mx-4 gap-3 lg:w-[430px]"
             variants={itemVariants}
           >
-            <img src="/assets/crowdpass_logo.png" height={48} width={300} />
+            <img src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/crowdpass_logo_a2f8bq.png" height={48} width={300} />
             <p className="text-white pt-3">
               Welcome to CrowdPass, your ultimate event management platform. We
               empower event organizers to create, manage, and promote their

@@ -89,7 +89,7 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
           />
         ) : (
           <img
-            src="/assets/add-icon-image.png"
+            src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/add-icon-image_uv5rlg.png"
             alt="create-event"
             className="object-fill"
           />
