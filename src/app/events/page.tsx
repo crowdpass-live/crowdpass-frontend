@@ -9,10 +9,10 @@ type Props = {};
 
 const Page = (props: Props) => {
   return (
-    <>
+    <div className="mb-10">
       <EventHero />
       <ExploreEvents />
-    </>
+    </div>
   );
 };
 

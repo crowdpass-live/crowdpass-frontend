@@ -81,7 +81,7 @@ const ExploreMarketplace = (props: Props) => {
             </div>
           </div>
           {/* Events Section */}
-          <div className="flex flex-wrap flex-grow gap-8 justify-center items-center w-full">
+          <div className="flex flex-wrap flex-grow gap-8 justify-start items-center w-full">
             {tabIndex === 0 &&
               (dummyEvents.length > 0 ? (
                 dummyEvents.map((eachEvent: any, index: any) => (

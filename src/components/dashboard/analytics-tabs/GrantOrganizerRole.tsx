@@ -6,10 +6,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StarknetContext } from "@/contexts/UserContext";
 import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
 import useAddOrganizer from "@/hooks/write-hooks/useAddOrganizers";
 import useRemoveOrganizer from "@/hooks/write-hooks/useRemoveOrganizer";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import HashLoader from "react-spinners/HashLoader";
+import { num } from "starknet";
 
 const GrantOrganizerRole = () => {
   const [delegateEmail, setDelegateEmail] = useState("");
@@ -17,14 +20,46 @@ const GrantOrganizerRole = () => {
   const [id, setId] = useState(0);
   const handleDelegateRole = useAddOrganizer();
   const handleRevokeRole = useRemoveOrganizer();
-  const { events } = useGetAllEvents();
-
+  const { address } = useContext(StarknetContext);
+  const { events, isLoading } = useGetAllEvents();
   const handleIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setId(parseInt(e.target.value));
   };
 
+  const tableData = [
+    {
+      id: 1,
+      email: "sogobanwo@gmail.com",
+      walletAddress: "0x045ERM4989756553795783NMDSLO3900049CAB",
+    },
+  ];
+
+  function normalizeHex(hexString: string) {
+    hexString = hexString.startsWith("0x") ? hexString.slice(2) : hexString;
+    hexString = hexString.replace(/^0+/, "");
+    return `0x${hexString}`;
+  }
+
+  const myEvents = events.filter(
+    (event) =>
+      normalizeHex(num.toHex(event.organizer)) ===
+      normalizeHex(address as string)
+  );
+
   return (
     <div className="bg-[#14141A] rounded-xl w-full p-10 flex flex-col gap-3">
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+          <HashLoader
+            color={"#FF6932"}
+            loading={isLoading}
+            size={100}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+          <div className="text-white text-2xl">Fetching Events...</div>
+        </div>
+      )}
       <div className="flex flex-col gap-4">
         <div>
           <Select>
@@ -32,7 +67,7 @@ const GrantOrganizerRole = () => {
               <SelectValue placeholder="Select Event to Delegate" />
             </SelectTrigger>
             <SelectContent className=" bg-light-black border-deep-blue text-white">
-              {events.map((event) => (
+              {myEvents.map((event) => (
                 <SelectItem key={event.id} value={event.id}>
                   {event.name}
                 </SelectItem>
@@ -41,7 +76,7 @@ const GrantOrganizerRole = () => {
           </Select>
         </div>
         <div className="border border-deep-blue p-6 rounded-lg">
-          <div className="flex w-full gap-4 items-center">
+          <div className="flex flex-col lg:flex-row w-full gap-4 items-center">
             <div className="flex flex-col gap-4 w-full">
               <h1 className="text-white text-lg mb-4 raleway font-semibold">
                 Delegate Role
@@ -62,7 +97,11 @@ const GrantOrganizerRole = () => {
                 Delegate Role
               </Button>
             </div>
-            <img src="/assets/line-divider.png" alt="line-divider" />
+            <img
+              src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633480/line-divider_wvokop.png"
+              alt="line-divider"
+              className="hidden lg:flex"
+            />
             <div className="flex flex-col gap-4 w-full">
               <h1 className="text-white text-lg mb-4 raleway font-semibold">
                 Revoke Role
@@ -88,19 +127,47 @@ const GrantOrganizerRole = () => {
         <h1 className="text-white ">
           Delegates: <span className="text-white text-2xl">20</span>
         </h1>
-        <div className="border border-deep-blue p-6 rounded-lg">
-          <div className="w-full border-b border-deep-blue pb-3 flex pl-3">
+        <div className="border border-deep-blue p-4 md:p-6 rounded-lg">
+          {/* Header - visible only on md and larger screens */}
+          <div className="hidden md:flex w-full border-b border-deep-blue pb-3 pl-3">
             <h1 className="w-1/6 font-bold text-white">SN</h1>
             <h1 className="w-2/6 font-bold text-white">Email</h1>
             <h1 className="w-3/6 font-bold text-white">Wallet Address</h1>
           </div>
-          <div className="w-full border-b border-deep-blue py-3 flex pl-3">
-            <p className="w-1/6 text-deep-blue ">1</p>
-            <p className="w-2/6 text-deep-blue ">sogobanwo@gmail.com</p>
-            <p className="w-3/6 text-deep-blue ">
-              0x045ERM4989756553795783NMDSLO3900049CAB
-            </p>
-          </div>
+
+          {/* Table rows */}
+          {tableData.map((row) => (
+            <React.Fragment key={row.id}>
+              {/* Desktop view - visible only on md and larger screens */}
+              <div className="hidden md:flex w-full border-b border-deep-blue py-3 pl-3">
+                <p className="w-1/6 text-deep-blue">{row.id}</p>
+                <p className="w-2/6 text-deep-blue overflow-hidden text-ellipsis">
+                  {row.email}
+                </p>
+                <p className="w-3/6 text-deep-blue overflow-hidden text-ellipsis">
+                  {row.walletAddress}
+                </p>
+              </div>
+
+              {/* Mobile view - visible only on smaller than md screens */}
+              <div className="md:hidden border-b border-deep-blue py-3">
+                <div className="flex py-1">
+                  <h2 className="w-1/3 font-bold text-white">SN:</h2>
+                  <p className="w-2/3 text-deep-blue">{row.id}</p>
+                </div>
+                <div className="flex py-1">
+                  <h2 className="w-1/3 font-bold text-white">Email:</h2>
+                  <p className="w-2/3 text-deep-blue break-all">{row.email}</p>
+                </div>
+                <div className="flex py-1">
+                  <h2 className="w-1/3 font-bold text-white">Wallet:</h2>
+                  <p className="w-2/3 text-deep-blue break-all">
+                    {row.walletAddress}
+                  </p>
+                </div>
+              </div>
+            </React.Fragment>
+          ))}
         </div>
       </div>
     </div>

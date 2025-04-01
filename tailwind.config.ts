@@ -22,8 +22,8 @@ export default {
 		  "accordion-up": "accordion-up 0.2s ease-out",
 		},
 		backgroundImage: {
-		  'ticketImage': "url('/assets/ticket-bg-image.png')",
-		  'add-image': "url('/assets/add-image.png')"
+		  'ticketImage': "url('https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633481/ticket-bg-image_jsukrq.png')",
+		  'add-image': "url('https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/add-image_vbp00z.png')"
 		},
 		colors: {
 		  "deep-blue": "#5B5959",

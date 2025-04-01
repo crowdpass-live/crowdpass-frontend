@@ -3,7 +3,7 @@
 import { dummyEvents } from "@/components/events/dummyData";
 import TicketList from "@/components/marketplace/TicketList";
 import { epochToDatetime } from "datetime-epoch-conversion";
-import { MapPin, Ticket } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React from "react";
@@ -42,7 +42,7 @@ const page = (props: Props) => {
       <div className="hidden gap-6 flex-col w-1/3 md:flex">
         <Image src={eventImage} alt="dot" width={460} height={522} />
         <Image
-          src={"/assets/MapImage.png"}
+          src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633489/MapImage_jgeu3d.png"}
           alt="dot"
           width={460}
           height={274}
@@ -65,7 +65,7 @@ const page = (props: Props) => {
                 {response.day} {response.month}, {response.year}
               </p>
               <Image
-                src={"/assets/oui_dot.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633482/oui_dot_k90jke.png"}
                 alt="dot"
                 width={18}
                 height={18}

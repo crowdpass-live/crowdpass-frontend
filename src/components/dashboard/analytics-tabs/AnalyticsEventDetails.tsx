@@ -60,35 +60,35 @@ const AnalyticsEventDetails = ({eventDetails, id}:any) => {
           <div className="flex gap-4">
             <div className="flex items-center justify-center">
               <Image
-                src={"/assets/attendee1.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee1_hvftrx.png"}
                 alt="attendee1"
                 width={30}
                 height={30}
                 className="w-8 h-8 md:w-[30px] md:h-[30px]"
               />
               <Image
-                src={"/assets/attendee2.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee2_fuynig.png"}
                 alt="attendee2"
                 width={30}
                 height={30}
                 className="-ml-3 w-8 h-8 md:w-[30px] md:h-[30px]"
               />
               <Image
-                src={"/assets/attendee3.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee3_pwpu24.png"}
                 alt="attendee3"
                 width={30}
                 height={30}
                 className="-ml-3 w-8 h-8 md:w-[30px] md:h-[30px]"
               />
               <Image
-                src={"/assets/attendee4.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee5_b81v8c.png"}
                 alt="attendee4"
                 width={30}
                 height={30}
                 className="-ml-3 w-8 h-8 md:w-[30px] md:h-[30px]"
               />
               <Image
-                src={"/assets/attendee5.png"}
+                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png"}
                 alt="attendee5"
                 width={30}
                 height={30}
@@ -103,29 +103,6 @@ const AnalyticsEventDetails = ({eventDetails, id}:any) => {
               <p className="font-medium text-sm text-white">Across the globe</p>
             </div>
           </div>
-          {/* <div className="flex items-center gap-1">
-            <h1 className="text-white text-xs md:text-base font-medium">
-              {speakers.length}+ Speakers
-            </h1>
-            <Image
-              src={"/assets/oui_dot.png"}
-              alt="dot"
-              width={18}
-              height={18}
-            />
-            <h1 className="text-white text-xs md:text-base  font-medium">
-              {sponsors.length}+ Sponsors
-            </h1>
-            <Image
-              src={"/assets/oui_dot.png"}
-              alt="dot"
-              width={18}
-              height={18}
-            />
-            <h1 className="text-white text-xs md:text-base font-medium">
-              {workshops.length}+ Workshops
-            </h1>
-          </div> */}
         </div>
       </div>
       <div className='flex gap-4'>

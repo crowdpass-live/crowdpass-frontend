@@ -11,7 +11,7 @@ const EventSpok = (props: Props) => {
           STATUS: <span className="italic">Minted</span>
         </p>
       </div>
-      <img src="/assets/carousel1.png" alt="spok" className="w-full md:w-80 h-64" />
+      <img src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel2_qgonb8.png" alt="spok" className="w-full md:w-80 h-64" />
     </div>
   );
 };

@@ -74,7 +74,7 @@ const Review = ({ setActiveStep, eventData, handleCreateEvent }: any) => {
           <div className="w-full md:w-64 flex flex-col justify-between">
             <div className="flex flex-col gap-4">
               <img
-                src="/assets/MapImage.png"
+                src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633489/MapImage_jgeu3d.png"
                 alt="map image"
                 className="w-full h-40 object-cover"
               />

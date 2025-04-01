@@ -48,18 +48,18 @@ const MarketplaceHero = (props: Props) => {
           Resell with confidence, buy with trust — unlock new opportunities with
           <span className="text-primary"> CrowdPass</span>
         </motion.h1>
-        <motion.div variants={itemVariants}>
+        {/* <motion.div variants={itemVariants}>
           <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4">
             List Ticket
           </Button>
-        </motion.div>
+        </motion.div> */}
       </motion.div>
       <motion.div
         className="flex justify-center items-center m-3 gap-4 w-full lg:min-w-[50%]"
         variants={itemVariants}
       >
         <motion.img
-          src="/assets/marketplace-hero.png"
+          src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633483/marketplace-hero_m3wkp8.png"
           alt="hero-image"
           className="md:flex"
           variants={itemVariants}

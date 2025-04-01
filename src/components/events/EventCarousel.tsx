@@ -7,7 +7,7 @@ import Slider from "react-slick";
 type Props = {};
 
 const EventCarousel = (props: Props) => {
-  const images = ["/assets/carousel1.png", "/assets/carousel2.png","/assets/carousel1.png","/assets/carousel2.png","/assets/carousel2.png",];
+  const images = ["https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel1_cnsop2.png", "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel2_qgonb8.png","https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel1_cnsop2.png","https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel2_qgonb8.png","https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel1_cnsop2.png",];
   const settings = {
     className: "center",
     centerMode: true,
@@ -23,7 +23,7 @@ const EventCarousel = (props: Props) => {
     dotsClass: "slick-dots slick-thumb",
     customPaging: function(i: number) {
         return (
-            <img src={`/assets/inactive-dot.png`} />
+            <img src={`https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633483/inactive-dot_niv409.png`} />
         );
       },
   };

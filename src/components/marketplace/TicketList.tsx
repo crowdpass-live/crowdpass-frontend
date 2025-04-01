@@ -11,7 +11,7 @@ const TicketList = (props: Props) => {
       <div className="flex flex-col gap-2 md:flex-row justify-between md:items-center">
         <div className="flex gap-4 items-center">
           <Image
-            src={"/assets/ticket-buy.png"}
+            src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633481/ticket-buy_qk3rnm.png"}
             alt="dot"
             width={70}
             height={70}
@@ -26,7 +26,7 @@ const TicketList = (props: Props) => {
           <div className="flex items-center gap-2">
             <h1 className="text-white text-sm md:text-sm">1 Ticket</h1>
             <Image
-              src={"/assets/oui_dot.png"}
+              src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633482/oui_dot_k90jke.png"}
               alt="dot"
               width={18}
               height={18}

@@ -21,7 +21,7 @@ const EventDetailsBody = ({ eventDetails }: any) => {
         />
         <div className="flex flex-col my-6 md:basis-2/6">
           <Image
-            src={"/assets/MapImage.png"}
+            src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633489/MapImage_jgeu3d.png"}
             alt="map"
             objectFit="fill"
             width={450}

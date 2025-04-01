@@ -15,6 +15,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import FilterEvent from "./FilterEvent";
 import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
+import HashLoader from "react-spinners/HashLoader";
 
 type FilterState = {
   categories: string[];
@@ -63,12 +64,22 @@ const ExploreEvents = () => {
 
   return (
     <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
-       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+          <HashLoader
+            color={"#FF6932"}
+            loading={isLoading}
+            size={100}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
           <div className="text-white text-2xl">Fetching Events...</div>
         </div>
       )}
-      <div className="flex flex-col md:flex-row items-center justify-between" id="explore">
+      <div
+        className="flex flex-col md:flex-row items-center justify-between"
+        id="explore"
+      >
         <motion.h1
           className="text-4xl font-semibold text-white raleway my-6"
           initial="hidden"
@@ -98,7 +109,10 @@ const ExploreEvents = () => {
       </div>
 
       <div className="flex gap-16 items-start justify-between">
-        <FilterEvent filterState={filterState} setFilterState={setFilterState} />
+        <FilterEvent
+          filterState={filterState}
+          setFilterState={setFilterState}
+        />
         {/* Events Section */}
         <div className="flex flex-wrap gap-8 justify-between items-center w-full">
           <AnimatePresence>
@@ -119,58 +133,57 @@ const ExploreEvents = () => {
               <p className="text-white">No events to show</p>
             )}
           </AnimatePresence>
-
         </div>
       </div>
       <div>
         {totalPages > 1 && (
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: false, amount: 0.5 }}
-            >
-              <Pagination className="flex justify-end text-white my-4">
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: false, amount: 0.5 }}
+          >
+            <Pagination className="flex justify-end text-white my-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) handleChangePage(currentPage - 1);
+                    }}
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <PaginationItem key={index}>
+                    <PaginationLink
                       href="#"
                       onClick={(e) => {
                         e.preventDefault();
-                        if (currentPage > 1) handleChangePage(currentPage - 1);
+                        handleChangePage(index + 1);
                       }}
-                    />
+                      aria-current={
+                        currentPage === index + 1 ? "page" : undefined
+                      }
+                    >
+                      {index + 1}
+                    </PaginationLink>
                   </PaginationItem>
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <PaginationItem key={index}>
-                      <PaginationLink
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleChangePage(index + 1);
-                        }}
-                        aria-current={
-                          currentPage === index + 1 ? "page" : undefined
-                        }
-                      >
-                        {index + 1}
-                      </PaginationLink>
-                    </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (currentPage < totalPages)
-                          handleChangePage(currentPage + 1);
-                      }}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </motion.div>
-          )}
-          </div>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages)
+                        handleChangePage(currentPage + 1);
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </motion.div>
+        )}
+      </div>
     </Tabs>
   );
 };
@@ -185,17 +198,17 @@ const getFilteredEvents = (
   // Tab-based filtering
   switch (tabIndex) {
     case 0:
-      filteredData = data; 
+      filteredData = data;
       break;
     case 1:
       filteredData = data.filter(
         (event: any) => Number(event.start_date) > Date.now() / 1000
-      ); 
+      );
       break;
     case 2:
       filteredData = data.filter(
         (event: any) => Number(event.end_date) <= Date.now() / 1000
-      ); 
+      );
       break;
     default:
       filteredData = [];
@@ -225,12 +238,14 @@ const getFilteredEvents = (
   // Filter by date range
   if (filterState.startDate) {
     filteredData = filteredData.filter(
-      (event: any) => event.start_date >= new Date(filterState.startDate).getTime() / 1000
+      (event: any) =>
+        event.start_date >= new Date(filterState.startDate).getTime() / 1000
     );
   }
   if (filterState.endDate) {
     filteredData = filteredData.filter(
-      (event: any) => event.end_date <= new Date(filterState.endDate).getTime() / 1000
+      (event: any) =>
+        event.end_date <= new Date(filterState.endDate).getTime() / 1000
     );
   }
 

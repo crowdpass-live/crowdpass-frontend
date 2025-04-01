@@ -14,7 +14,7 @@ const page = (props: Props) => {
   const detailsTabs = ["Upcoming", "Past", "Bookmarked"];
 
   return (
-    <div>
+    <div className="mb-10">
       <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
         <div className="flex flex-col md:flex-row items-center justify-end">
           <TabList className={"flex items-center justify-evenly gap-6 my-6"}>
@@ -29,7 +29,7 @@ const page = (props: Props) => {
             ))}
           </TabList>
         </div>
-        <div className="flex flex-wrap justify-center gap-5 items-center">
+        <div className="flex flex-wrap justify-start gap-5 items-center">
         {dummyEvents.length > 0 ? (
               dummyEvents.map((eachEvent: any, index: any) => (
                 <MyEventCard eachEvent={eachEvent} key={index} />
