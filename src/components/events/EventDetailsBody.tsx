@@ -25,7 +25,7 @@ const EventDetailsBody = ({ eventDetails }: any) => {
             alt="map"
             objectFit="fill"
             width={450}
-            height={247}
+            height={250}
             className="w-full"
           />
           <div className="bg-[#42424033] font-semibold rounded-md p-2 my-4 flex items-center justify-start text-white gap-4 w-full">
