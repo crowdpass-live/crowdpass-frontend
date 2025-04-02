@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import FilterEvent from "./FilterEvent";
 import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
 import HashLoader from "react-spinners/HashLoader";
+import { getFilteredEvents } from "./getFilteredEvent";
 
 type FilterState = {
   categories: string[];
@@ -32,7 +33,7 @@ const ExploreEvents = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  // Consolidated filter state
+  //filter state
   const [filterState, setFilterState] = useState<FilterState>({
     categories: [],
     locations: [],
@@ -42,10 +43,11 @@ const ExploreEvents = () => {
     searchQuery: "",
   });
 
-  // Filter events based on tab and filter parameters
+  console.log(events);
+  console.log(filterState);
+
   const filteredEvents = getFilteredEvents(events || [], tabIndex, filterState);
 
-  // Paginate the filtered events
   const paginatedEvents = filteredEvents.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -57,7 +59,6 @@ const ExploreEvents = () => {
     setCurrentPage(page);
   };
 
-  // Reset pagination to page 1 when filters change
   React.useEffect(() => {
     setCurrentPage(1);
   }, [filterState]);
@@ -188,75 +189,6 @@ const ExploreEvents = () => {
   );
 };
 
-const getFilteredEvents = (
-  data: any[],
-  tabIndex: number,
-  filterState: FilterState
-) => {
-  let filteredData = data;
 
-  // Tab-based filtering
-  switch (tabIndex) {
-    case 0:
-      filteredData = data;
-      break;
-    case 1:
-      filteredData = data.filter(
-        (event: any) => Number(event.start_date) > Date.now() / 1000
-      );
-      break;
-    case 2:
-      filteredData = data.filter(
-        (event: any) => Number(event.end_date) <= Date.now() / 1000
-      );
-      break;
-    default:
-      filteredData = [];
-  }
-
-  // Filter by categories
-  if (filterState.categories.length > 0) {
-    filteredData = filteredData.filter((event: any) =>
-      filterState.categories.includes(event.category)
-    );
-  }
-
-  // Filter by locations
-  if (filterState.locations.length > 0) {
-    filteredData = filteredData.filter((event: any) =>
-      filterState.locations.includes(event.location)
-    );
-  }
-
-  // Filter by payment types
-  if (filterState.payments.length > 0) {
-    filteredData = filteredData.filter((event: any) =>
-      filterState.payments.includes(event.payment_type)
-    );
-  }
-
-  // Filter by date range
-  if (filterState.startDate) {
-    filteredData = filteredData.filter(
-      (event: any) =>
-        event.start_date >= new Date(filterState.startDate).getTime() / 1000
-    );
-  }
-  if (filterState.endDate) {
-    filteredData = filteredData.filter(
-      (event: any) =>
-        event.end_date <= new Date(filterState.endDate).getTime() / 1000
-    );
-  }
-
-  // Filter by search query
-  if (filterState.searchQuery) {
-    filteredData = filteredData.filter((event: any) =>
-      event.name.toLowerCase().includes(filterState.searchQuery.toLowerCase())
-    );
-  }
-
-  return filteredData;
-};
 
 export default ExploreEvents;

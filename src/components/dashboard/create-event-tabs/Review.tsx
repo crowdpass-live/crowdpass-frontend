@@ -15,7 +15,7 @@ const Review = ({ setActiveStep, eventData, handleCreateEvent }: any) => {
   );
 
   return (
-    <div className="w-full md:w-[655px] h-full overflow-y-auto flex flex-col gap-8">
+    <div className="w-full md:w-[655px] h-full flex flex-col gap-8">
       <img
         src={URL.createObjectURL(eventData?.eventImage)}
         alt="event image"

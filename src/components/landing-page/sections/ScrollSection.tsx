@@ -15,7 +15,7 @@ const itemVariants = {
 
 const ScrollSection = (props: Props) => {
   const scrollImg = [
-    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742642682/horus_yuuan6.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1743585175/horusLabs_jgtd5c.svg",
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742642681/sn-foundation_jxk0gk.png",
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742642681/argent_ktvrwz.png",
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742642681/sn_dqa0q2.png",
@@ -49,8 +49,8 @@ const ScrollSection = (props: Props) => {
 
   const content = scrollImg.map((image, index) => {
     return (
-      <div className="flex h-20 justify-center items-center" key={index}>
-        <img src={image} alt="parthner" className="w-40 h-20"/>
+      <div className="flex justify-center items-center" key={index}>
+        <img src={image} alt="parthner" className="h-8 lg:h-12 w-32 flex justify-center mx-4 lg:mx-0"/>
       </div>
     );
   });
@@ -65,7 +65,7 @@ const ScrollSection = (props: Props) => {
       </motion.h1>
       <Slider
         {...settings}
-        className="flex items-center justify-center bg-[#14141A] h-20"
+        className="flex items-center justify-center bg-[#14141A] h-16 lg:h-20 py-4"
       >
         {content}
       </Slider>
