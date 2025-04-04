@@ -125,7 +125,7 @@ const GrantOrganizerRole = () => {
           </div>
         </div>
         <h1 className="text-white ">
-          Delegates: <span className="text-white text-2xl">20</span>
+          Delegates: <span className="text-white text-2xl">0</span>
         </h1>
         <div className="border border-deep-blue p-4 md:p-6 rounded-lg">
           {/* Header - visible only on md and larger screens */}

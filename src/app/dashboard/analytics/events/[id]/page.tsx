@@ -1,9 +1,8 @@
 "use client";
 
-import AnalyticsEventDetails from "@/components/dashboard/analytics-tabs/AnalyticsEventDetails";
 import EventAnalytics from "@/components/dashboard/analytics-tabs/EventAnalytics";
 import EventCheckin from "@/components/dashboard/analytics-tabs/EventCheckin";
-import EventDetailsBody from "@/components/events/EventDetailsBody";
+import EventAnalyticsDetailsPage from "@/components/events/EventAnalyticsDetailsPage";
 import { StarknetContext } from "@/contexts/UserContext";
 import useGetEventById from "@/hooks/read-hooks/useGetEventById";
 import { useParams } from "next/navigation";
@@ -23,27 +22,22 @@ const page = (props: Props) => {
     switch (tabIndex) {
       case 0:
         return (
-          <>
-            <AnalyticsEventDetails
-              eventDetails={eventDetails}
-              id={Number(params.id)}
-            />
-            <EventDetailsBody eventDetails={eventDetails} />
-          </>
+          <EventAnalyticsDetailsPage
+            eventDetails={eventDetails}
+            id={Number(params.id)}
+          />
         );
       case 1:
-        return <EventAnalytics />;
+        return <EventAnalytics eventDetails={eventDetails}
+/>;
       case 2:
         return <EventCheckin id={Number(params.id)} />;
       default:
         return (
-          <>
-            <AnalyticsEventDetails
-              eventDetails={eventDetails}
-              id={Number(params.id)}
-            />
-            <EventDetailsBody eventDetails={eventDetails} />
-          </>
+          <EventAnalyticsDetailsPage
+            eventDetails={eventDetails}
+            id={Number(params.id)}
+          />
         );
     }
   };
