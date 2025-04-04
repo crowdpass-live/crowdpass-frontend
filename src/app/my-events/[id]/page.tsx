@@ -4,22 +4,20 @@ import { dummyEvents } from "@/components/events/dummyData";
 import EventDetails from "@/components/events/EventDetails";
 import EventTicketPrice from "@/components/events/EventTicktetPrice";
 import MyEventTab from "@/components/my-event/MyEventTab";
+import useGetEventById from "@/hooks/read-hooks/useGetEventById";
 import { MapPin } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React from "react";
 
-
 const page = () => {
   const params = useParams<{ id: string }>();
-  const eventDetails = dummyEvents.find(
-    (event) => event.eventId === Number(params.id)
-  );
-  const { eventLocation, description, paid, ticketsType }: any = eventDetails;
+  const eventDetails = useGetEventById(Number(params.id));
+  const { attributes, description, paid, ticketsType }: any = eventDetails;
 
   return (
     <div>
-      <EventDetails eventDetails={eventDetails} />
+      <EventDetails eventDetails={eventDetails} id={params.id} />
       <div className="bg-[#CBCACF66] max-w-[1280px] pt-28 -mt-16">
         <div className="mx-4 lg:mx-28">
           <hr className="text-white " />
@@ -27,16 +25,22 @@ const page = () => {
             Description
           </h1>
           <hr className="text-white" />
-          <p className="text-white my-6">{description}</p>
+          {/* <div
+            className="prose prose-invert max-w-full text-white my-6 md:basis-4/6"
+            dangerouslySetInnerHTML={{
+              __html: description,
+            }}
+          />{" "}
           <hr className="text-white" />
-
           <div className="flex flex-col md:flex-row gap-10">
             <div className="flex flex-col lg:w-[384px] my-6">
               <h1 className="text-3xl text-white raleway mb-2 font-semibold">
                 Location
               </h1>
               <Image
-                src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633489/MapImage_jgeu3d.png"}
+                src={
+                  "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633489/MapImage_jgeu3d.png"
+                }
                 alt="map"
                 objectFit="fill"
                 width={450}
@@ -46,7 +50,7 @@ const page = () => {
                 <div className="bg-[#14141A] p-2 rounded-xl">
                   <MapPin size={30} color="#FF6932" />
                 </div>
-                {eventLocation}
+                {attributes[3].value || "Location not specified"}
               </div>
               <div
                 className={`${
@@ -70,7 +74,31 @@ const page = () => {
             <div className="lg:w-[600px] lg:mt-8">
               <MyEventTab eventDetails={eventDetails} />
             </div>
-          </div>
+          </div> */}
+          <div className="flex flex-col md:flex-row gap-10">
+        <div
+          className="prose prose-invert max-w-full text-white my-6 md:basis-4/6"
+          dangerouslySetInnerHTML={{
+            __html: description,
+          }}
+        />
+        <div className="flex flex-col my-6 md:basis-2/6">
+          <Image
+            src={"https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633489/MapImage_jgeu3d.png"}
+            alt="map"
+            objectFit="fill"
+            width={450}
+            height={250}
+            className="w-full"
+          />
+          <div className="bg-[#42424033] font-semibold rounded-md p-2 my-4 flex items-center justify-start text-white gap-4 w-full">
+            <div className="bg-[#14141A] p-2 rounded-xl">
+              <MapPin size={30} color="#FF6932" />
+            </div>
+            {attributes[3].value || "Location not specified"}
+            </div>
+        </div>
+      </div>
         </div>
       </div>
     </div>
