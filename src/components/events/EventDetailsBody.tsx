@@ -32,8 +32,8 @@ const EventDetailsBody = ({ eventDetails }: any) => {
             <div className="bg-[#14141A] p-2 rounded-xl">
               <MapPin size={30} color="#FF6932" />
             </div>
-            {event?.attributes[3].value}
-          </div>
+            {event?.attributes[3].value || "Location not specified"}
+            </div>
         </div>
       </div>
     </>

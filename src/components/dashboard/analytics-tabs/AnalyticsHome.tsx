@@ -1,10 +1,13 @@
-import React from "react";
-import { CiShare1 } from "react-icons/ci";
+import { StarknetContext } from "@/contexts/UserContext";
+import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
+import React, { useContext } from "react";
 import { FaSquare } from "react-icons/fa6";
 import { IoIosPeople } from "react-icons/io";
 import { MdCelebration } from "react-icons/md";
 import { TbMessageCircleUser } from "react-icons/tb";
+import HashLoader from "react-spinners/HashLoader";
 import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { num } from "starknet";
 
 
 const DoughnutData = {
@@ -38,46 +41,74 @@ type Props = {
 };
 
 const AnalyticsHome = (props: Props) => {
+  const { address } = useContext(StarknetContext);
+
+  const { events, isLoading } = useGetAllEvents();
+
+  function normalizeHex(hexString: string) {
+    hexString = hexString.startsWith("0x") ? hexString.slice(2) : hexString;
+    hexString = hexString.replace(/^0+/, "");
+    return `0x${hexString}`;
+  }
+
+  const myEvents = events.filter(
+    (event) =>
+      normalizeHex(num.toHex(event.organizer)) ===
+      normalizeHex(address as string)
+  );
+
+  const paidEvents = myEvents.filter((event) => event.ticket_price > 0);
+
+  const freeEvents = myEvents.filter((event) => event.ticket_price === 0);
+
   return (
     <div className="flex flex-col gap-4 p-4">
-      {/* Top Row - First div takes 2 columns, others take 1 column each */}
+      {isLoading && (
+          <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+            <HashLoader
+              color={"#FF6932"}
+              loading={isLoading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+            <div className="text-white text-2xl">
+              Fetching Event Analytics...
+            </div>
+          </div>
+        )}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-2 p-4">
           <h1 className="text-base xl:text-2xl text-white font-semibold raleway">Daily Ticket Count</h1>
           <div className="bg-[#5B5959] h-3 rounded-3xl w-full mt-2">
-            <div className="bg-primary h-full rounded-3xl w-[10%]"></div>
+            <div className="bg-primary h-full rounded-3xl w-[0%]"></div>
           </div>
           <div className="flex justify-between items-center mt-2">
-            <p className="text-white text-sm font-thin">Sold: 20 Tickets</p>
-            <p className="text-white text-sm font-thin">Revenue: $100</p>
-            <p className="text-white text-sm font-thin">180 left</p>
+            <p className="text-white text-sm font-thin">Sold: 0 Tickets</p>
+            <p className="text-white text-sm font-thin">Revenue: $0</p>
+            <p className="text-white text-sm font-thin">0 left</p>
           </div>
         </div>
         <div className="bg-[#14141A] rounded-xl p-4 flex flex-col justify-between">
           <div className="flex justify-between items-center">
-            <p className="text-white text-sm font-thin">Free: 1</p>
-            <p className="text-white text-sm font-thin">Paid: 1</p>
+            <p className="text-white text-sm font-thin">Free: {freeEvents.length}</p>
+            <p className="text-white text-sm font-thin">Paid: {paidEvents.length}</p>
           </div>
           <div className="flex flex-col justify-center items-center">
             <p className="text-white text-sm font-thin">Events</p>
-            <h1 className="text-3xl text-white font-semibold">2</h1>
-          </div>
-          <div className="flex gap-2 items-center hover:cursor-pointer hover:text-primary">
-            <p className="text-white text-xs font-thin">Sold: 20 Tickets</p>
-            <CiShare1 size={18} color="#ffffff" />
+            <h1 className="text-3xl text-white font-semibold">{myEvents.length}</h1>
           </div>
         </div>
         <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
           <p className="text-sm text-white/80">Ticket Revenue</p>
-          <h1 className="text-3xl text-white font-semibold">$4000</h1>
+          <h1 className="text-3xl text-white font-semibold">$0</h1>
         </div>
         <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
           <p className="text-sm text-white/80">Total Attendees</p>
-          <h1 className="text-3xl text-white font-semibold">452</h1>
+          <h1 className="text-3xl text-white font-semibold">0</h1>
         </div>
       </div>
 
-      {/* Middle Row - First div takes 3 columns, second div takes 2 columns */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-4">
           <ResponsiveContainer width="100%" height={400}>
@@ -114,7 +145,6 @@ const AnalyticsHome = (props: Props) => {
         </div>
       </div>
 
-      {/* Bottom Row - First div takes 3 columns, others take 1 column each */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-4 flex flex-col gap-4">
           <div className="flex gap-4 items-center">
@@ -127,25 +157,25 @@ const AnalyticsHome = (props: Props) => {
             <div className="flex items-center justify-between gap-4">
               <div className="flex gap-4 items-center">
                 <FaSquare size={16} color="#FF6932" />
-                <p className="text-white text-sm font-thin">Available: 300</p>
+                <p className="text-white text-sm font-thin">Available: 0</p>
               </div>
               <div className="bg-[#5B5959] h-4 rounded-3xl flex-1">
-                <div className="bg-primary h-full rounded-3xl w-[75%]"></div>
+                <div className="bg-primary h-full rounded-3xl w-[0%]"></div>
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <div className="flex gap-4 items-center">
                 <FaSquare size={16} color="#FFFFFF" />
-                <p className="text-white text-sm font-thin">Minted: 100</p>
+                <p className="text-white text-sm font-thin">Minted: 0</p>
               </div>
               <div className="bg-[#5B5959] h-4 rounded-3xl flex-1">
-                <div className="bg-white h-full rounded-3xl w-[25%]"></div>
+                <div className="bg-white h-full rounded-3xl w-[0%]"></div>
               </div>
             </div>
             <div className="flex items-center justify-between gap-4">
               <div className="flex gap-4 items-center">
                 <FaSquare size={16} color="#5B5959" />
-                <p className="text-white text-sm font-thin">Total: 400</p>
+                <p className="text-white text-sm font-thin">Total: 0</p>
               </div>
             </div>
           </div>
@@ -155,14 +185,14 @@ const AnalyticsHome = (props: Props) => {
             <IoIosPeople size={30} color="#ffffff" />
           </div>
           <p className="text-sm text-white/80">Delegates</p>
-          <h1 className="text-white text-3xl">100</h1>
+          <h1 className="text-white text-3xl">0</h1>
         </div>
         <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
           <div className="flex justify-center items-center p-3 border border-white border-dashed rounded-full mb-1">
             <TbMessageCircleUser size={30} color="#ffffff" />
           </div>
           <p className="text-sm text-white/80">Feedbacks</p>
-          <h1 className="text-white text-3xl">20</h1>
+          <h1 className="text-white text-3xl">0</h1>
         </div>
       </div>
     </div>
