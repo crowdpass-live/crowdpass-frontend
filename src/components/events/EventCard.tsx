@@ -10,7 +10,7 @@ const EventCard = ({ eachEvent }: any) => {
     start_date,
     description,
     ticket_price,
-    image
+    image,
   } = eachEvent;
   console.log(eachEvent)
   const response = epochToDatetime(`${start_date}`);

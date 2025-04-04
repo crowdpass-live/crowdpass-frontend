@@ -4,15 +4,20 @@ import { dummyEvents } from "@/components/events/dummyData";
 import MyEventCard from "@/components/my-event/EventCard";
 import SuggestionsSection from "@/components/my-event/SuggestionsSection";
 import { Button } from "@/components/ui/button";
-import React, { useState } from "react";
+import { StarknetContext } from "@/contexts/UserContext";
+import useGetEventsWithTickets from "@/hooks/read-hooks/useGetUserEvent";
+import useIsTicketHolder from "@/hooks/read-hooks/useIsTicketHolder";
+import React, { useContext, useState } from "react";
 import { Tab, TabList, Tabs } from "react-tabs";
+import { stark } from "starknet";
 
 type Props = {};
 
 const page = (props: Props) => {
+  const {address} = useContext(StarknetContext)
   const [tabIndex, setTabIndex] = useState(0);
   const detailsTabs = ["Upcoming", "Past", "Bookmarked"];
-
+  const { events } = useGetEventsWithTickets(address as `0x${string}`)
   return (
     <div className="mb-10">
       <Tabs selectedIndex={tabIndex} onSelect={(index) => setTabIndex(index)}>
@@ -30,8 +35,8 @@ const page = (props: Props) => {
           </TabList>
         </div>
         <div className="flex flex-wrap justify-start gap-5 items-center">
-        {dummyEvents.length > 0 ? (
-              dummyEvents.map((eachEvent: any, index: any) => (
+        {events.length > 0 ? (
+              events.map((eachEvent: any, index: any) => (
                 <MyEventCard eachEvent={eachEvent} key={index} />
               ))
             ) : (
