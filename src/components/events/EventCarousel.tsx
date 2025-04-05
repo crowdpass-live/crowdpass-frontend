@@ -31,7 +31,7 @@ const EventCarousel = (props: Props) => {
       },
   };
   return (
-    <div className="slider-container ">
+    <div className="slider-container flex gap-10">
        {isLoading && (
         <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
           <HashLoader
@@ -44,10 +44,10 @@ const EventCarousel = (props: Props) => {
           <div className="text-white text-2xl">Fetching Event Details...</div>
         </div>
       )}
-      <Slider {...settings}>
+      <Slider {...settings} className="flex">
         {events.map((event, index) => (
           <a key={index} className="mx-6" href={`/events/${event.id}`}>
-            <img src={event?.image} alt="carousel-image"  className="h-24 w-[200px]  md:h-60 md:w-[400px]  lg:h-80 lg:w-[650px] mb-3 rounded-xl"/>
+            <img src={event?.image} alt="carousel-image"  className="h-24 w-[200px] md:h-60 md:w-[400px] lg:h-80 lg:w-[650px] mb-3 rounded-xl"/>
           </a>
         ))}
       </Slider>
