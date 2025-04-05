@@ -15,7 +15,7 @@ const page = () => {
   const eventDetails = useGetEventById(Number(params.id));
 
   const { attributes, description, paid, ticket_price }: any = eventDetails.event;
-
+  console.log(eventDetails.event)
   return (
     <div>
       <EventDetails eventDetails={eventDetails} id={params.id} />
