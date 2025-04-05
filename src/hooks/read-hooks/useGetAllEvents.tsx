@@ -13,24 +13,21 @@ const useGetAllEvents = () => {
     abi: eventAbi,
     args: [],
     address: contractAddr,
-    watch: true,
+    watch: false,
   });
 
-  // Function to fetch data from the server and merge it with the existing object
   async function fetchAndMergeEventData(event: { uri: string, id: any }) {
     try {
       const response = await fetch(event.uri);
       const uriData = await response.json();
       const backData = uriData.data
-      // Merge the fetched data with the existing event object
       return { ...event, ...backData};
     } catch (error) {
       console.error(`Failed to fetch data for event ${event.id}:`, error);
-      return event; // Return the original event if the fetch fails
+      return event; 
     }
   }
 
-  // Process the events array when data changes
   useEffect(() => {
     const processEvents = async () => {
       if (!Array.isArray(data) || data.length === 0 || isLoading || isError) return;
