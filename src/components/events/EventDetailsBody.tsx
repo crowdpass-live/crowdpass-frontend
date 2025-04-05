@@ -1,6 +1,6 @@
 import { MapPin } from "lucide-react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 
 const EventDetailsBody = ({ eventDetails }: any) => {
   const { event }: any = eventDetails;

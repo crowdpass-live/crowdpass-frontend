@@ -9,15 +9,29 @@ import { MapPin } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React from "react";
+import HashLoader from "react-spinners/HashLoader";
 
 const page = () => {
   const params = useParams<{ id: string }>();
   const eventDetails = useGetEventById(Number(params.id));
 
-  const { attributes, description, paid, ticket_price }: any = eventDetails.event;
-  console.log(eventDetails.event)
+  const { isLoading: loading }: any = eventDetails
+  const { event }: any = eventDetails;
+
   return (
     <div>
+       {loading && (
+        <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+          <HashLoader
+              color={"#FF6932"}
+              loading={loading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          <div className="text-white text-2xl">Fetching Event Details...</div>
+        </div>
+      )}
       <EventDetails eventDetails={eventDetails} id={params.id} />
       <div className="bg-[#CBCACF66] max-w-[1280px] pt-28 -mt-24 mb-10">
         <div className="mx-4 lg:mx-28">
@@ -29,7 +43,7 @@ const page = () => {
           <div
             className="prose prose-invert max-w-full text-white my-6 md:basis-4/6"
             dangerouslySetInnerHTML={{
-              __html: description,
+              __html: event?.description,
             }}
           />{" "}
           <hr className="text-white" />
@@ -51,29 +65,11 @@ const page = () => {
                 <div className="bg-[#14141A] p-2 rounded-xl">
                   <MapPin size={30} color="#FF6932" />
                 </div>
-                {attributes[3].value || "Location not specified"}
-              </div>
-              <div
-                className={`${
-                  paid ? "flex" : "hidden"
-                }  mt-1 gap-3 flex-grow items-center justify-center flex-wrap`}
-              >
-                {/* {ticketsType.map(
-                  (
-                    { type, price }: { type: string; price: number },
-                    index: React.Key | null | undefined
-                  ) => (
-                    <EventTicketPrice
-                      key={index}
-                      price={price}
-                      ticketType={type}
-                    />
-                  )
-                )} */}
-              </div>
+                {event?.attributes[3].value || "Location not specified"}
+                </div>
             </div>
             <div className="lg:w-[600px] lg:mt-8">
-              <MyEventTab ticket_price={ticket_price} />
+              <MyEventTab ticket_price={event?.ticket_price} />
             </div>
           </div>
         </div>
