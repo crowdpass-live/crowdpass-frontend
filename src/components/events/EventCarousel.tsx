@@ -3,11 +3,14 @@ import React, { act } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
+import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
+import HashLoader from "react-spinners/HashLoader";
 
 type Props = {};
 
 const EventCarousel = (props: Props) => {
-  const images = ["https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel1_cnsop2.png", "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel2_qgonb8.png","https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel1_cnsop2.png","https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel2_qgonb8.png","https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/carousel1_cnsop2.png",];
+  const { events, isLoading } = useGetAllEvents();
+
   const settings = {
     className: "center",
     centerMode: true,
@@ -29,11 +32,23 @@ const EventCarousel = (props: Props) => {
   };
   return (
     <div className="slider-container ">
+       {isLoading && (
+        <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+          <HashLoader
+              color={"#FF6932"}
+              loading={isLoading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          <div className="text-white text-2xl">Fetching Event Details...</div>
+        </div>
+      )}
       <Slider {...settings}>
-        {images.map((image, index) => (
-          <div key={index} className="mx-6">
-            <img src={image} alt="carousel-image"  className="h-24 w-[200px]  md:h-60 md:w-[400px]  lg:h-80 lg:w-[650px] mb-3 rounded-xl"/>
-          </div>
+        {events.map((event, index) => (
+          <a key={index} className="mx-6" href={`/events/${event.id}`}>
+            <img src={event?.image} alt="carousel-image"  className="h-24 w-[200px]  md:h-60 md:w-[400px]  lg:h-80 lg:w-[650px] mb-3 rounded-xl"/>
+          </a>
         ))}
       </Slider>
     </div>

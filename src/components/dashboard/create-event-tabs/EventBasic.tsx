@@ -1,19 +1,17 @@
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import React, { useState, useMemo } from "react";
-import 'react-quill/dist/quill.snow.css';
+import "react-quill/dist/quill.snow.css";
 
-const ReactQuill = dynamic(() => import('react-quill'), {
-  ssr: false
+const ReactQuill = dynamic(() => import("react-quill"), {
+  ssr: false,
 });
 
 const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
-  const [localEventData, setLocalEventData] = useState({...eventData});
-  
-  const handleInputChange = (
-    e: any
-  ) => {
+  const [localEventData, setLocalEventData] = useState({ ...eventData });
+
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
 
     setLocalEventData((prevData: any) => ({
@@ -31,12 +29,12 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) { 
+    if (file) {
       setLocalEventData((prevData: any) => ({
         ...prevData,
         eventImage: file,
       }));
-      
+
       try {
         const formData = new FormData();
         formData.append("file", file);
@@ -52,7 +50,7 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
           }
         );
         const cid = response.data.IpfsHash;
-        
+
         setLocalEventData((prevData: any) => ({
           ...prevData,
           eventUri: `${cid}`,
@@ -79,7 +77,7 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
   };
 
   return (
-    <div className="w-full md:w-[655px] h-full overflow-y-auto flex flex-col gap-8">
+    <div className="w-full md:max-w-[655px] h-full overflow-y-auto flex flex-col gap-8">
       <div className="flex w-full h-32 md:h-[210px] bg-add-image justify-center items-center relative">
         {localEventData.eventImage ? (
           <img
@@ -115,7 +113,7 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
       <div className="flex flex-col md:flex-row gap-10 w-full">
         <div className="flex flex-col gap-4 w-full md:w-[50%]">
           <h1 className="raleway font-semibold text-xl text-white">
-            Event Organizer
+            Organizer's Name
           </h1>
           <input
             type="text"
@@ -144,16 +142,16 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
         <h1 className="raleway font-semibold text-xl text-white">
           Event Description
         </h1>
-        <ReactQuill 
-          theme="snow" 
+        <ReactQuill
+          theme="snow"
           value={localEventData.eventDescription || ""}
           onChange={handleDescriptionChange}
           className="bg-transparent text-white/70"
         />
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-10 ">
         <Button
-          className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-5 md:py-7 text-xl mt-4 font-semibold"
+          className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-5 md:py-7 text-xl font-semibold"
           onClick={handleNextClick}
           disabled={!isFormValid}
         >

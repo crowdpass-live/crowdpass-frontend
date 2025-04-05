@@ -195,7 +195,7 @@ const AnalyticsHome = (props: Props) => {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex gap-4 items-center">
-                <FaSquare size={16} color="#FF642" />
+                <FaSquare size={16} color="#ff6932" />
                 <p className="text-white text-sm font-thin">Available: 0</p>
               </div>
               <div className="bg-[#5B5959] h-4 rounded-3xl flex-1">

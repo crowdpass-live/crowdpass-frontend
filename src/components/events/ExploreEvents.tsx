@@ -43,9 +43,6 @@ const ExploreEvents = () => {
     searchQuery: "",
   });
 
-  console.log(events);
-  console.log(filterState);
-
   const filteredEvents = getFilteredEvents(events || [], tabIndex, filterState);
 
   const paginatedEvents = filteredEvents.slice(
