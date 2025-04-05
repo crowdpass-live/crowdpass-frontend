@@ -33,7 +33,7 @@ const page = () => {
         </div>
       )}
       <EventDetails eventDetails={eventDetails} id={params.id} />
-      <div className="bg-[#CBCACF66] max-w-[1280px] pt-28 -mt-24 mb-10">
+      <div className="bg-[#CBCACF66] max-w-[1280px] pt-40 -mt-32 mb-10">
         <div className="mx-4 lg:mx-28">
           <hr className="text-white " />
           <h1 className="raleway text-2xl md:text-4xl text-white font-semibold my-4">
@@ -69,7 +69,7 @@ const page = () => {
                 </div>
             </div>
             <div className="lg:w-[600px] lg:mt-8">
-              <MyEventTab ticket_price={event?.ticket_price} />
+              <MyEventTab />
             </div>
           </div>
         </div>

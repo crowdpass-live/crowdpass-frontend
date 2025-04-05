@@ -78,7 +78,7 @@ const MyEventCard = ({ eachEvent }: any) => {
         <div className="flex justify-between items-center w-full">
           <div className="flex items-center">
             <FaLocationDot color="#fff" />
-            {/* <p className="text-xs text-white"> {attributes[3].value || "Location not specified"}</p> */}
+            <p className="text-xs text-white"> {attributes[3].value || "Location not specified"}</p>
           </div>
           <div></div>
         </div>

@@ -14,7 +14,7 @@ const useGetEventById = (eventId: number) => {
     args: [cairo.uint256(eventId)],
     abi: eventAbi,
     address: contractAddr,
-    watch: true,
+    watch: false,
   });
 
   async function fetchAndMergeEventData(event: { uri: string, id: any }) {

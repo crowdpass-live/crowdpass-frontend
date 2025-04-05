@@ -12,7 +12,7 @@ const useIsEventAttendee = (eventId: number, address: `0x${string}`) => {
     args: [cairo.uint256(eventId), address],
     abi: eventAbi,
     address: contractAddr,
-    watch: true,
+    watch: false,
   });
 
   return { data, isError, isLoading, error };
