@@ -20,16 +20,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import useIsTicketHolder from "@/hooks/read-hooks/useIsTicketHolder";
 
 const EventDetails = ({ eventDetails, id }: any) => {
+  const { address, isLoading } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
   const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const { data } = useIsTicketHolder(id, address as `0x${string}`);
 
   const { event }: any = eventDetails;
-  const { isLoading }: any = useContext(StarknetContext);
   const response = epochToDatetime(`${Number(event?.start_date)}`);
 
   useEffect(() => {
@@ -228,18 +230,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
               >
                 <Share2 size={40} fill="#ffffff" color="#ffffff" />
               </Button>
-              {/* <Bookmark size={40} fill="#ffffff" color="#ffffff" /> */}
             </div>
-            {Number(event?.ticket_price) > 0 ? (
-              <Button
-                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
-                onClick={async () => {
-                  await handlePurchase(id, Number(event?.ticket_price));
-                }}
-              >
-                Register
-              </Button>
-            ) : (
+
+            {data === false && (
               <Button
                 className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
                 onClick={async () => {

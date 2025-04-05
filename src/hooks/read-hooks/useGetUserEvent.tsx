@@ -35,7 +35,6 @@ const useGetUserEvents = (address: `0x${string}`) => {
       setIsProcessing(true);
       const userEventsList: any[] = [];
 
-      // Batched calls (not real multicall)
       const batchSize = 10;
 
       for (let i = 0; i < allEvents.length; i += batchSize) {
