@@ -12,7 +12,7 @@ const useGetOrganizerCount = (eventId: number) => {
     args: [cairo.uint256(eventId)],
     abi: eventAbi,
     address: contractAddr,
-    watch: true,
+    watch: false,
   });
 
   return { data, isError, isLoading, error };
