@@ -26,13 +26,7 @@ const GrantOrganizerRole = () => {
     setId(parseInt(e.target.value));
   };
 
-  const tableData = [
-    {
-      id: 1,
-      email: "sogobanwo@gmail.com",
-      walletAddress: "0x045ERM4989756553795783NMDSLO3900049CAB",
-    },
-  ];
+  const tableData: any[] = [];
 
   function normalizeHex(hexString: string) {
     hexString = hexString.startsWith("0x") ? hexString.slice(2) : hexString;

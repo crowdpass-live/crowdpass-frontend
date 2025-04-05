@@ -7,6 +7,8 @@ import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import useCheckIn from "@/hooks/write-hooks/useCheckIn";
 import { useParams } from "next/navigation";
+import useGetEventAttendance from "@/hooks/read-hooks/useGetEventAttendance";
+import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 type Props = {
   id: number
@@ -16,6 +18,12 @@ const EventCheckin = (props: Props) => {
   const params = useParams<{ id: string }>();
   const checkUserIn = useCheckIn()
   const [checkInEmail, setCheckInEmail] = useState("")
+
+  console.log(params.id)
+  const {data: attendance} = useGetEventAttendance(Number(params.id))
+  
+  const {data: available} = useGetAvailableTicket(Number(params.id))
+  
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -113,15 +121,15 @@ const EventCheckin = (props: Props) => {
         <div className="flex flex-col gap-4 w-1/5">
           <div className="bg-[#14141A] rounded-xl w-full p-5 flex flex-col items-center justify-center border border-deep-blue">
             <p className="text-xs xl:text-sm text-white/80 text-center">Total Registrations</p>
-            <h1 className="text-3xl text-white font-medium">1800</h1>
+            <h1 className="text-3xl text-white font-medium">0</h1>
           </div>
           <div className="bg-[#14141A] rounded-xl w-full p-5 flex flex-col items-center justify-center border border-deep-blue">
             <p className="text-xs xl:text-sm text-white/80 text-center">Total Checkins</p>
-            <h1 className="text-3xl text-white font-medium">1222</h1>
+            <h1 className="text-3xl text-white font-medium">{Number(attendance)}</h1>
           </div>
           <div className="bg-[#14141A] rounded-xl w-full p-5 flex flex-col items-center justify-center border border-deep-blue">
             <p className="text-xs xl:text-sm text-white/80 text-center">Available Tickets</p>
-            <h1 className="text-3xl text-white font-medium">200</h1>
+            <h1 className="text-3xl text-white font-medium">{Number(available)}</h1>
           </div>
         </div>
       </div>
