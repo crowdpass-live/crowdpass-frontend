@@ -42,7 +42,6 @@ const useBuyTicket = () => {
             entrypoint: "purchase_ticket",
             calldata: CallData.compile([cairo.uint256(event_id)]),
           };
-          console.log("got here 1");
 
           const { resourceBounds: estimatedResourceBounds } =
             await account.estimateInvokeFee(call, {

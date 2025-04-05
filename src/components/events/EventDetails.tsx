@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import useIsTicketHolder from "@/hooks/read-hooks/useIsTicketHolder";
+import useClaimRefund from "@/hooks/write-hooks/useClaimRefund";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading } = useContext(StarknetContext);
@@ -33,6 +34,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
   const { event }: any = eventDetails;
   const response = epochToDatetime(`${Number(event?.start_date)}`);
+  const refund = useClaimRefund()
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -240,6 +242,17 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 }}
               >
                 Register
+              </Button>
+            )}
+            {data === true && (
+              <Button
+                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center "
+                disabled
+                onClick={async () => {
+                  await refund(id, address as `0x${string}`);
+                }}
+              >
+                Reclaim Refund
               </Button>
             )}
           </div>

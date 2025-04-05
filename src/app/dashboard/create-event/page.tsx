@@ -8,7 +8,6 @@ import TicketingOptions from "@/components/dashboard/create-event-tabs/Ticketing
 import Review from "@/components/dashboard/create-event-tabs/Review";
 import useCreateEvent from "@/hooks/write-hooks/useCreateEvent";
 import { StarknetContext } from "@/contexts/UserContext";
-import HashLoader from "react-spinners/HashLoader";
 
 const page = () => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -26,7 +25,7 @@ const page = () => {
     ticketQuantity: "",
     ticketPrice: "",
     eventAcronym: "",
-    eventSchedule: [] as any[],
+    eventSchedule: [] as any[]
   });
   const createEvent = useCreateEvent();
   const { isLoading }: any = useContext(StarknetContext);
@@ -45,8 +44,8 @@ const page = () => {
       eventData.eventStartDate,
       eventData.eventEndDate,
       Number(eventData.ticketQuantity),
-      Number(eventData.ticketPrice)
-    );
+      Number(eventData.ticketPrice),
+    )
   };
 
   const ActiveStepComponent = ({ setActiveStep }: any) => {
@@ -76,13 +75,7 @@ const page = () => {
           />
         );
       case 3:
-        return (
-          <Review
-            setActiveStep={setActiveStep}
-            eventData={eventData}
-            handleCreateEvent={handleCreateEvent}
-          />
-        );
+        return <Review setActiveStep={setActiveStep} eventData={eventData} handleCreateEvent={handleCreateEvent} />;
       default:
         return (
           <EventBasic
@@ -100,20 +93,17 @@ const page = () => {
         Create Events
       </h1>
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
-          <HashLoader
-            color={"#FF6932"}
-            loading={isLoading}
-            size={100}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="text-white text-2xl">Creating your event...</div>
         </div>
       )}
-      <div className="bg-[#14141A] rounded-xl w-full p-6 md:p-10 flex  gap-10 justify-evenly">
+      <div className="flex w-full justify-center">
+
+      
+      <div className="bg-[#14141A] rounded-xl w-full h-full p-6 md:p-10 flex gap-20">
         <CustomStepper activeStep={activeStep} />
         <ActiveStepComponent setActiveStep={setActiveStep} />
+      </div>
       </div>
     </>
   );

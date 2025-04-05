@@ -19,7 +19,6 @@ const EventCheckin = (props: Props) => {
   const checkUserIn = useCheckIn()
   const [checkInEmail, setCheckInEmail] = useState("")
 
-  console.log(params.id)
   const {data: attendance} = useGetEventAttendance(Number(params.id))
   
   const {data: available} = useGetAvailableTicket(Number(params.id))

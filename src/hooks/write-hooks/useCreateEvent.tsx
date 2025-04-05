@@ -58,8 +58,6 @@ const useCreateEvent = () => {
               });
 
               const { link } = await hashRes.json();
-              
-              console.log(link)
 
               try {
                 const call = {

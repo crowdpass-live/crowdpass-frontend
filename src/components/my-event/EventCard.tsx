@@ -51,8 +51,6 @@ const MyEventCard = ({ eachEvent }: any) => {
   const { id, image, name, start_date, attributes } = eachEvent;
   const response = epochToDatetime(`${Number(start_date)}`);
 
-  console.log(start_date);
-
   return (
     <Card className="flex max-w-[628px] flex-col md:flex-row flex-grow md:h-48 bg-deep-blue rounded-r-lg rounded-tl-lg md:pr-5 border-0">
       <img
