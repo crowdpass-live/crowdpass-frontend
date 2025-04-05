@@ -53,7 +53,7 @@ const page = (props: Props) => {
             )}
         </div>
       </Tabs>
-      {/* <SuggestionsSection /> */}
+      <SuggestionsSection />
     </div>
   );
 };
