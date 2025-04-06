@@ -17,6 +17,7 @@ import FilterEvent from "./FilterEvent";
 import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
 import HashLoader from "react-spinners/HashLoader";
 import { getFilteredEvents } from "./getFilteredEvent";
+import NoEventsMessage from "./NoEventMessage";
 
 type FilterState = {
   categories: string[];
@@ -128,7 +129,13 @@ const ExploreEvents = () => {
                 </motion.div>
               ))
             ) : (
-              <p className="text-white">No events to show</p>
+              <NoEventsMessage
+                message={`No ${tabs[
+                  tabIndex
+                ].toLowerCase()} events to show`}
+                actionText="create your own event"
+                actionLink="/dashboard/create-event"
+              />
             )}
           </AnimatePresence>
         </div>
@@ -185,7 +192,5 @@ const ExploreEvents = () => {
     </Tabs>
   );
 };
-
-
 
 export default ExploreEvents;
