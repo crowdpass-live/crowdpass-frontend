@@ -12,6 +12,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa6";
 import { FaDotCircle, FaTimes } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { CiLogout } from "react-icons/ci";
 
 const Sidebar = ({ isOpen, closeSidebar }: any) => {
   const [analyticsOpen, setAnalyticsOpen] = React.useState(false);
@@ -61,15 +62,18 @@ const Sidebar = ({ isOpen, closeSidebar }: any) => {
         closeSidebar();
       }
     };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [isOpen, closeSidebar]);
 
   // Animation variants for mobile sidebar
   const sidebarVariants = {
     open: { x: 0, transition: { type: "spring", stiffness: 300, damping: 30 } },
-    closed: { x: '-100%', transition: { type: "spring", stiffness: 300, damping: 30 } }
+    closed: {
+      x: "-100%",
+      transition: { type: "spring", stiffness: 300, damping: 30 },
+    },
   };
 
   // If clicking a link in mobile view, close the sidebar
@@ -83,7 +87,7 @@ const Sidebar = ({ isOpen, closeSidebar }: any) => {
     <>
       {/* Desktop Sidebar */}
       <div className="hidden lg:block h-screen w-[20%] fixed bg-deep-blue">
-        <div className="flex flex-col py-20 justify-between h-screen">
+        <div className="flex flex-col py-10 justify-between h-screen">
           <div className="flex flex-col gap-10">
             <div className="my-2 mx-6 flex items-center">
               <Link href="/" className="flex items-center">
@@ -124,43 +128,43 @@ const Sidebar = ({ isOpen, closeSidebar }: any) => {
                     )}
                   </div>
                 </div>
-                {analyticsOpen && dropDownLink.sublinks.map((menu, index) => (
-                  <div className="ml-10" key={index}>
-                    <SidebarItem menu={menu} pathname={pathname} />
-                  </div>
-                ))}
+                {analyticsOpen &&
+                  dropDownLink.sublinks.map((menu, index) => (
+                    <div className="ml-10" key={index}>
+                      <SidebarItem menu={menu} pathname={pathname} />
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-center gap-3 mx-3">
-            <hr className="h-px w-full mx-10 border-t border-gray-700" />
-            <p>
-              <Button
-                className="flex gap-2 bg-transparent py-6"
-                onClick={() => {
-                  disconnect();
-                }}
-              >
-                <IoLogOut color="#fff" size={30} />
-                <p className="text-white ml-2 text-lg px-3 font-semibold">
-                  LogOut
-                </p>
-              </Button>
-            </p>
+          <div className="mx-4">
+          <hr className="h-px w-full my-4 border-t border-white" />
+          <div
+            className={`py-4 px-6 mt-2 flex items-center rounded-xl hover:bg-light-black hover:text-primary`}
+            onClick={() => disconnect()}
+          >
+            <div>
+              {" "}
+              <CiLogout color="#fff" size={24} />
+            </div>
+            <div className="ml-3 lg:text-lg xl:text-xl font-semibold raleway text-white">
+              LogOut
+            </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Mobile Sidebar Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
           onClick={closeSidebar}
         />
       )}
 
       {/* Mobile Sidebar */}
-      <motion.div 
+      <motion.div
         className="lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-deep-blue shadow-lg overflow-y-auto"
         variants={sidebarVariants}
         initial="closed"
@@ -215,16 +219,17 @@ const Sidebar = ({ isOpen, closeSidebar }: any) => {
                   )}
                 </div>
               </div>
-              {analyticsOpen && dropDownLink.sublinks.map((menu, index) => (
-                <div className="ml-8" key={index} onClick={handleLinkClick}>
-                  <SidebarItem menu={menu} pathname={pathname} />
-                </div>
-              ))}
+              {analyticsOpen &&
+                dropDownLink.sublinks.map((menu, index) => (
+                  <div className="ml-8" key={index} onClick={handleLinkClick}>
+                    <SidebarItem menu={menu} pathname={pathname} />
+                  </div>
+                ))}
             </div>
           </div>
 
           <div className="mt-auto px-4">
-            <hr className="h-px w-full my-4 border-t border-gray-700" />
+            <hr className="h-px w-full my-4 border-t border-white" />
             <Button
               className="flex w-full gap-2 bg-transparent py-4 justify-center items-center"
               onClick={() => {
@@ -233,9 +238,7 @@ const Sidebar = ({ isOpen, closeSidebar }: any) => {
               }}
             >
               <IoLogOut color="#fff" size={24} />
-              <p className="text-white text-lg font-semibold">
-                LogOut
-              </p>
+              <p className="text-white text-lg font-semibold">LogOut</p>
             </Button>
           </div>
         </div>

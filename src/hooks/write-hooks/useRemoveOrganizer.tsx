@@ -59,7 +59,7 @@ const useRemoveOrganizer = () => {
                 return "success";
               } catch (error) {
                 console.error(error);
-                toast.error(`${error}`);
+                toast.error(`Error removing organizer, Try again`);
           
                 setIsLoading(false);
               }

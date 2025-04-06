@@ -57,8 +57,7 @@ const useCancelEvent = () => {
                 return "success";
               } catch (error) {
                 console.error(error);
-                toast.error(`${error}`);
-          
+                toast.error(`Error Cancelling ticket, Try again`);
                 setIsLoading(false);
               }
     
