@@ -17,11 +17,13 @@ export const getFilteredEvents = (
     // Tab-based filtering
     switch (tabIndex) {
       case 0:
-        filteredData = data;
+        filteredData = data.filter(
+          (event: any) => Number(event.start_date) > Date.now() / 1000
+        );
         break;
       case 1:
         filteredData = data.filter(
-          (event: any) => Number(event.start_date) > Date.now() / 1000
+          (event: any) => Number(event.start_date) < Date.now() / 1000 && Number(event.end_date) > Date.now() / 1000
         );
         break;
       case 2:

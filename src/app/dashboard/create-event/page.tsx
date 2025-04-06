@@ -8,6 +8,7 @@ import TicketingOptions from "@/components/dashboard/create-event-tabs/Ticketing
 import Review from "@/components/dashboard/create-event-tabs/Review";
 import useCreateEvent from "@/hooks/write-hooks/useCreateEvent";
 import { StarknetContext } from "@/contexts/UserContext";
+import HashLoader from "react-spinners/HashLoader";
 
 const page = () => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -93,10 +94,19 @@ const page = () => {
         Create Events
       </h1>
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="text-white text-2xl">Creating your event...</div>
-        </div>
-      )}
+          <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+            <HashLoader
+              color={"#FF6932"}
+              loading={isLoading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+            <div className="text-white text-2xl">
+              Perfroming your operation...
+            </div>
+          </div>
+        )}
       <div className="flex w-full justify-center">
 
       

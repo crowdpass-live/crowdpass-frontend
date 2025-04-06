@@ -64,7 +64,7 @@ const MyEventCard = ({ eachEvent }: any) => {
         <div className="flex flex-col">
           <Link
             href={`/my-events/${id}`}
-            className="text-2xl font-normal text-white hover:underline hover:text-primary"
+            className="text-2xl font-normal text-white hover:underline hover:text-primary line-clamp-1"
           >
             {name}
           </Link>

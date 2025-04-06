@@ -1,5 +1,6 @@
 "use client";
 
+import { getFilteredEvents } from "@/components/events/getFilteredEvent";
 import MyEventCard from "@/components/my-event/EventCard";
 import SuggestionsSection from "@/components/my-event/SuggestionsSection";
 import { StarknetContext } from "@/contexts/UserContext";
@@ -8,13 +9,31 @@ import React, { useContext, useState } from "react";
 import HashLoader from "react-spinners/HashLoader";
 import { Tab, TabList, Tabs } from "react-tabs";
 
-type Props = {};
+type FilterState = {
+  categories: string[];
+  locations: string[];
+  payments: string[];
+  startDate: string;
+  endDate: string;
+  searchQuery: string;
+};
 
-const page = (props: Props) => {
+const page = () => {
   const {address, isLoading} = useContext(StarknetContext)
   const [tabIndex, setTabIndex] = useState(0);
-  const detailsTabs = ["Upcoming", "Past", "Bookmarked"];
+  const detailsTabs = ["Upcoming", "Ongoing", "Past"];
   const { userEvents } = useGetUserEvents(address as `0x${string}`)
+//filter state
+const [filterState, setFilterState] = useState<FilterState>({
+  categories: [],
+  locations: [],
+  payments: [],
+  startDate: "",
+  endDate: "",
+  searchQuery: "",
+});
+  const filteredEvents = getFilteredEvents(userEvents || [], tabIndex, filterState);
+
   return (
     <div className="mb-10">
        {isLoading && (
@@ -44,8 +63,8 @@ const page = (props: Props) => {
           </TabList>
         </div>
         <div className="flex flex-wrap justify-start gap-5 items-center">
-        {userEvents.length > 0 ? (
-              userEvents.map((eachEvent: any, index: any) => (
+        {filteredEvents.length > 0 ? (
+              filteredEvents.map((eachEvent: any, index: any) => (
                 <MyEventCard eachEvent={eachEvent} key={index} />
               ))
             ) : (
