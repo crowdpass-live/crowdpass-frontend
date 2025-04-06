@@ -59,7 +59,7 @@ const useCollectEventPayout = () => {
                 return "success";
               } catch (error) {
                 console.error(error);
-                toast.error(`${error}`);
+                toast.error(`Error collecting payout, Try again`);
           
                 setIsLoading(false);
               }

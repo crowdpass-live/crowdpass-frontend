@@ -71,7 +71,7 @@ const useBuyTicket = () => {
           return "success";
         } catch (error) {
           console.error(error);
-          toast.error(`${error}`);
+          toast.error(`Error purchasing ticket, Try again`);
 
           setIsLoading(false);
         }

@@ -94,7 +94,7 @@ const useUpdateEvent = () => {
                 return "success";
               } catch (error) {
                 console.error(error);
-                toast.error(`${error}`);
+                toast.error(`Error updating event, Try again`);
           
                 setIsLoading(false);
               }

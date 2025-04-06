@@ -66,7 +66,7 @@ const AnalyticsHome = (props: Props) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4 p-8">
       {isLoading && (
         <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
           <HashLoader
@@ -82,7 +82,7 @@ const AnalyticsHome = (props: Props) => {
         </div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-2 p-4">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-2 p-8">
           <h1 className="text-base xl:text-2xl text-white font-semibold raleway">Daily Ticket Count</h1>
           <div className="bg-[#5B5959] h-3 rounded-3xl w-full mt-2">
             <div className="bg-primary h-full rounded-3xl w-[0%]"></div>
@@ -93,7 +93,7 @@ const AnalyticsHome = (props: Props) => {
             <p className="text-white text-sm font-thin">{paidEvents.reduce((sum, event) => sum + Number(event.tickets_left), 0)} left</p>
           </div>
         </div>
-        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col justify-between">
+        <div className="bg-[#14141A] rounded-xl p-8 flex flex-col justify-between">
           <div className="flex justify-between items-center">
             <p className="text-white text-sm font-thin">Free: {freeEvents.length}</p>
             <p className="text-white text-sm font-thin">Paid: {paidEvents.length}</p>
@@ -103,18 +103,18 @@ const AnalyticsHome = (props: Props) => {
             <h1 className="text-3xl text-white font-semibold">{myEvents.length}</h1>
           </div>
         </div>
-        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-8 flex flex-col items-center justify-center">
           <p className="text-sm text-white/80">Ticket Revenue</p>
           <h1 className="text-3xl text-white font-semibold">${totalRevenue.toFixed(2)}</h1>
         </div>
-        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-8 flex flex-col items-center justify-center">
           <p className="text-sm text-white/80">Total Attendees</p>
           <h1 className="text-3xl text-white font-semibold">{myEvents.reduce((sum, event) => sum + (Number(event.total_tickets) - Number(event.tickets_left)), 0) || 0}</h1>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-4">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-8">
           <h1 className="text-white text-2xl raleway font-medium mb-4">Sales Analytics</h1>
           <div className="flex flex-col gap-6">
             <div className="flex items-center justify-between">
@@ -144,7 +144,7 @@ const AnalyticsHome = (props: Props) => {
             </p>
           </div>
         </div>
-        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-2 p-4 flex flex-col justify-start gap-10">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-2 p-8 flex flex-col justify-start gap-10">
           <h1 className="text-white text-3xl raleway font-medium">Event Stats</h1>
           <div className="flex justify-center">
             <ResponsiveContainer width="100%" height={300}>
@@ -185,7 +185,7 @@ const AnalyticsHome = (props: Props) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-4 flex flex-col gap-4">
+        <div className="bg-[#14141A] rounded-xl col-span-1 md:col-span-3 p-8 flex flex-col gap-4">
           <div className="flex gap-4 items-center">
             <h1 className="text-white text-2xl raleway font-medium">SPOK History</h1>
             <div className="flex justify-center items-center p-2 border border-white border-dashed rounded-full mb-1">
@@ -219,14 +219,14 @@ const AnalyticsHome = (props: Props) => {
             </div>
           </div>
         </div>
-        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-8 flex flex-col items-center justify-center">
           <div className="flex justify-center items-center p-3 border border-white border-dashed rounded-full mb-1">
             <IoIosPeople size={30} color="#ffffff" />
           </div>
           <p className="text-sm text-white/80">Delegates</p>
           <h1 className="text-white text-3xl">0</h1>
         </div>
-        <div className="bg-[#14141A] rounded-xl p-4 flex flex-col items-center justify-center">
+        <div className="bg-[#14141A] rounded-xl p-8 flex flex-col items-center justify-center">
           <div className="flex justify-center items-center p-3 border border-white border-dashed rounded-full mb-1">
             <TbMessageCircleUser size={30} color="#ffffff" />
           </div>

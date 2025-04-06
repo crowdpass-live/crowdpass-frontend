@@ -59,7 +59,7 @@ const useCheckIn = () => {
                 return "success";
               } catch (error) {
                 console.error(error);
-                toast.error(`${error}`);
+                toast.error(`Error Checking-in attendee, Try again`);
           
                 setIsLoading(false);
               }

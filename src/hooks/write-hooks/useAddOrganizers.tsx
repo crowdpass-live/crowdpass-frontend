@@ -58,8 +58,7 @@ const useAddOrganizer = () => {
                 return "success";
               } catch (error) {
                 console.error(error);
-                toast.error(`${error}`);
-          
+                toast.error(`Error adding Orgnaizer, Try again`);
                 setIsLoading(false);
               }
     

@@ -59,7 +59,7 @@ const useClaimRefund = () => {
                 return "success";
               } catch (error) {
                 console.error(error);
-                toast.error(`${error}`);
+                toast.error(`Error Claiming refund, Try again`);
           
                 setIsLoading(false);
               }
