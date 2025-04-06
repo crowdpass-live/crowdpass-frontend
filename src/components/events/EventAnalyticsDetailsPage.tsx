@@ -6,7 +6,7 @@ import EditableEventDetailsBody from "./EditableEventDetailsBody";
 
 
 const EventAnalyticsDetailsPage = ({ eventDetails, id }: any) => {
-  const [isEditing, setIsEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
   const [editedEvent, setEditedEvent] = useState({
     name: '',
     description: '',

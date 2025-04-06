@@ -26,7 +26,7 @@ export const detailsTabs = [
     },
   ];
   
-  export const tabs = ["All Events", "Upcoming", "Ended"];
+  export const tabs = ["Upcoming", "Ongoing", "Ended"];
 
   export const categories = [
   "Sports",
