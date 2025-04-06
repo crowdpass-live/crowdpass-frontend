@@ -1,14 +1,17 @@
-import React, { useContext } from "react";
+import React, { use, useContext } from "react";
 import EventPortfolioCard from "./EventPortfolioCard";
 import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
 import { StarknetContext } from "@/contexts/UserContext";
 import { num } from "starknet";
 import HashLoader from "react-spinners/HashLoader";
+import { useRouter } from "next/navigation";
 
 const EventPortfolio = () => {
   const { address } = useContext(StarknetContext);
 
   const { events, isLoading } = useGetAllEvents();
+
+  const navigate = useRouter();
 
   function normalizeHex(hexString: string) {
     hexString = hexString.startsWith("0x") ? hexString.slice(2) : hexString;
@@ -40,11 +43,25 @@ const EventPortfolio = () => {
             <div className="text-white text-2xl">Fetching Events...</div>
           </div>
         )}
-        <div className="flex justify-start flex-flow flex-wrap flex-grow gap-6">
-          {myEvents.map((eachEvent: any, index: any) => (
-            <EventPortfolioCard eachEvent={eachEvent} key={index} />
-          ))}
-        </div>
+        {!isLoading && myEvents.length < 1 ? (
+          <div className="w-full py-12 flex flex-col items-center justify-center text-center">
+            <div className="text-gray-400 text-lg mb-4">
+              You haven't created any events yet
+            </div>
+            <div className="text-gray-500 mb-6">
+              When you create events, they will appear here in your portfolio
+            </div>
+            <button className="bg-[#FF6932] hover:bg-[#e05a28] text-white py-2 px-6 rounded-lg transition-colors" onClick={() => {navigate.push("/create-event")}}>
+              Create Event
+            </button>
+          </div>
+        ) : (
+          <div className="flex justify-start flex-flow flex-wrap flex-grow gap-6">
+            {myEvents.map((eachEvent: any, index: any) => (
+              <EventPortfolioCard eachEvent={eachEvent} key={index} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

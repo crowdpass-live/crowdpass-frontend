@@ -65,7 +65,6 @@ const EventCarousel = () => {
     );
   }
 
-  // Don't render slider if there are no events or component isn't mounted
   if (!events?.length || !mounted) {
     return null;
   }
