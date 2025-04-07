@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Analytics } from '@vercel/analytics/next';
 import { Toaster } from "@/components/ui/sonner";
 import { LenisProvider } from "@/providers/LenisProvider";
 import dynamic from 'next/dynamic';
@@ -27,6 +28,7 @@ export default function RootLayout({
           </LenisProvider>
           </StarknetContextProvider>
         </StarknetProvider>
+        <Analytics />
       </body>
     </html>
   );
