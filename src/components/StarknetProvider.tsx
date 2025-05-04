@@ -9,14 +9,24 @@ import { constants } from "starknet";
 
 const policies: SessionPolicies = {
   contracts: {
-    "0x076278c1c8e8cfd6c8304681bcf3670c2dd6751bc12b4e1d7d717dc01f7aa130": {
-      name: "wordle",
-      description: "contains the logic for a wordle game on starknet",
+    "0x04db787da1e9a4ef771846c1884dc43c6c0b4b989139f4a28e7306ce249c55f7": {
+      name: "crowdpass",
+      description: "contains the logic for crowdpass event ticketing",
       methods: [
         {
-          name: "Start",
-          description: "starts a classic game",
-          entrypoint: "start"
+          name: "create_event",
+          description: "creates an event",
+          entrypoint: "create_event"
+        },
+        {
+          name: "update_event",
+          description: "updates event details",
+          entrypoint: "update_event"
+        },
+        {
+          name: "cancel_event",
+          description: "updates event details",
+          entrypoint: "update_event"
         }
       ]
     },
@@ -59,7 +69,7 @@ export function StarknetProvider({ children }: { children: React.ReactNode }) {
       autoConnect
       chains={[sepolia]}
       provider={provider}
-      connectors={[cartridgeConnector]}
+      connectors={[cartridgeConnector, connector]}
       explorer={voyager}
     >
       {children}
