@@ -19,7 +19,7 @@ const useGetAllEvents = () => {
   async function fetchAndMergeEventData(event: { uri: string, id: any }) {
     try {
       const response = await fetch(event.uri);
-      const uriData = await response.json();
+      const uriData = await response;
       const backData = uriData
       return { ...event, ...backData};
     } catch (error) {
