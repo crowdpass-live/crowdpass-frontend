@@ -51,7 +51,7 @@ const useCreateEvent = () => {
         });
 
         const { link } = await hashRes.json();
-
+console.log("failed")
         try {
           const call = {
             contractAddress: contractAddr,
@@ -66,13 +66,14 @@ const useCreateEvent = () => {
               cairo.uint256(ticket_price),
             ]),
           };
-
+          console.log("got here ")
           const {
             resourceBounds: estimatedResourceBounds,
           } = await account.estimateInvokeFee(call, {
             version: "0x3",
           });
-    
+
+          console.log("got here 3")
           const resourceBounds = {
             ...estimatedResourceBounds,
             l1_gas: {
@@ -80,11 +81,14 @@ const useCreateEvent = () => {
               max_amount: "0x1388",
             },
           };
+          console.log("got here 5")
 
           let { transaction_hash } = await account.execute(call, {
             version: "0x3",
             resourceBounds,
           });
+
+                    console.log("got here 7")
 
           // Wait for transaction to be mined
           const waitForTransaction = await account.waitForTransaction(transaction_hash);
