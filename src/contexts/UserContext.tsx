@@ -130,7 +130,7 @@ export const StarknetContextProvider = ({
   const provider = isClient
     ? new RpcProvider({
         nodeUrl:
-          "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
+          "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_8/FtlFKmlVF7DMCHmzZHQDu",
         chainId: constants.StarknetChainId.SN_SEPOLIA,
       })
     : null;
