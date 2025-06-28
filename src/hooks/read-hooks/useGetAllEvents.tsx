@@ -20,7 +20,7 @@ const useGetAllEvents = () => {
     try {
       const response = await fetch(event.uri);
       const uriData = await response.json();
-      const backData = uriData.data
+      const backData = uriData
       return { ...event, ...backData};
     } catch (error) {
       console.error(`Failed to fetch data for event ${event.id}:`, error);
@@ -30,7 +30,7 @@ const useGetAllEvents = () => {
 
   useEffect(() => {
     const processEvents = async () => {
-      if (!Array.isArray(data) || data.length === 0 || isLoading || isError) return;
+      if (!Array.isArray(data) || length === 0 || isLoading || isError) return;
       
       setIsProcessing(true);
       const processedEvents = [];

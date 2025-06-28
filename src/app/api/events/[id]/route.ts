@@ -51,7 +51,7 @@ export async function GET(
     };
 
     return NextResponse.json(
-      { message: "Event fetched successfully", data: eventJson },
+      { eventJson },
       { status: 200 }
     );
   } catch (error) {

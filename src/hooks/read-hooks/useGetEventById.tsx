@@ -21,7 +21,7 @@ const useGetEventById = (eventId: number) => {
     try {
       const response = await fetch(event.uri);
       const uriData = await response.json();
-      const backData = uriData.data
+      const backData = uriData
       
       return { ...event, ...backData };
     } catch (error) {
