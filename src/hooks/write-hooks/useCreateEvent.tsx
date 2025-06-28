@@ -97,7 +97,7 @@ const useCreateEvent = () => {
           return "success";
         } catch (error) {
           console.error(error);
-          toast.error(`Error creating event, Try again`);
+          toast.error(`Error creating event, Try again: ${error}`);
     
           setIsLoading(false);
         }
