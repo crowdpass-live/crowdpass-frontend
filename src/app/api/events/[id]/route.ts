@@ -51,7 +51,7 @@ export async function GET(
     };
 
     return NextResponse.json(
-      { eventJson },
+       eventJson ,
       { status: 200 }
     );
   } catch (error) {
@@ -115,7 +115,7 @@ export async function PUT(
     }
 
     return NextResponse.json(
-      { updatedEvent },
+      updatedEvent ,
       { status: 200 }
     );
   } catch (error) {
