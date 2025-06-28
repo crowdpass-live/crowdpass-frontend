@@ -36,7 +36,7 @@ const useCreateEvent = () => {
         setIsLoading(true);
         {isLoading == true && toast.loading("creating event")}
 
-        const hashRes = await fetch(`https://www.crowdpass.live/api/events`, {
+        const hashRes = await fetch(`https://www.crowdpassevents.com/api/events`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
