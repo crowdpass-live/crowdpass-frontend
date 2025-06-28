@@ -5,12 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}", 
+    "start": "next start -H 0.0.0.0 -p ${PORT:-8080}",
     "lint": "next lint",
     "export": "npm run build && next export "
   },
   "dependencies": {
-    "@argent/invisible-sdk": "^1.1.1",
+    "@argent/invisible-sdk": "^1.1.2",
     "@argent/x-sessions": "^7.0.0",
     "@cartridge/connector": "^0.5.5",
     "@emotion/react": "^11.14.0",
