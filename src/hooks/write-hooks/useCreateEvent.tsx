@@ -81,6 +81,7 @@ console.log("failed")
               max_amount: "0x1388",
             },
           };
+          console.log(resourceBounds)
           console.log("got here 5")
 
           let { transaction_hash } = await account.execute(call, {
