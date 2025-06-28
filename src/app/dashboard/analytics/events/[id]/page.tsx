@@ -57,7 +57,7 @@ const page = (props: Props) => {
               data-testid="loader"
             />
             <div className="text-white text-2xl">
-              Perfroming your operation...
+              Performing your operation...
             </div>
           </div>
         )}
