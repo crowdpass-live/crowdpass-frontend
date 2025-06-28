@@ -115,7 +115,7 @@ export async function PUT(
     }
 
     return NextResponse.json(
-      { message: "Event updated successfully", data: updatedEvent },
+      { updatedEvent },
       { status: 200 }
     );
   } catch (error) {
