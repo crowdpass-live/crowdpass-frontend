@@ -34,7 +34,6 @@ export const connectDB = async () => {
         }
       )
       .then((mongoose) => {
-        console.log("Connected to MongoDB");
         return mongoose;
       });
   }
