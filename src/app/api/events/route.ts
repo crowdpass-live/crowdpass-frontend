@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Generate the JSON link for the created event
-    const jsonLink = `https://www.crowdpass.live/api/events/${event._id}`;
+    const jsonLink = `https://www.crowdpassevents.com/api/events/${event._id}`;
 
     // Return the response with the JSON link
     return NextResponse.json({ link: jsonLink }, { status: 201 });

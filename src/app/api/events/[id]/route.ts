@@ -24,7 +24,7 @@ export async function GET(
       name: event.name,
       image: `https://ipfs.io/ipfs/${event.image}`,
       description: event.description,
-      external_url: "https://www.crowdpass.live/events/" + event._id,
+      external_url: "https://www.crowdpassevents.com/events/" + event._id,
       attributes: [
         {
           trait_type: "Organizer Name",
@@ -42,6 +42,7 @@ export async function GET(
           trait_type: "Location",
           value: event.location,
         },
+        
         {
           trait_type: "Schedule",
           value: event.schedule,
