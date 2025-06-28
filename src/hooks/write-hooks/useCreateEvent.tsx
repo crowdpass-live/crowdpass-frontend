@@ -5,11 +5,8 @@ import { toast } from "sonner";
 import { useCallback, useContext, useEffect } from "react";
 import { StarknetContext } from "@/contexts/UserContext";
 import { datetimeToEpochTime } from "datetime-epoch-conversion";
-import { useRouter } from "next/navigation";
 
 const useCreateEvent = () => {
-  const router = useRouter();
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_JSON_URL;
   const { contractAddr, account, setIsLoading, isLoading }: any = useContext(StarknetContext);
     
   return useCallback(
