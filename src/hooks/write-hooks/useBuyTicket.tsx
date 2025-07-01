@@ -25,7 +25,12 @@ const useBuyTicket = () => {
           spender: contractAddr,
         },
       ];
-      const res = await argentWebWallet.requestApprovals(approvalRequests);
+      try {
+        const res = await argentWebWallet.requestApprovals(approvalRequests);
+      } catch (error) {
+        toast.error(`Error Purchasing ticket: ${error}` )
+      }
+      
 
       try {
         if (!account) {

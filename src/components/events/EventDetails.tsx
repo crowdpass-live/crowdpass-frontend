@@ -19,6 +19,7 @@ import useClaimRefund from "@/hooks/write-hooks/useClaimRefund";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -26,9 +27,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { toast } from "sonner";
 
 const EventDetails = ({ eventDetails, id }: any) => {
-  const { address, isLoading } = useContext(StarknetContext);
+  const { address, isLoading, handleConnect } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
   const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
@@ -38,13 +40,13 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const { event }: any = eventDetails;
   const response = epochToDatetime(`${Number(event?.start_date)}`);
   const refund = useClaimRefund();
-
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
     role: "",
     name: "",
     email: "",
     xhandle: "",
+    agreeToNewsletter: false,
   });
 
   const roleOptions = [
@@ -76,10 +78,26 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setFormData((prev) => ({ ...prev, role: value }));
   };
 
+  const handleNewsletterChange = (checked: boolean) => {
+    setFormData((prev) => ({ ...prev, agreeToNewsletter: checked }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
+
+    if (!formData.agreeToNewsletter) {
+      toast.error(
+        "Please agree to receive newsletters from CrowdPass to continue."
+      );
+      return;
+    }
+
+    if (!address) {
+     await handleConnect();
+    }
+
     console.log("Registration data:", formData);
+    
     await handlePurchase(id, Number(event?.ticket_price));
     setIsOpen(false);
   };
@@ -318,7 +336,14 @@ const EventDetails = ({ eventDetails, id }: any) => {
                               id={field.id}
                               type={field.type}
                               value={
-                                formData[field.id as keyof typeof formData]
+                                formData[field.id as keyof typeof formData] ===
+                                false
+                                  ? ""
+                                  : String(
+                                      formData[
+                                        field.id as keyof typeof formData
+                                      ] ?? ""
+                                    )
                               }
                               onChange={(e) =>
                                 handleInputChange(field.id, e.target.value)
@@ -358,6 +383,24 @@ const EventDetails = ({ eventDetails, id }: any) => {
                               ))}
                             </SelectContent>
                           </Select>
+                        </div>
+
+                        {/* Newsletter Checkbox */}
+                        <div className="flex items-start space-x-3 pt-4">
+                          <Checkbox
+                            id="newsletter"
+                            checked={formData.agreeToNewsletter}
+                            onCheckedChange={handleNewsletterChange}
+                            className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932]"
+                          />
+                          <Label
+                            htmlFor="newsletter"
+                            className="text-white text-sm leading-relaxed cursor-pointer"
+                          >
+                            I agree to receive newsletters and updates from
+                            CrowdPass about upcoming events, features, and
+                            announcements. *
+                          </Label>
                         </div>
 
                         <Button
