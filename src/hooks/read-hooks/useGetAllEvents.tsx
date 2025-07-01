@@ -16,48 +16,49 @@ const useGetAllEvents = () => {
     watch: false,
   });
 
-  async function fetchAndMergeEventData(event: { uri: string, id: any }) {
+  console.log(data);
+
+  async function fetchAndMergeEventData(event: { uri: string; id: any }) {
     try {
       const response = await fetch(event.uri);
-      const uriData = await response;
-      const backData = uriData
-      return { ...event, ...backData};
+      console.log(response);
+      return { ...event, ...response };
     } catch (error) {
       console.error(`Failed to fetch data for event ${event.id}:`, error);
-      return event; 
+      return event;
     }
   }
+  const processEvents = async () => {
+    if (!Array.isArray(data) || data.length === 0 || isLoading || isError)
+      return;
+
+    setIsProcessing(true);
+    const processedEvents = [];
+    for (let i = 0; i < data.length; i++) {
+      const event = data[i];
+      console.log(event);
+      if (event && event.uri) {
+        const updatedEvent = await fetchAndMergeEventData(event);
+        processedEvents.push(updatedEvent);
+      } else {
+        processedEvents.push(event);
+      }
+    }
+
+    setUpdatedEvents(processedEvents);
+    setIsProcessing(false);
+  };
 
   useEffect(() => {
-    const processEvents = async () => {
-      if (!Array.isArray(data) || length === 0 || isLoading || isError) return;
-      
-      setIsProcessing(true);
-      const processedEvents = [];
-      
-      for (let i = 0; i < data.length; i++) {
-        const event = data[i];
-        if (event && event.uri) {
-          const updatedEvent = await fetchAndMergeEventData(event);
-          processedEvents.push(updatedEvent);
-        } else {
-          processedEvents.push(event);
-        }
-      }
-      
-      setUpdatedEvents(processedEvents);
-      setIsProcessing(false);
-    };
-  
     processEvents();
   }, [data, isLoading, isError]);
 
-  return { 
-    events: updatedEvents, 
+  return {
+    events: updatedEvents,
     originalEvents: data,
-    isLoading: isLoading || isProcessing, 
-    isError, 
-    error 
+    isLoading: isLoading || isProcessing,
+    isError,
+    error,
   };
 };
 
