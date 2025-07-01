@@ -2,6 +2,42 @@ import { NextRequest, NextResponse } from "next/server";
 import Event from "../../../models/eventModel";
 import { connectDB } from "@/app/lib/db";
 
+const ALLOWED_ORIGINS = [
+  "https://www.crowdpassevents.com",
+  "http://localhost:3000",
+  "http://localhost:3001",
+];
+
+function addCorsHeaders(response: NextResponse, request: NextRequest) {
+  const origin = request.headers.get("origin");
+  
+  const allowedPatterns = [
+    /^https:\/\/.*\.crowdpassevents\.com$/,
+    /^http:\/\/localhost:\d+$/,        
+  ];
+  
+  const isAllowed = origin && (
+    ALLOWED_ORIGINS.includes(origin) || 
+    allowedPatterns.some(pattern => pattern.test(origin))
+  );
+  
+  if (isAllowed) {
+    response.headers.set("Access-Control-Allow-Origin", origin);
+  }
+  
+  response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  response.headers.set("Access-Control-Max-Age", "86400");
+  response.headers.set("Access-Control-Allow-Credentials", "true");
+  
+  return response;
+}
+
+export async function OPTIONS(request: NextRequest) {
+  const response = new NextResponse(null, { status: 200 });
+  return addCorsHeaders(response, request);
+}
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -13,10 +49,11 @@ export async function GET(
 
     const event = await Event.findById(id);
     if (!event) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { message: "Event not found" },
         { status: 404 }
       );
+      return addCorsHeaders(response, request);
     }
 
     const eventJson = {
@@ -42,7 +79,6 @@ export async function GET(
           trait_type: "Location",
           value: event.location,
         },
-        
         {
           trait_type: "Schedule",
           value: event.schedule,
@@ -50,16 +86,15 @@ export async function GET(
       ],
     };
 
-    return NextResponse.json(
-       eventJson ,
-      { status: 200 }
-    );
+    const response = NextResponse.json(eventJson, { status: 200 });
+    return addCorsHeaders(response, request);
   } catch (error) {
     console.error("Error fetching event:", error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Failed to fetch event" },
       { status: 500 }
     );
+    return addCorsHeaders(response, request);
   }
 }
 
@@ -84,12 +119,12 @@ export async function PUT(
       schedule,
     } = body;
 
-    // Input validation
     if (!name || !description || !organizer_name) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
       );
+      return addCorsHeaders(response, request);
     }
 
     const updatedEvent = await Event.findByIdAndUpdate(
@@ -108,22 +143,22 @@ export async function PUT(
     );
 
     if (!updatedEvent) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { message: "Event not found" },
         { status: 404 }
       );
+      return addCorsHeaders(response, request);
     }
 
-    return NextResponse.json(
-      updatedEvent ,
-      { status: 200 }
-    );
+    const response = NextResponse.json(updatedEvent, { status: 200 });
+    return addCorsHeaders(response, request);
   } catch (error) {
     console.error("Error updating event:", error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Failed to update event" },
       { status: 500 }
     );
+    return addCorsHeaders(response, request);
   }
 }
 
@@ -139,21 +174,24 @@ export async function DELETE(
     const deletedEvent = await Event.findByIdAndDelete(id);
 
     if (!deletedEvent) {
-      return NextResponse.json(
+      const response = NextResponse.json(
         { message: "Event not found" },
         { status: 404 }
       );
+      return addCorsHeaders(response, request);
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Event deleted successfully" },
       { status: 200 }
     );
+    return addCorsHeaders(response, request);
   } catch (error) {
     console.error("Error deleting event:", error);
-    return NextResponse.json(
+    const response = NextResponse.json(
       { message: "Failed to delete event" },
       { status: 500 }
     );
+    return addCorsHeaders(response, request);
   }
 }
