@@ -19,9 +19,13 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import useIsTicketHolder from "@/hooks/read-hooks/useIsTicketHolder";
 import useClaimRefund from "@/hooks/write-hooks/useClaimRefund";
+import { Card, CardContent } from "../ui/card";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading } = useContext(StarknetContext);
@@ -34,7 +38,33 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
   const { event }: any = eventDetails;
   const response = epochToDatetime(`${Number(event?.start_date)}`);
-  const refund = useClaimRefund()
+  const refund = useClaimRefund();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    type: "non-dev",
+    name: "",
+    email: "",
+    xhandle: "",
+  });
+
+  // Form field data
+  const formFields = [
+    { id: "name", label: "Name", type: "text" },
+    { id: "email", label: "Email", type: "email" },
+    { id: "xhandle", label: "X Handle", type: "text" },
+  ];
+
+  const handleInputChange = (id: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission here
+    console.log("Registration data:", formData);
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -235,14 +265,68 @@ const EventDetails = ({ eventDetails, id }: any) => {
             </div>
 
             {data === false && (
-              <Button
-                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
-                onClick={async () => {
-                  await handlePurchase(id, Number(event?.ticket_price));
-                }}
-              >
-                Register
-              </Button>
+              <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
+                    onClick={async () => {
+                      await handlePurchase(id, Number(event?.ticket_price));
+                    }}
+                  >
+                    Register
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="w-[526px] max-w-[90vw] p-0 bg-[#5b5959] border-none rounded-[30px] overflow-hidden">
+                  <DialogHeader className="sr-only">
+                    <DialogTitle>Event Registration</DialogTitle>
+                  </DialogHeader>
+
+                  <Card className="w-full bg-transparent border-none rounded-none">
+                    <img
+                      className="w-full h-[174px] object-cover"
+                      alt={event?.name}
+                      src={event?.image}
+                    />
+
+                    <CardContent className="p-10 space-y-6">
+                      <form onSubmit={handleSubmit} className="space-y-6">
+                        {formFields.map((field) => (
+                          <div
+                            key={field.id}
+                            className="border-b-2 border-[#ffffff99]"
+                          >
+                            <Label
+                              htmlFor={field.id}
+                              className="font-bold text-white text-lg block mb-2"
+                            >
+                              {field.label}
+                            </Label>
+                            <Input
+                              id={field.id}
+                              type={field.type}
+                              value={
+                                formData[field.id as keyof typeof formData]
+                              }
+                              onChange={(e) =>
+                                handleInputChange(field.id, e.target.value)
+                              }
+                              className="bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-400 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                              required
+                            />
+                          </div>
+                        ))}
+
+                        <Button
+                          type="submit"
+                          className="w-full h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-2xl font-['Poppins',Helvetica] font-semibold mt-6"
+                        >
+                          Register
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
+                </DialogContent>
+              </Dialog>
             )}
             {data === true && (
               <Button
