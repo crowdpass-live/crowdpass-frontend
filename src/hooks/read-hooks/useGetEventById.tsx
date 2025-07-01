@@ -20,9 +20,9 @@ const useGetEventById = (eventId: number) => {
   async function fetchAndMergeEventData(event: { uri: string, id: any }) {
     try {
       const response = await fetch(event.uri);
+      const eventData = await response.json()
       
-      
-      return { ...event, ...response };
+      return { ...event, ...eventData };
     } catch (error) {
       console.error(`Failed to fetch data for event ${event.id}:`, error);
       return event; 

@@ -1,11 +1,4 @@
-import {
-  Bookmark,
-  Calendar,
-  Share2,
-  ArrowLeft,
-  Copy,
-  Check,
-} from "lucide-react";
+import { Calendar, Share2, ArrowLeft, Copy, Check } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useState, useEffect } from "react";
 import { Button } from "../ui/button";
@@ -26,6 +19,13 @@ import useClaimRefund from "@/hooks/write-hooks/useClaimRefund";
 import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading } = useContext(StarknetContext);
@@ -35,18 +35,31 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const { data } = useIsTicketHolder(id, address as `0x${string}`);
-
   const { event }: any = eventDetails;
   const response = epochToDatetime(`${Number(event?.start_date)}`);
   const refund = useClaimRefund();
 
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
-    type: "non-dev",
+    role: "",
     name: "",
     email: "",
     xhandle: "",
   });
+
+  const roleOptions = [
+    { value: "founder", label: "Founder" },
+    { value: "builder", label: "Builder" },
+    { value: "software-engineer", label: "Software Engineer" },
+    { value: "product-manager", label: "Product Manager" },
+    { value: "designer", label: "Designer" },
+    { value: "investor", label: "Investor" },
+    { value: "entrepreneur", label: "Entrepreneur" },
+    { value: "student", label: "Student" },
+    { value: "researcher", label: "Researcher" },
+    { value: "consultant", label: "Consultant" },
+    { value: "other", label: "Other" },
+  ];
 
   // Form field data
   const formFields = [
@@ -59,10 +72,15 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRoleChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, role: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
     console.log("Registration data:", formData);
+    await handlePurchase(id, Number(event?.ticket_price));
     setIsOpen(false);
   };
 
@@ -264,15 +282,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
               </Button>
             </div>
 
-            {data === false && (
+            {!data === true && (
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                  <Button
-                    className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
-                    onClick={async () => {
-                      await handlePurchase(id, Number(event?.ticket_price));
-                    }}
-                  >
+                  <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center">
                     Register
                   </Button>
                 </DialogTrigger>
@@ -316,9 +329,40 @@ const EventDetails = ({ eventDetails, id }: any) => {
                           </div>
                         ))}
 
+                        <div className="border-b-2 border-[#ffffff99] pb-2">
+                          <Label
+                            htmlFor="role"
+                            className="font-bold text-white text-lg block mb-2"
+                          >
+                            Which best describes you?
+                          </Label>
+                          <Select
+                            value={formData.role}
+                            onValueChange={handleRoleChange}
+                          >
+                            <SelectTrigger className="bg-transparent border-none focus:ring-0 text-white p-0 h-auto focus:ring-offset-0 [&>span]:text-white [&>svg]:text-white">
+                              <SelectValue
+                                placeholder="Select your role"
+                                className="text-white placeholder:text-gray-400"
+                              />
+                            </SelectTrigger>
+                            <SelectContent className="bg-[#5b5959] border-[#ffffff33] text-white">
+                              {roleOptions.map((option) => (
+                                <SelectItem
+                                  key={option.value}
+                                  value={option.value}
+                                  className="text-white focus:bg-[#ff6932] focus:text-[#1e1e24] cursor-pointer"
+                                >
+                                  {option.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
                         <Button
                           type="submit"
-                          className="w-full h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-2xl font-['Poppins',Helvetica] font-semibold mt-6"
+                          className="w-full h-[58px] md:h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-2xl font-semibold mt-6"
                         >
                           Register
                         </Button>
