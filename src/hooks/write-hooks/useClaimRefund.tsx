@@ -53,11 +53,13 @@ const useClaimRefund = () => {
           
                 // // Wait for transaction to be mined
                 const waitForTransaction = await account.waitForTransaction(transaction_hash);
-          
+                  toast.dismiss();
+
                 setIsLoading(false);
                 toast.success("Refund claimed");
                 return "success";
               } catch (error) {
+                toast.dismiss();
                 console.error(error);
                 toast.error(`Error Claiming refund, Try again`);
           

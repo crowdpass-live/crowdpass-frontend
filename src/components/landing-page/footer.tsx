@@ -161,7 +161,7 @@ const Footer = () => {
           <motion.div className="flex gap-2 items-center" variants={itemVariants}>
           <AiFillCopyrightCircle size={24} color={"#FFFFFF"}/>
             <p className="text-lg text-white">
-              All Rights Reserved, CrowdPass 2024.
+              All Rights Reserved, CrowdPass {new Date().getFullYear()}.
             </p>
           </motion.div>
 

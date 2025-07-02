@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import useIsTicketHolder from "@/hooks/read-hooks/useIsTicketHolder";
 import useClaimRefund from "@/hooks/write-hooks/useClaimRefund";
@@ -28,7 +27,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { toast } from "sonner";
-import axios from "axios";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
@@ -115,6 +113,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
       const res = await handlePurchase( event, formData, String(address), id);
 
+      console.log(address)
       toast.success("registration successful!");
 
       setLoading(false)
