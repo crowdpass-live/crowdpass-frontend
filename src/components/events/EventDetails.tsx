@@ -28,10 +28,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { toast } from "sonner";
+import axios from "axios";
+import useGetEventAttendance from "@/hooks/read-hooks/useGetEventAttendance";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleConnect } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
+  const { data: eventAttendance } = useGetEventAttendance(id);
   const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -41,6 +44,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const response = epochToDatetime(`${Number(event?.start_date)}`);
   const refund = useClaimRefund();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [formData, setFormData] = useState({
     role: "",
     name: "",
@@ -82,6 +86,20 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setFormData((prev) => ({ ...prev, agreeToNewsletter: checked }));
   };
 
+  const handleLogin = async () => {
+    await handleConnect();
+    setIsLoginOpen(false);
+    setIsOpen(true);
+  };
+
+  const handleRegisterClick = () => {
+    if (!address) {
+      setIsLoginOpen(true);
+    } else {
+      setIsOpen(true);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -92,14 +110,40 @@ const EventDetails = ({ eventDetails, id }: any) => {
       return;
     }
 
-    if (!address) {
-     await handleConnect();
-    }
+    try {
+      const res = await handlePurchase(id, Number(event?.ticket_price));
 
-    console.log("Registration data:", formData);
-    
-    await handlePurchase(id, Number(event?.ticket_price));
-    setIsOpen(false);
+      if (res === undefined) {
+        return;
+      }
+
+      toast.loading("Registering for event...");
+
+      const response = await axios.post("/api/registration", {
+        eventId: event?.uri.split("/").pop(),
+        eventName: event?.name,
+        ...formData,
+      });
+
+      toast.success("Payment and registration successful!");
+
+      console.log("Registration successful:", response.data);
+
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error("Error:", error);
+      if (error.response) {
+        const errorMessage =
+          error.response.data?.message || "Registration failed";
+        toast.error(errorMessage);
+      } else if (error.request) {
+        toast.error("Network error. Please check your connection.");
+      } else {
+        toast.error(
+          error.message || "Payment or registration failed. Please try again."
+        );
+      }
+    }
   };
 
   useEffect(() => {
@@ -131,6 +175,18 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const attendeeImages = [
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee1_hvftrx.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee2_fuynig.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee3_pwpu24.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee5_b81v8c.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
+  ];
+
+  const totalTickets = Number(eventAttendance) || 0;
+  const displayCount = Math.min(totalTickets, 5);
+  const remaining = totalTickets - 5;
 
   return (
     <div className="flex flex-col w-full">
@@ -175,6 +231,28 @@ const EventDetails = ({ eventDetails, id }: any) => {
         </DialogContent>
       </Dialog>
 
+      {/* Login Modal */}
+      <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
+        <DialogContent className="bg-[#14141A] border border-gray-700 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl text-center">
+              Login
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-300 mb-6">
+              Please login to register for this event
+            </p>
+            <Button
+              onClick={handleLogin}
+              className="bg-primary hover:bg-primary/90 text-light-black w-full py-3 text-lg"
+            >
+              Login
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Back Button */}
       <div className="my-4">
         <Button
@@ -207,7 +285,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
           height={467}
           className="rounded-3xl w-full md:w-96 object-center object-cover"
         />
-        <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
+        <div className="flex flex-col gap-4 lg:w-full lg:gap-6 md:justify-between">
+          <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
+
+         
           <div>
             <p className="text-primary">
               {Number(event?.ticket_price) > 0
@@ -231,64 +312,45 @@ const EventDetails = ({ eventDetails, id }: any) => {
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex gap-4">
-              <div className="flex items-center justify-center">
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee1_hvftrx.png"
-                  }
-                  alt="attendee1"
-                  width={50}
-                  height={50}
-                  className="w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee2_fuynig.png"
-                  }
-                  alt="attendee2"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee3_pwpu24.png"
-                  }
-                  alt="attendee3"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee5_b81v8c.png"
-                  }
-                  alt="attendee4"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png"
-                  }
-                  alt="attendee5"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
-                  {Number(event?.total_tickets) - 5}+
-                </p>
-              </div>
-              <div className="flex flex-col">
-                <p className="font-semibold text-white">Participant</p>
-                <p className="font-medium text-sm text-white">
-                  Across the globe
-                </p>
-              </div>
+              {totalTickets === 0 ? (
+                <div className="flex items-center">
+                  <p className="text-gray-400 italic">
+                    No participant has registered yet
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-center">
+                    {attendeeImages.slice(0, displayCount).map((src, idx) => (
+                      <Image
+                        key={idx}
+                        src={src}
+                        alt={`attendee${idx + 1}`}
+                        width={50}
+                        height={50}
+                        className={`${
+                          idx !== 0 ? "-ml-3" : ""
+                        } w-8 h-8 md:w-[50px] md:h-[50px]`}
+                      />
+                    ))}
+
+                    {totalTickets > 5 && (
+                      <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
+                        {remaining}+
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="font-semibold text-white">Participant</p>
+                    <p className="font-medium text-sm text-white">
+                      Across the globe
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
+ </div>
           <div className="flex justify-end lg:w-full gap-8 items-center">
             <div className="pt-4 flex gap-4">
               <Button
@@ -301,119 +363,125 @@ const EventDetails = ({ eventDetails, id }: any) => {
             </div>
 
             {!data === true && (
-              <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center">
-                    Register
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="w-[526px] max-w-[90vw] p-0 bg-[#5b5959] border-none rounded-[30px] overflow-hidden">
-                  <DialogHeader className="sr-only">
-                    <DialogTitle>Event Registration</DialogTitle>
-                  </DialogHeader>
+              <>
+                <Button
+                  onClick={handleRegisterClick}
+                  className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
+                >
+                  Register
+                </Button>
 
-                  <Card className="w-full bg-transparent border-none rounded-none">
-                    <img
-                      className="w-full h-[174px] object-cover"
-                      alt={event?.name}
-                      src={event?.image}
-                    />
+                {/* Registration Modal - Only shown when user is logged in */}
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogContent className="w-[526px] max-w-[90vw] p-0 bg-[#5b5959] border-none rounded-[30px] overflow-scroll">
+                    <DialogHeader className="sr-only">
+                      <DialogTitle>Event Registration</DialogTitle>
+                    </DialogHeader>
 
-                    <CardContent className="p-10 space-y-6">
-                      <form onSubmit={handleSubmit} className="space-y-6">
-                        {formFields.map((field) => (
-                          <div
-                            key={field.id}
-                            className="border-b-2 border-[#ffffff99]"
-                          >
+                    <Card className="w-full bg-transparent border-none rounded-none">
+                      <img
+                        className="w-full h-[174px] object-cover"
+                        alt={event?.name}
+                        src={event?.image}
+                      />
+
+                      <CardContent className="p-6 md:p-10  space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                          {formFields.map((field) => (
+                            <div
+                              key={field.id}
+                              className="border-b-2 border-[#ffffff99]"
+                            >
+                              <Label
+                                htmlFor={field.id}
+                                className="font-bold text-white text-lg block mb-2"
+                              >
+                                {field.label}
+                              </Label>
+                              <Input
+                                id={field.id}
+                                type={field.type}
+                                value={
+                                  formData[
+                                    field.id as keyof typeof formData
+                                  ] === false
+                                    ? ""
+                                    : String(
+                                        formData[
+                                          field.id as keyof typeof formData
+                                        ] ?? ""
+                                      )
+                                }
+                                onChange={(e) =>
+                                  handleInputChange(field.id, e.target.value)
+                                }
+                                className="bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-400 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                required
+                              />
+                            </div>
+                          ))}
+
+                          <div className="border-b-2 border-[#ffffff99] pb-2">
                             <Label
-                              htmlFor={field.id}
+                              htmlFor="role"
                               className="font-bold text-white text-lg block mb-2"
                             >
-                              {field.label}
+                              Which best describes you?
                             </Label>
-                            <Input
-                              id={field.id}
-                              type={field.type}
-                              value={
-                                formData[field.id as keyof typeof formData] ===
-                                false
-                                  ? ""
-                                  : String(
-                                      formData[
-                                        field.id as keyof typeof formData
-                                      ] ?? ""
-                                    )
-                              }
-                              onChange={(e) =>
-                                handleInputChange(field.id, e.target.value)
-                              }
-                              className="bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-400 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
-                              required
-                            />
+                            <Select
+                              value={formData.role}
+                              onValueChange={handleRoleChange}
+                            >
+                              <SelectTrigger className="bg-transparent border-none focus:ring-0 text-white p-0 h-auto focus:ring-offset-0 [&>span]:text-white [&>svg]:text-white">
+                                <SelectValue
+                                  placeholder="Select your role"
+                                  className="text-white placeholder:text-gray-400"
+                                />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#5b5959] border-[#ffffff33] text-white">
+                                {roleOptions.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                    className="text-white focus:bg-[#ff6932] focus:text-[#1e1e24] cursor-pointer"
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </div>
-                        ))}
 
-                        <div className="border-b-2 border-[#ffffff99] pb-2">
-                          <Label
-                            htmlFor="role"
-                            className="font-bold text-white text-lg block mb-2"
-                          >
-                            Which best describes you?
-                          </Label>
-                          <Select
-                            value={formData.role}
-                            onValueChange={handleRoleChange}
-                          >
-                            <SelectTrigger className="bg-transparent border-none focus:ring-0 text-white p-0 h-auto focus:ring-offset-0 [&>span]:text-white [&>svg]:text-white">
-                              <SelectValue
-                                placeholder="Select your role"
-                                className="text-white placeholder:text-gray-400"
-                              />
-                            </SelectTrigger>
-                            <SelectContent className="bg-[#5b5959] border-[#ffffff33] text-white">
-                              {roleOptions.map((option) => (
-                                <SelectItem
-                                  key={option.value}
-                                  value={option.value}
-                                  className="text-white focus:bg-[#ff6932] focus:text-[#1e1e24] cursor-pointer"
-                                >
-                                  {option.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
+                          {/* Newsletter Checkbox */}
+                          <div className="flex items-start space-x-3 pt-4">
+                            <Checkbox
+                              id="newsletter"
+                              checked={formData.agreeToNewsletter}
+                              onCheckedChange={handleNewsletterChange}
+                              className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932]"
+                            />
+                            <Label
+                              htmlFor="newsletter"
+                              className="text-white text-sm leading-relaxed cursor-pointer"
+                            >
+                              I agree to receive newsletters and updates from
+                              CrowdPass about upcoming events, features, and
+                              announcements. *
+                            </Label>
+                          </div>
 
-                        {/* Newsletter Checkbox */}
-                        <div className="flex items-start space-x-3 pt-4">
-                          <Checkbox
-                            id="newsletter"
-                            checked={formData.agreeToNewsletter}
-                            onCheckedChange={handleNewsletterChange}
-                            className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932]"
-                          />
-                          <Label
-                            htmlFor="newsletter"
-                            className="text-white text-sm leading-relaxed cursor-pointer"
+                          <Button
+                            type="submit"
+                            className="w-full h-[58px] md:h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-2xl font-semibold mt-6"
                           >
-                            I agree to receive newsletters and updates from
-                            CrowdPass about upcoming events, features, and
-                            announcements. *
-                          </Label>
-                        </div>
-
-                        <Button
-                          type="submit"
-                          className="w-full h-[58px] md:h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-2xl font-semibold mt-6"
-                        >
-                          Register
-                        </Button>
-                      </form>
-                    </CardContent>
-                  </Card>
-                </DialogContent>
-              </Dialog>
+                            Register
+                          </Button>
+                        </form>
+                      </CardContent>
+                    </Card>
+                  </DialogContent>
+                </Dialog>
+              </>
             )}
             {data === true && (
               <Button
