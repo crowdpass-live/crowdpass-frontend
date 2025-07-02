@@ -29,12 +29,12 @@ import {
 } from "../ui/select";
 import { toast } from "sonner";
 import axios from "axios";
-import useGetEventAttendance from "@/hooks/read-hooks/useGetEventAttendance";
+import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleConnect } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
-  const { data: eventAttendance } = useGetEventAttendance(id);
+  const { data: availableTicket } = useGetAvailableTicket(id);
   const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -52,7 +52,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     xhandle: "",
     agreeToNewsletter: false,
   });
-
+  const [loading, setLoading] = useState(false)
   const roleOptions = [
     { value: "founder", label: "Founder" },
     { value: "builder", label: "Builder" },
@@ -111,23 +111,13 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
 
     try {
-      const res = await handlePurchase(id, Number(event?.ticket_price));
+      setLoading(true)
 
-      if (res === undefined) {
-        return;
-      }
+      const res = await handlePurchase( event, formData, String(address), id);
 
-      toast.loading("Registering for event...");
+      toast.success("registration successful!");
 
-      const response = await axios.post("/api/registration", {
-        eventId: event?.uri.split("/").pop(),
-        eventName: event?.name,
-        ...formData,
-      });
-
-      toast.success("Payment and registration successful!");
-
-      console.log("Registration successful:", response.data);
+      setLoading(false)
 
       setIsOpen(false);
     } catch (error: any) {
@@ -135,13 +125,19 @@ const EventDetails = ({ eventDetails, id }: any) => {
       if (error.response) {
         const errorMessage =
           error.response.data?.message || "Registration failed";
-        toast.error(errorMessage);
+        toast.error(errorMessage)
+        setLoading(false)
+
       } else if (error.request) {
         toast.error("Network error. Please check your connection.");
+        setLoading(false)
+
       } else {
         toast.error(
           error.message || "Payment or registration failed. Please try again."
         );
+        setLoading(false)
+
       }
     }
   };
@@ -184,9 +180,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
   ];
 
-  const totalTickets = Number(eventAttendance) || 0;
-  const displayCount = Math.min(totalTickets, 5);
-  const remaining = totalTickets - 5;
+  const totalEventTicket =Number(event?.total_tickets)- Number(availableTicket) || 0
+
+  const displayCount = Math.min(totalEventTicket, 5);
+  const remaining = totalEventTicket - 5;
 
   return (
     <div className="flex flex-col w-full">
@@ -266,7 +263,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
-        {isLoading && (
+        {isLoading || loading && (
           <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
             <HashLoader
               color={"#FF6932"}
@@ -275,7 +272,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
               aria-label="Loading Spinner"
               data-testid="loader"
             />
-            <div className="text-white text-2xl">Purchasing Tickets...</div>
+            <div className="text-white text-2xl">Registering for event...</div>
           </div>
         )}
         <Image
@@ -312,7 +309,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex gap-4">
-              {totalTickets === 0 ? (
+              {totalEventTicket === 0 ? (
                 <div className="flex items-center">
                   <p className="text-gray-400 italic">
                     No participant has registered yet
@@ -334,7 +331,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       />
                     ))}
 
-                    {totalTickets > 5 && (
+                    {totalEventTicket > 5 && (
                       <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
                         {remaining}+
                       </p>
@@ -373,7 +370,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
                 {/* Registration Modal - Only shown when user is logged in */}
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogContent className="w-[526px] max-w-[90vw] p-0 bg-[#5b5959] border-none rounded-[30px] overflow-scroll">
+                  <DialogContent className="w-[526px] max-w-[90vw] p-0 bg-[#5b5959] border-none rounded-[30px] overflow-hidden">
                     <DialogHeader className="sr-only">
                       <DialogTitle>Event Registration</DialogTitle>
                     </DialogHeader>
@@ -473,8 +470,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
                           <Button
                             type="submit"
                             className="w-full h-[58px] md:h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-2xl font-semibold mt-6"
+                            disabled={loading}
                           >
-                            Register
+                            {loading ? "Registering" : "Register"}
                           </Button>
                         </form>
                       </CardContent>

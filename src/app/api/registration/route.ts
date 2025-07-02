@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Registration from "../../models/registrationModel";
 import Event from "../../models/eventModel";
 import { connectDB } from "@/app/lib/db";
+import { sendRegistrationEmail } from "@/app/lib/sendRegistrationEmail";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,9 +16,11 @@ export async function POST(request: NextRequest) {
       email,
       xhandle,
       agreeToNewsletter,
+      eventStartDate,
+      id,
+      address
     } = await request.json();
 
-    // Input validation
     if (!eventName || !eventId || !role || !name || !email) {
       return NextResponse.json(
         { message: "Missing required fields: eventName, eventId, role, name, and email are required" },
@@ -25,16 +28,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { message: "Invalid email format" },
-        { status: 400 }
-      );
-    }
-
-    // Check if event exists using the event ID (more reliable)
     const event = await Event.findById(eventId);
     if (!event) {
       return NextResponse.json(
@@ -43,7 +36,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify that the event name matches the ID (for data integrity)
     if (event.name !== eventName) {
       return NextResponse.json(
         { message: "Event name and ID mismatch" },
@@ -51,7 +43,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user is already registered for this event
     const existingRegistration = await Registration.findOne({
       eventId,
       email,
@@ -64,25 +55,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create the registration in the database
     const registration = await Registration.create({
       eventId,
       eventName,
       role,
       name,
       email,
+      address,
       xhandle: xhandle || null,
       agreeToNewsletter: agreeToNewsletter || false,
       registrationDate: new Date(),
     });
 
-    // Return success response
+    // Send confirmation email
+    try {
+      await sendRegistrationEmail({
+        email,
+        name,
+        eventName,
+        eventStartDate,
+        id
+      });
+    } catch (emailError) {
+      console.error("Failed to send confirmation email:", emailError);
+    }
+
     return NextResponse.json(
       {
         message: "Registration successful",
         registrationId: registration._id,
         eventId: registration.eventId,
         eventName: registration.eventName,
+        address: registration.address
       },
       { status: 201 }
     );
