@@ -129,8 +129,7 @@ export const StarknetContextProvider = ({
   // Provider setup - only initialize in client environment
   const provider = isClient
     ? new RpcProvider({
-        nodeUrl:
-          "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_8/FtlFKmlVF7DMCHmzZHQDu",
+        nodeUrl: process.env.NEXT_PUBLIC_NODE_URL,
         chainId: constants.StarknetChainId.SN_SEPOLIA,
       })
     : null;
