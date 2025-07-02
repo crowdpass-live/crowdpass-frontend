@@ -13,24 +13,25 @@ const useBuyTicket = () => {
     setIsLoading,
     isLoading,
     token_addr,
-    argentWebWallet
+    argentWebWallet,
   }: any = useContext(StarknetContext);
   const router = useRouter();
   return useCallback(
     async (event_id: number, amount: number) => {
-      const approvalRequests = [
-        {
-          tokenAddress: token_addr,
-          amount: (amount * 1e18).toString(),
-          spender: contractAddr,
-        },
-      ];
-      try {
-        const res = await argentWebWallet.requestApprovals(approvalRequests);
-      } catch (error) {
-        toast.error(`Error Purchasing ticket: ${error}` )
+      if (amount > 0) {
+        const approvalRequests = [
+          {
+            tokenAddress: token_addr,
+            amount: (amount * 1e18).toString(),
+            spender: contractAddr,
+          },
+        ];
+        try {
+          const res = await argentWebWallet.requestApprovals(approvalRequests);
+        } catch (error) {
+          toast.error(`Error Purchasing ticket: ${error}`);
+        }
       }
-      
 
       try {
         if (!account) {
@@ -38,7 +39,7 @@ const useBuyTicket = () => {
         }
         setIsLoading(true);
         {
-          isLoading == true && toast.loading("Claiming refund in progress");
+          isLoading == true && toast.loading("Purchasing your ticket...");
         }
 
         try {
@@ -76,7 +77,14 @@ const useBuyTicket = () => {
           return "success";
         } catch (error) {
           console.error(error);
-          toast.error(`Error purchasing ticket, Try again`);
+          const errorString =
+            error instanceof Error ? error.message : String(error);
+
+          if (errorString.includes("('Event has ended')")) {
+            toast.error(`Error purchasing ticket: Event has ended`);
+          } else {
+            toast.error(`Error purchasing ticket`);
+          }
 
           setIsLoading(false);
         }
