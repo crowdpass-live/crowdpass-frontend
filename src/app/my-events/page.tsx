@@ -67,7 +67,7 @@ const page = () => {
             ))}
           </TabList>
         </div>
-        <div className="flex flex-wrap justify-start gap-5 items-center">
+        <div className="flex flex-wrap justify-center md:justify-start gap-5 items-center">
           {filteredEvents.length > 0 ? (
             filteredEvents.map((eachEvent: any, index: any) => (
               <MyEventCard eachEvent={eachEvent} key={index} />

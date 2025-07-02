@@ -43,9 +43,10 @@ const useBuyTicket = () => {
             address,
             ...formData,
           });
-
+          toast.dismiss();
           toast.success("Registration successful");
         } catch (regErr: any) {
+          toast.dismiss();
           console.error("Registration failed:", regErr);
           toast.error(
             regErr.response?.data?.message || "Registration failed, try again"
@@ -101,13 +102,14 @@ const useBuyTicket = () => {
         });
 
         await account.waitForTransaction(transaction_hash);
-
+        toast.dismiss();
         setIsLoading(false);
         toast.success("Ticket purchased");
         router.push("/my-events");
         return "success";
       } catch (err) {
         console.error("Error purchasing ticket:", err);
+        toast.dismiss();
         const errMsg =
           err instanceof Error ? err.message : "Failed to purchase ticket";
         toast.error(errMsg);

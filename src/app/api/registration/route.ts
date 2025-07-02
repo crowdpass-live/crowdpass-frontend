@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       role,
       name,
       email,
-      address,
+      address: address,
       xhandle: xhandle || null,
       agreeToNewsletter: agreeToNewsletter || false,
       registrationDate: new Date(),

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { CallData, byteArray, cairo } from "starknet";
 import { toast } from "sonner";
@@ -7,8 +7,9 @@ import { StarknetContext } from "@/contexts/UserContext";
 import { datetimeToEpochTime } from "datetime-epoch-conversion";
 
 const useCreateEvent = () => {
-  const { contractAddr, account, setIsLoading, isLoading }: any = useContext(StarknetContext);
-    
+  const { contractAddr, account, setIsLoading, isLoading }: any =
+    useContext(StarknetContext);
+
   return useCallback(
     async (
       event_name: string,
@@ -29,26 +30,31 @@ const useCreateEvent = () => {
         if (!account) {
           throw new Error("Account not connected");
         }
-        
-        setIsLoading(true);
-        {isLoading == true && toast.loading("creating event")}
 
-        const hashRes = await fetch(`https://www.crowdpassevents.com/api/events`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: event_name,
-            image: img_uri,
-            description: description,
-            organizer_name: organizer_name,
-            event_type: event_type,
-            event_category: event_category,
-            location: event_location,
-            schedule: event_schedule
-          }),
-        });
+        setIsLoading(true);
+        {
+          isLoading == true && toast.loading("creating event");
+        }
+
+        const hashRes = await fetch(
+          `https://www.crowdpassevents.com/api/events`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: event_name,
+              image: img_uri,
+              description: description,
+              organizer_name: organizer_name,
+              event_type: event_type,
+              event_category: event_category,
+              location: event_location,
+              schedule: event_schedule,
+            }),
+          }
+        );
 
         const { link } = await hashRes.json();
         try {
@@ -65,11 +71,10 @@ const useCreateEvent = () => {
               cairo.uint256(ticket_price),
             ]),
           };
-          const {
-            resourceBounds: estimatedResourceBounds,
-          } = await account.estimateInvokeFee(call, {
-            version: "0x3",
-          });
+          const { resourceBounds: estimatedResourceBounds } =
+            await account.estimateInvokeFee(call, {
+              version: "0x3",
+            });
 
           const resourceBounds = {
             ...estimatedResourceBounds,
@@ -84,20 +89,22 @@ const useCreateEvent = () => {
             resourceBounds,
           });
 
-
           // Wait for transaction to be mined
-          const waitForTransaction = await account.waitForTransaction(transaction_hash);
-    
+          const waitForTransaction =
+            await account.waitForTransaction(transaction_hash);
+
           setIsLoading(false);
           toast.success("Event Created");
-          
+
           window.location.href = "/dashboard/analytics/events";
-          
+          toast.dismiss();
+
           return "success";
         } catch (error) {
           console.error(error);
           toast.error(`Error creating event, Try again: ${error}`);
-    
+          toast.dismiss();
+
           setIsLoading(false);
         }
       } catch (err) {

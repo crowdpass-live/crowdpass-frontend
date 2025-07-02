@@ -28,6 +28,11 @@ const RegistrationSchema: Schema = new Schema(
       required: true,
       trim: true,
     },
+     address: {
+      type: String,
+      trim: true,
+      default: null,
+    },
     name: {
       type: String,
       required: true,

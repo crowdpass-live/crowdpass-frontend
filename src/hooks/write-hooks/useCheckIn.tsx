@@ -29,6 +29,7 @@ const useCheckIn = () => {
         if (!attendee_address) {
           throw new Error("Attendee address not found");
         }
+        toast.dismiss();
 
         toast.loading("Checking in attendee...");
 
@@ -62,11 +63,13 @@ const useCheckIn = () => {
         });
 
         await account.waitForTransaction(transaction_hash);
+        toast.dismiss();
 
         setIsLoading(false);
         toast.success("✅ Attendee checked in successfully!");
         return "success";
       } catch (err) {
+        toast.dismiss();
         console.error("Error during check-in:", err);
         setIsLoading(false);
         toast.error(`❌ Check-in failed: ${err instanceof Error ? err.message : "Unknown error"}`);
