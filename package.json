@@ -53,6 +53,7 @@
     "react-spinners": "^0.15.0",
     "react-tabs": "^6.1.0",
     "recharts": "^2.15.1",
+    "resend": "^4.6.0",
     "slick-carousel": "^1.8.1",
     "sonner": "^2.0.1",
     "starknet": "^6.11.0",
