@@ -45,7 +45,7 @@ const useGetAllEvents = () => {
       }
     }
 
-    setUpdatedEvents(processedEvents);
+    setUpdatedEvents(processedEvents.reverse());
     setIsProcessing(false);
   };
 
