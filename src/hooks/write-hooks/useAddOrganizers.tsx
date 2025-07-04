@@ -14,7 +14,7 @@ const useAddOrganizer = () => {
     async (event_id: number, email: string) => {
       try {
         if (!account) {
-          throw new Error("Account not connected");
+          toast.error("Account not connected");
         }
 
         setIsLoading(true);
