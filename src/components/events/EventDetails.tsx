@@ -49,7 +49,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     xhandle: "",
     agreeToNewsletter: false,
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
   const roleOptions = [
     { value: "founder", label: "Founder" },
     { value: "builder", label: "Builder" },
@@ -84,7 +84,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   const handleRegisterClick = () => {
-    setIsOpen(true);
+    
+      setIsOpen(true);
+  
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,14 +100,14 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
 
     try {
-      setLoading(true);
+      setLoading(true)
 
-      const res = await handlePurchase(event, formData, String(address), id);
+      const res = await handlePurchase( event, formData, String(address), id);
 
-      console.log(address);
+      console.log(address)
       toast.success("registration successful!");
 
-      setLoading(false);
+      setLoading(false)
 
       setIsOpen(false);
     } catch (error: any) {
@@ -113,16 +115,19 @@ const EventDetails = ({ eventDetails, id }: any) => {
       if (error.response) {
         const errorMessage =
           error.response.data?.message || "Registration failed";
-        toast.error(errorMessage);
-        setLoading(false);
+        toast.error(errorMessage)
+        setLoading(false)
+
       } else if (error.request) {
         toast.error("Network error. Please check your connection.");
-        setLoading(false);
+        setLoading(false)
+
       } else {
         toast.error(
           error.message || "Payment or registration failed. Please try again."
         );
-        setLoading(false);
+        setLoading(false)
+
       }
     }
   };
@@ -165,8 +170,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
   ];
 
-  const totalEventTicket =
-    Number(event?.total_tickets) - Number(availableTicket) || 0;
+  const totalEventTicket =Number(event?.total_tickets)- Number(availableTicket) || 0
 
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
@@ -227,21 +231,18 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
-        {isLoading ||
-          (loading && (
-            <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
-              <HashLoader
-                color={"#FF6932"}
-                loading={isLoading}
-                size={100}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-              <div className="text-white text-2xl">
-                Registering for event...
-              </div>
-            </div>
-          ))}
+        {isLoading || loading && (
+          <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+            <HashLoader
+              color={"#FF6932"}
+              loading={isLoading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+            <div className="text-white text-2xl">Registering for event...</div>
+          </div>
+        )}
         <Image
           src={event?.image}
           alt="event-image"
@@ -251,70 +252,70 @@ const EventDetails = ({ eventDetails, id }: any) => {
         />
         <div className="flex flex-col gap-4 lg:w-full lg:gap-6 md:justify-between">
           <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
-            <div>
-              <p className="text-primary">
-                {Number(event?.ticket_price) > 0
-                  ? `${Number(event?.ticket_price)} STRK`
-                  : "FREE"}
-              </p>
-              <h1 className="raleway text-2xl md:text-4xl text-white font-semibold">
-                {event?.name}
-              </h1>
-            </div>
-            <div className="bg-[#CBCACF66] flex gap-2 rounded-lg lg:max-w-80 py-2 px-3">
-              <div className="bg-[#14141A] p-2 rounded-xl">
-                <Calendar size={30} color="#FF6932" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-white">
-                  {response.day} {response.month}, {response.year}
-                </p>
-                <p className="text-white text-sm">
-                  {convertTime(response.time)}
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-4">
-                {totalEventTicket === 0 ? (
-                  <div className="flex items-center">
-                    <p className="text-gray-400 italic">
-                      No participant has registered yet
-                    </p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="flex items-center justify-center">
-                      {attendeeImages.slice(0, displayCount).map((src, idx) => (
-                        <Image
-                          key={idx}
-                          src={src}
-                          alt={`attendee${idx + 1}`}
-                          width={50}
-                          height={50}
-                          className={`${
-                            idx !== 0 ? "-ml-3" : ""
-                          } w-8 h-8 md:w-[50px] md:h-[50px]`}
-                        />
-                      ))}
 
-                      {totalEventTicket > 5 && (
-                        <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
-                          {remaining}+
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex flex-col">
-                      <p className="font-semibold text-white">Participant</p>
-                      <p className="font-medium text-sm text-white">
-                        Across the globe
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
+         
+          <div>
+            <p className="text-primary">
+              {Number(event?.ticket_price) > 0
+                ? `${Number(event?.ticket_price)} STRK`
+                : "FREE"}
+            </p>
+            <h1 className="raleway text-2xl md:text-4xl text-white font-semibold">
+              {event?.name}
+            </h1>
+          </div>
+          <div className="bg-[#CBCACF66] flex gap-2 rounded-lg lg:max-w-80 py-2 px-3">
+            <div className="bg-[#14141A] p-2 rounded-xl">
+              <Calendar size={30} color="#FF6932" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-white">
+                {response.day} {response.month}, {response.year}
+              </p>
+              <p className="text-white text-sm">{convertTime(response.time)}</p>
             </div>
           </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-4">
+              {totalEventTicket === 0 ? (
+                <div className="flex items-center">
+                  <p className="text-gray-400 italic">
+                    No participant has registered yet
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-center">
+                    {attendeeImages.slice(0, displayCount).map((src, idx) => (
+                      <Image
+                        key={idx}
+                        src={src}
+                        alt={`attendee${idx + 1}`}
+                        width={50}
+                        height={50}
+                        className={`${
+                          idx !== 0 ? "-ml-3" : ""
+                        } w-8 h-8 md:w-[50px] md:h-[50px]`}
+                      />
+                    ))}
+
+                    {totalEventTicket > 5 && (
+                      <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
+                        {remaining}+
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="font-semibold text-white">Participant</p>
+                    <p className="font-medium text-sm text-white">
+                      Across the globe
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+ </div>
           <div className="flex justify-end lg:w-full gap-8 items-center">
             <div className="pt-4 flex gap-4">
               <Button
@@ -337,7 +338,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
                 {/* Registration Modal - Mobile Responsive */}
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogContent className="w-[95vw] max-w-lg p-0 bg-[#5b5959] border-none rounded-[20px] md:rounded-[30px] overflow-y-auto max-h-[90vh]">
+                  <DialogContent className="w-[95vw] max-w-lg p-0 bg-[#5b5959] border-none rounded-[20px] md:rounded-[30px] overflow-hidden max-h-[90vh] overflow-y-auto">
+                    <DialogHeader className="sr-only">
+                      <DialogTitle>Event Registration</DialogTitle>
+                    </DialogHeader>
+
                     <Card className="w-full bg-transparent border-none rounded-none">
                       <img
                         className="w-full h-[120px] sm:h-[150px] md:h-[174px] object-cover"
@@ -345,11 +350,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
                         src={event?.image}
                       />
 
-                      <CardContent className="p-4 sm:p-6 md:p-10 space-y-4 sm:space-y-6 pb-32">
-                        <form
-                          onSubmit={handleSubmit}
-                          className="space-y-4 sm:space-y-6"
-                        >
+                      <CardContent className="p-4 sm:p-6 md:p-10 space-y-4 sm:space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                           {formFields.map((field) => (
                             <div
                               key={field.id}
@@ -415,6 +417,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                             </Select>
                           </div>
 
+                          {/* Newsletter Checkbox */}
                           <div className="flex items-start space-x-3 pt-4">
                             <Checkbox
                               id="newsletter"
