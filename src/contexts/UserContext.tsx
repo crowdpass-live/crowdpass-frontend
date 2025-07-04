@@ -224,6 +224,7 @@ export const StarknetContextProvider = ({
         setAccount(sessionAccount);
         setAddress(sessionAccount.address);
         toast.success("Wallet Connected Successfully");
+        return sessionAccount;
       } else {
         toast.error("requestConnection response is undefined");
       }

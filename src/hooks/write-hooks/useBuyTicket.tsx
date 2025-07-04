@@ -14,6 +14,7 @@ const useBuyTicket = () => {
     setIsLoading,
     token_addr,
     argentWebWallet,
+    handleConnect
   }: any = useContext(StarknetContext);
 
   const router = useRouter();
@@ -26,15 +27,23 @@ const useBuyTicket = () => {
       id: string | number
     ) => {
       try {
+      
+        let activeAccount = account;
+        
         if (!account) {
-          throw new Error("Account not connected");
+          setIsLoading(true);
+          const loginAccount = await handleConnect();
+          if (!loginAccount) {
+            toast.error("Account not connected");
+            return;
+          }
+          toast.success("logged in successfully")
+          activeAccount = loginAccount;
         }
 
-        // Register first
+        try {
         setIsLoading(true);
         toast.loading("Registering for event...");
-
-        try {
           const response = await axios.post("/api/registration", {
             eventId: event?.uri.split("/").pop(),
             eventName: event?.name,
@@ -55,7 +64,6 @@ const useBuyTicket = () => {
           return;
         }
 
-        // Handle approval if needed
         if (Number(event?.ticket_price) > 0) {
           const approvalRequests = [
             {
@@ -74,7 +82,6 @@ const useBuyTicket = () => {
           }
         }
 
-        // Proceed to buy ticket
         toast.loading("Purchasing your ticket...");
 
         const call = {
@@ -84,7 +91,7 @@ const useBuyTicket = () => {
         };
 
         const { resourceBounds: estimatedResourceBounds } =
-          await account.estimateInvokeFee(call, {
+          await activeAccount.estimateInvokeFee(call, {
             version: "0x3",
           });
 
@@ -96,15 +103,15 @@ const useBuyTicket = () => {
           },
         };
 
-        let { transaction_hash } = await account.execute(call, {
+        let { transaction_hash } = await activeAccount.execute(call, {
           version: "0x3",
           resourceBounds,
         });
 
-        await account.waitForTransaction(transaction_hash);
+        await activeAccount.waitForTransaction(transaction_hash);
         toast.dismiss();
         setIsLoading(false);
-        toast.success("Ticket purchased");
+        toast.success("Ticket purchased. Check your mail to see confirmation");
         router.push("/my-events");
         return "success";
       } catch (err) {
@@ -117,7 +124,7 @@ const useBuyTicket = () => {
         throw err;
       }
     },
-    [account]
+    [account, handleConnect, contractAddr, setIsLoading, token_addr, argentWebWallet, router]
   );
 };
 

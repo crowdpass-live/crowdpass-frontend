@@ -52,7 +52,7 @@ const useCheckIn = () => {
           ...estimatedResourceBounds,
           l1_gas: {
             ...estimatedResourceBounds.l1_gas,
-            max_amount: "0x1388", // adjust as needed
+            max_amount: "0x1388", 
           },
         };
 
@@ -70,9 +70,9 @@ const useCheckIn = () => {
         return "success";
       } catch (err) {
         toast.dismiss();
-        console.error("Error during check-in:", err);
+        console.error("Error during check-in");
         setIsLoading(false);
-        toast.error(`❌ Check-in failed: ${err instanceof Error ? err.message : "Unknown error"}`);
+        toast.error(`❌ Check-in failed}`);
         throw err instanceof Error ? err : new Error("Failed to check in attendee");
       }
     },
