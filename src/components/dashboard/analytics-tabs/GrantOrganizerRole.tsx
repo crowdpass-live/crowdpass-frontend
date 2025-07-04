@@ -92,14 +92,14 @@ const GrantOrganizerRole = () => {
                   <input
                     type="text"
                     placeholder="whitelist email address"
-                    className="raleway w-full bg-transparent border border-deep-blue rounded-lg text-deep-blue py-4 px-8"
+                    className="raleway w-full bg-transparent border border-deep-blue rounded-lg text-white py-4 px-8"
                     value={delegateEmail}
                     onChange={(e) => setDelegateEmail(e.target.value)}
                   />
                   <Button
                     className="bg-primary w-full py-6 raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue"
                     onClick={async () =>
-                      await handleDelegateRole(id, delegateEmail as `0x${string}`)
+                      await handleDelegateRole(id, delegateEmail)
                     }
                   >
                     Delegate Role
@@ -117,7 +117,7 @@ const GrantOrganizerRole = () => {
                   <input
                     type="text"
                     placeholder="revoke email address"
-                    className="raleway w-full bg-transparent border border-deep-blue rounded-lg text-deep-blue py-4 px-8"
+                    className="raleway w-full bg-transparent border border-deep-blue rounded-lg text-white py-4 px-8"
                     value={revokeEmail}
                     onChange={(e) => setRevokeEmail(e.target.value)}
                   />

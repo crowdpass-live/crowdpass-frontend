@@ -3,6 +3,7 @@
 import { CallData, cairo } from "starknet";
 import { toast } from "sonner";
 import { useCallback, useContext } from "react";
+import axios from "axios";
 import { StarknetContext } from "@/contexts/UserContext";
 
 const useAddOrganizer = () => {
@@ -10,66 +11,70 @@ const useAddOrganizer = () => {
     useContext(StarknetContext);
 
   return useCallback(
-    async (event_id: number, organizer_address: `0x${string}`) => {
+    async (event_id: number, email: string) => {
       try {
         if (!account) {
           throw new Error("Account not connected");
         }
+
         setIsLoading(true);
-        {
-          isLoading == true && toast.loading("adding organizer");
+        toast.loading("Fetching organizer info...");
+
+        // 1️⃣ Fetch organizer address from API
+        const res = await axios.get(`/api/registration/${encodeURIComponent(email)}`);
+        const organizer_address = res.data.address as `0x${string}`;
+
+        if (!organizer_address) {
+          throw new Error("Organizer address not found");
         }
-        try {
-          const call = {
-            contractAddress: contractAddr,
-            entrypoint: "add_organizer",
-            calldata: CallData.compile([
-              cairo.uint256(event_id),
-              organizer_address,
-            ]),
-          };
+        toast.dismiss();
 
-          const { resourceBounds: estimatedResourceBounds } =
-            await account.estimateInvokeFee(call, {
-              version: "0x3",
-            });
+        toast.loading("Adding organizer...");
 
-          const resourceBounds = {
-            ...estimatedResourceBounds,
-            l1_gas: {
-              ...estimatedResourceBounds.l1_gas,
-              max_amount: "0x1388",
-            },
-          };
+        // 2️⃣ Build Starknet call
+        const call = {
+          contractAddress: contractAddr,
+          entrypoint: "add_organizer",
+          calldata: CallData.compile([
+            cairo.uint256(event_id),
+            organizer_address,
+          ]),
+        };
 
-          let { transaction_hash } = await account.execute(call, {
+        // 3️⃣ Estimate fee
+        const { resourceBounds: estimatedResourceBounds } =
+          await account.estimateInvokeFee(call, {
             version: "0x3",
-            resourceBounds,
           });
 
-          // // Wait for transaction to be mined
-          const waitForTransaction =
-            await account.waitForTransaction(transaction_hash);
+        const resourceBounds = {
+          ...estimatedResourceBounds,
+          l1_gas: {
+            ...estimatedResourceBounds.l1_gas,
+            max_amount: "0x1388",
+          },
+        };
 
-          setIsLoading(false);
-          toast.dismiss();
-          {
-            isLoading == false && toast.dismiss();
-          }
-          toast.success("Organizer added successfully");
-          return "success";
-        } catch (error) {
-          console.error(error);
-          toast.dismiss();
-          toast.error(`Error adding Orgnaizer, Try again`);
-          setIsLoading(false);
-        }
+        // 4️⃣ Execute
+        const { transaction_hash } = await account.execute(call, {
+          version: "0x3",
+          resourceBounds,
+        });
+
+        await account.waitForTransaction(transaction_hash);
+        toast.dismiss();
+        setIsLoading(false);
+        toast.success("✅ Organizer added successfully!");
+        return "success";
       } catch (err) {
-        console.error("Error Adding Organizer:", err);
-        throw err instanceof Error ? err : new Error("Failed to Add Organizer");
+        toast.dismiss();
+        console.error("Error adding organizer");
+        setIsLoading(false);
+        toast.error(`❌ Adding organizer failed`);
+        throw err instanceof Error ? err : new Error("Failed to add organizer");
       }
     },
-    [account]
+    [account, contractAddr, setIsLoading]
   );
 };
 

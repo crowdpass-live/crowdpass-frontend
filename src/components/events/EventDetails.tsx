@@ -30,7 +30,7 @@ import { toast } from "sonner";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
-  const { address, isLoading, handleConnect } = useContext(StarknetContext);
+  const { address, isLoading } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
   const { data: availableTicket } = useGetAvailableTicket(id);
   const router = useRouter();
@@ -42,7 +42,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const response = epochToDatetime(`${Number(event?.start_date)}`);
   const refund = useClaimRefund();
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [formData, setFormData] = useState({
     role: "",
     name: "",
@@ -84,18 +83,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setFormData((prev) => ({ ...prev, agreeToNewsletter: checked }));
   };
 
-  const handleLogin = async () => {
-    await handleConnect();
-    setIsLoginOpen(false);
-    setIsOpen(true);
-  };
-
   const handleRegisterClick = () => {
-    if (!address) {
-      setIsLoginOpen(true);
-    } else {
+    
       setIsOpen(true);
-    }
+  
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -143,7 +134,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setShareUrl(window.location.href);
+      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
     }
   }, []);
 
@@ -188,7 +179,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     <div className="flex flex-col w-full">
       {/* Share Modal */}
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
-        <DialogContent className="bg-[#14141A] border border-gray-700 text-white">
+        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
           <DialogHeader>
             <DialogTitle className="text-white text-xl">
               Share Event
@@ -209,7 +200,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyLink}
-                className="hover:bg-gray-700"
+                className="hover:bg-gray-700 shrink-0"
               >
                 {copied ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -223,28 +214,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 Link copied to clipboard!
               </p>
             )}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Login Modal */}
-      <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
-        <DialogContent className="bg-[#14141A] border border-gray-700 text-white max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-white text-xl text-center">
-              Login
-            </DialogTitle>
-          </DialogHeader>
-          <div className="mt-4 text-center">
-            <p className="text-sm text-gray-300 mb-6">
-              Please login to register for this event
-            </p>
-            <Button
-              onClick={handleLogin}
-              className="bg-primary hover:bg-primary/90 text-light-black w-full py-3 text-lg"
-            >
-              Login
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -367,22 +336,22 @@ const EventDetails = ({ eventDetails, id }: any) => {
                   Register
                 </Button>
 
-                {/* Registration Modal - Only shown when user is logged in */}
+                {/* Registration Modal - Mobile Responsive */}
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogContent className="w-[526px] max-w-[90vw] p-0 bg-[#5b5959] border-none rounded-[30px] overflow-hidden">
+                  <DialogContent className="w-[95vw] max-w-lg p-0 bg-[#5b5959] border-none rounded-[20px] md:rounded-[30px] overflow-hidden max-h-[90vh] overflow-y-auto">
                     <DialogHeader className="sr-only">
                       <DialogTitle>Event Registration</DialogTitle>
                     </DialogHeader>
 
                     <Card className="w-full bg-transparent border-none rounded-none">
                       <img
-                        className="w-full h-[174px] object-cover"
+                        className="w-full h-[120px] sm:h-[150px] md:h-[174px] object-cover"
                         alt={event?.name}
                         src={event?.image}
                       />
 
-                      <CardContent className="p-6 md:p-10  space-y-6">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                      <CardContent className="p-4 sm:p-6 md:p-10 space-y-4 sm:space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                           {formFields.map((field) => (
                             <div
                               key={field.id}
@@ -390,7 +359,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                             >
                               <Label
                                 htmlFor={field.id}
-                                className="font-bold text-white text-lg block mb-2"
+                                className="font-bold text-white text-base sm:text-lg block mb-2"
                               >
                                 {field.label}
                               </Label>
@@ -420,7 +389,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                           <div className="border-b-2 border-[#ffffff99] pb-2">
                             <Label
                               htmlFor="role"
-                              className="font-bold text-white text-lg block mb-2"
+                              className="font-bold text-white text-base sm:text-lg block mb-2"
                             >
                               Which best describes you?
                             </Label>
@@ -454,11 +423,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
                               id="newsletter"
                               checked={formData.agreeToNewsletter}
                               onCheckedChange={handleNewsletterChange}
-                              className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932]"
+                              className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932] shrink-0"
                             />
                             <Label
                               htmlFor="newsletter"
-                              className="text-white text-sm leading-relaxed cursor-pointer"
+                              className="text-white text-xs sm:text-sm leading-relaxed cursor-pointer"
                             >
                               I agree to receive newsletters and updates from
                               CrowdPass about upcoming events, features, and
@@ -468,10 +437,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
                           <Button
                             type="submit"
-                            className="w-full h-[58px] md:h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-2xl font-semibold mt-6"
+                            className="w-full h-[48px] sm:h-[58px] md:h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-lg sm:text-xl md:text-2xl font-semibold mt-4 sm:mt-6"
                             disabled={loading}
                           >
-                            {loading ? "Registering" : "Register"}
+                            {loading ? "Registering..." : "Register"}
                           </Button>
                         </form>
                       </CardContent>
