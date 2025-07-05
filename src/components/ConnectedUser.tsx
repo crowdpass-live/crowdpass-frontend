@@ -24,10 +24,11 @@ const ConnectedUser = ({showMobileNav}:any) => {
             .slice(0, 4)}...${address?.slice(-4)}`}</p>
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-deep-blue border-none z-[99] shadow-2xl ">
+      <DialogContent className="bg-deep-blue border-none z-[99] shadow-2xl rounded-xl mx-auto max-w-[90vw]">
         <DialogHeader className="text-neutral-100">
           Do you want to disconnect your Wallet?
         </DialogHeader>
+      
         <DialogFooter className="sm:justify-center mb-1">
           <DialogClose asChild>
             <Button onClick={()=>{handleClearSession()
@@ -39,7 +40,7 @@ const ConnectedUser = ({showMobileNav}:any) => {
             <Button
               type="button"
               variant="secondary"
-              className="text-white shadow-black shadow-sm"
+              className="text-white shadow-black shadow-sm mb-4"
             >
               No
             </Button>

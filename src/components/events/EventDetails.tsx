@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/dialog";
 import useIsTicketHolder from "@/hooks/read-hooks/useIsTicketHolder";
 import useClaimRefund from "@/hooks/write-hooks/useClaimRefund";
-import { Card, CardContent } from "../ui/card";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
@@ -338,19 +337,19 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
                 {/* Registration Modal - Mobile Responsive */}
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogContent className="w-[95vw] max-w-lg p-0 bg-[#5b5959] border-none rounded-[20px] md:rounded-[30px] overflow-hidden max-h-[90vh] overflow-y-auto">
+                  <DialogContent className="w-[90vw] max-w-lg p-0 bg-[#5b5959] border-none rounded-[20px] md:rounded-[30px] overflow-hidden max-h-[90vh] overflow-y-auto">
                     <DialogHeader className="sr-only">
                       <DialogTitle>Event Registration</DialogTitle>
                     </DialogHeader>
 
-                    <Card className="w-full bg-transparent border-none rounded-none">
+                    <div className="w-full">
                       <img
                         className="w-full h-[120px] sm:h-[150px] md:h-[174px] object-cover"
                         alt={event?.name}
                         src={event?.image}
                       />
 
-                      <CardContent className="p-4 sm:p-6 md:p-10 space-y-4 sm:space-y-6">
+                      <div className="p-4 sm:p-6 md:p-10 space-y-4 sm:space-y-6">
                         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                           {formFields.map((field) => (
                             <div
@@ -443,8 +442,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
                             {loading ? "Registering..." : "Register"}
                           </Button>
                         </form>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </DialogContent>
                 </Dialog>
               </>

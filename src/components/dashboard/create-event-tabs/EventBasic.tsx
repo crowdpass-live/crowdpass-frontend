@@ -149,9 +149,9 @@ const EventBasic = ({ setActiveStep, eventData, setEventData }: any) => {
           className="bg-transparent text-white/70"
         />
       </div>
-      <div className="flex justify-end mt-10 ">
+      <div className="flex justify-end md:mt-10">
         <Button
-          className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-5 md:py-7 text-xl font-semibold"
+          className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-10 py-7 text-xl font-semibold"
           onClick={handleNextClick}
           disabled={!isFormValid}
         >
