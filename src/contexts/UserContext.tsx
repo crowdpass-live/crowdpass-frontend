@@ -5,6 +5,8 @@ import { constants, RpcProvider } from "starknet";
 import eventAbi from "../Abis/eventAbi.json";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAccount, useConnect, useDisconnect } from '@starknet-react/core'
+import {ControllerConnector} from '@cartridge/connector'
 
 // Define types to avoid direct imports that cause SSR issues
 type SessionAccountInterface = any;
@@ -29,6 +31,8 @@ interface StarknetContextType {
   handleClearSession: () => Promise<void>;
   handleConnect: () => Promise<void>;
   setAddress: (address: String | undefined) => void;
+  username: string | undefined;
+  handleCartridgeConnect: () => Promise<void>;
 }
 
 export const StarknetContext = createContext<StarknetContextType>(
@@ -42,7 +46,19 @@ interface StarknetProviderProps {
 export const StarknetContextProvider = ({
   children,
 }: StarknetProviderProps) => {
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect()
+  const controller = connectors[0] as ControllerConnector
+  const [username, setUsername] = useState<string>()
+
+  useEffect(() => {
+    if (!address) return
+    controller.username()?.then((n) => setUsername(n))
+  }, [controller])
+ 
+
   const router = useRouter();
+  const { address: cartridgeAddress, account: cartridgeAccount } = useAccount();
   const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState<SessionAccountInterface | undefined>(
     undefined
@@ -56,15 +72,35 @@ export const StarknetContextProvider = ({
   const contractAddr =
     (process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`) || "0x0";
 
+    // set the cartrige controller
+    const setCartridge = () => {
+      
+
+      setAddress(cartridgeAddress);
+      setAccount(cartridgeAccount);
+      console.log(address)
+    }
+
+  useEffect(() => {
+    
+    setCartridge()
+   
+  }, [account, address]);
+
+
+
   // Initialize client-side only modules
   useEffect(() => {
     setIsClient(true);
-    
+
     const initArgentSDK = async () => {
       try {
         // Dynamically import browser-only modules
-        const { ArgentWebWallet, deployAndExecuteWithPaymaster: deployExecuteWithPaymaster } = await import("@argent/invisible-sdk");
-        
+        const {
+          ArgentWebWallet,
+          deployAndExecuteWithPaymaster: deployExecuteWithPaymaster,
+        } = await import("@argent/invisible-sdk");
+
         // Initialize the wallet
         argentWebWallet = ArgentWebWallet.init({
           appName: "CrowdPass",
@@ -115,7 +151,7 @@ export const StarknetContextProvider = ({
         });
 
         deployAndExecuteWithPaymaster = deployExecuteWithPaymaster;
-        
+
         // Try to connect to an existing session
         tryConnect();
       } catch (error) {
@@ -136,7 +172,7 @@ export const StarknetContextProvider = ({
 
   const handleClearSession = async () => {
     if (!argentWebWallet) return;
-    
+
     try {
       await argentWebWallet.clearSession();
       setAccount(undefined);
@@ -150,7 +186,7 @@ export const StarknetContextProvider = ({
 
   const tryConnect = async () => {
     if (!argentWebWallet) return;
-    
+
     try {
       const res = await argentWebWallet.connect();
       if (!res) {
@@ -172,12 +208,18 @@ export const StarknetContextProvider = ({
     }
   };
 
+  const handleCartridgeConnect = async () => {
+      await connect({ connector: controller })
+      setAddress(cartridgeAddress);
+      setAccount(cartridgeAccount);
+  }
+
   const handleConnect = async () => {
     if (!argentWebWallet || !provider || !deployAndExecuteWithPaymaster) {
       toast.error("Wallet functionality not available yet. Please try again.");
       return;
     }
-    
+
     try {
       const response = await argentWebWallet.requestConnection({
         callbackData: "custom_callback_data",
@@ -198,7 +240,7 @@ export const StarknetContextProvider = ({
       });
 
       if (response) {
-        const { account: sessionAccount } = response;        
+        const { account: sessionAccount } = response;
         if (response.deploymentPayload) {
           const isDeployed = await sessionAccount.isDeployed();
 
@@ -249,6 +291,8 @@ export const StarknetContextProvider = ({
         argentWebWallet,
         handleConnect,
         setAddress,
+        username,
+        handleCartridgeConnect
       }}
     >
       {children}
