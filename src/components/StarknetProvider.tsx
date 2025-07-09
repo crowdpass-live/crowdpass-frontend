@@ -76,3 +76,4 @@ export function StarknetProvider({ children }: { children: React.ReactNode }) {
     </StarknetConfig>
   );
 }
+

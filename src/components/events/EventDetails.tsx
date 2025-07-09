@@ -1,11 +1,4 @@
-import {
-  Bookmark,
-  Calendar,
-  Share2,
-  ArrowLeft,
-  Copy,
-  Check,
-} from "lucide-react";
+import { Calendar, Share2, ArrowLeft, Copy, Check } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useState, useEffect } from "react";
 import { Button } from "../ui/button";
@@ -22,23 +15,125 @@ import {
 } from "@/components/ui/dialog";
 import useIsTicketHolder from "@/hooks/read-hooks/useIsTicketHolder";
 import useClaimRefund from "@/hooks/write-hooks/useClaimRefund";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { toast } from "sonner";
+import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
+  const { data: availableTicket } = useGetAvailableTicket(id);
   const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const { data } = useIsTicketHolder(id, address as `0x${string}`);
-
   const { event }: any = eventDetails;
   const response = epochToDatetime(`${Number(event?.start_date)}`);
-  const refund = useClaimRefund()
+  const refund = useClaimRefund();
+  const [isOpen, setIsOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    role: "",
+    name: "",
+    email: "",
+    xhandle: "",
+    agreeToNewsletter: false,
+  });
+  const [loading, setLoading] = useState(false)
+  const roleOptions = [
+    { value: "founder", label: "Founder" },
+    { value: "builder", label: "Builder" },
+    { value: "software-engineer", label: "Software Engineer" },
+    { value: "product-manager", label: "Product Manager" },
+    { value: "designer", label: "Designer" },
+    { value: "investor", label: "Investor" },
+    { value: "entrepreneur", label: "Entrepreneur" },
+    { value: "student", label: "Student" },
+    { value: "researcher", label: "Researcher" },
+    { value: "consultant", label: "Consultant" },
+    { value: "other", label: "Other" },
+  ];
+
+  // Form field data
+  const formFields = [
+    { id: "name", label: "Name", type: "text" },
+    { id: "email", label: "Email", type: "email" },
+    { id: "xhandle", label: "X Handle", type: "text" },
+  ];
+
+  const handleInputChange = (id: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleRoleChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, role: value }));
+  };
+
+  const handleNewsletterChange = (checked: boolean) => {
+    setFormData((prev) => ({ ...prev, agreeToNewsletter: checked }));
+  };
+
+  const handleRegisterClick = () => {
+    
+      setIsOpen(true);
+  
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.agreeToNewsletter) {
+      toast.error(
+        "Please agree to receive newsletters from CrowdPass to continue."
+      );
+      return;
+    }
+
+    try {
+      setLoading(true)
+
+      const res = await handlePurchase( event, formData, String(address), id);
+
+      console.log(address)
+      toast.success("registration successful!");
+
+      setLoading(false)
+
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error("Error:", error);
+      if (error.response) {
+        const errorMessage =
+          error.response.data?.message || "Registration failed";
+        toast.error(errorMessage)
+        setLoading(false)
+
+      } else if (error.request) {
+        toast.error("Network error. Please check your connection.");
+        setLoading(false)
+
+      } else {
+        toast.error(
+          error.message || "Payment or registration failed. Please try again."
+        );
+        setLoading(false)
+
+      }
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setShareUrl(window.location.href);
+      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
     }
   }, []);
 
@@ -66,11 +161,24 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const attendeeImages = [
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee1_hvftrx.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee2_fuynig.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee3_pwpu24.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee5_b81v8c.png",
+    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
+  ];
+
+  const totalEventTicket =Number(event?.total_tickets)- Number(availableTicket) || 0
+
+  const displayCount = Math.min(totalEventTicket, 5);
+  const remaining = totalEventTicket - 5;
+
   return (
     <div className="flex flex-col w-full">
       {/* Share Modal */}
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
-        <DialogContent className="bg-[#14141A] border border-gray-700 text-white">
+        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
           <DialogHeader>
             <DialogTitle className="text-white text-xl">
               Share Event
@@ -91,7 +199,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyLink}
-                className="hover:bg-gray-700"
+                className="hover:bg-gray-700 shrink-0"
               >
                 {copied ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -122,7 +230,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
-        {isLoading && (
+        {isLoading || loading && (
           <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
             <HashLoader
               color={"#FF6932"}
@@ -131,7 +239,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
               aria-label="Loading Spinner"
               data-testid="loader"
             />
-            <div className="text-white text-2xl">Purchasing Tickets...</div>
+            <div className="text-white text-2xl">Registering for event...</div>
           </div>
         )}
         <Image
@@ -141,7 +249,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
           height={467}
           className="rounded-3xl w-full md:w-96 object-center object-cover"
         />
-        <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
+        <div className="flex flex-col gap-4 lg:w-full lg:gap-6 md:justify-between">
+          <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
+
+         
           <div>
             <p className="text-primary">
               {Number(event?.ticket_price) > 0
@@ -165,64 +276,45 @@ const EventDetails = ({ eventDetails, id }: any) => {
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex gap-4">
-              <div className="flex items-center justify-center">
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee1_hvftrx.png"
-                  }
-                  alt="attendee1"
-                  width={50}
-                  height={50}
-                  className="w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee2_fuynig.png"
-                  }
-                  alt="attendee2"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633488/attendee3_pwpu24.png"
-                  }
-                  alt="attendee3"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee5_b81v8c.png"
-                  }
-                  alt="attendee4"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <Image
-                  src={
-                    "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png"
-                  }
-                  alt="attendee5"
-                  width={50}
-                  height={50}
-                  className="-ml-3 w-8 h-8 md:w-[50px] md:h-[50px]"
-                />
-                <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
-                  {Number(event?.total_tickets) - 5}+
-                </p>
-              </div>
-              <div className="flex flex-col">
-                <p className="font-semibold text-white">Participant</p>
-                <p className="font-medium text-sm text-white">
-                  Across the globe
-                </p>
-              </div>
+              {totalEventTicket === 0 ? (
+                <div className="flex items-center">
+                  <p className="text-gray-400 italic">
+                    No participant has registered yet
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center justify-center">
+                    {attendeeImages.slice(0, displayCount).map((src, idx) => (
+                      <Image
+                        key={idx}
+                        src={src}
+                        alt={`attendee${idx + 1}`}
+                        width={50}
+                        height={50}
+                        className={`${
+                          idx !== 0 ? "-ml-3" : ""
+                        } w-8 h-8 md:w-[50px] md:h-[50px]`}
+                      />
+                    ))}
+
+                    {totalEventTicket > 5 && (
+                      <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
+                        {remaining}+
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="font-semibold text-white">Participant</p>
+                    <p className="font-medium text-sm text-white">
+                      Across the globe
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
+ </div>
           <div className="flex justify-end lg:w-full gap-8 items-center">
             <div className="pt-4 flex gap-4">
               <Button
@@ -234,15 +326,127 @@ const EventDetails = ({ eventDetails, id }: any) => {
               </Button>
             </div>
 
-            {data === false && (
-              <Button
-                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
-                onClick={async () => {
-                  await handlePurchase(id, Number(event?.ticket_price));
-                }}
-              >
-                Register
-              </Button>
+            {!data === true && (
+              <>
+                <Button
+                  onClick={handleRegisterClick}
+                  className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
+                >
+                  Register
+                </Button>
+
+                {/* Registration Modal - Mobile Responsive */}
+                <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                  <DialogContent className="w-[90vw] max-w-lg p-0 bg-[#5b5959] border-none rounded-[20px] md:rounded-[30px] overflow-hidden max-h-[90vh] overflow-y-auto">
+                    <DialogHeader className="sr-only">
+                      <DialogTitle>Event Registration</DialogTitle>
+                    </DialogHeader>
+
+                    <div className="w-full">
+                      <img
+                        className="w-full h-[120px] sm:h-[150px] md:h-[174px] object-cover"
+                        alt={event?.name}
+                        src={event?.image}
+                      />
+
+                      <div className="p-4 sm:p-6 md:p-10 space-y-4 sm:space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                          {formFields.map((field) => (
+                            <div
+                              key={field.id}
+                              className="border-b-2 border-[#ffffff99]"
+                            >
+                              <Label
+                                htmlFor={field.id}
+                                className="font-bold text-white text-base sm:text-lg block mb-2"
+                              >
+                                {field.label}
+                              </Label>
+                              <Input
+                                id={field.id}
+                                type={field.type}
+                                value={
+                                  formData[
+                                    field.id as keyof typeof formData
+                                  ] === false
+                                    ? ""
+                                    : String(
+                                        formData[
+                                          field.id as keyof typeof formData
+                                        ] ?? ""
+                                      )
+                                }
+                                onChange={(e) =>
+                                  handleInputChange(field.id, e.target.value)
+                                }
+                                className="bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-400 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                required
+                              />
+                            </div>
+                          ))}
+
+                          <div className="border-b-2 border-[#ffffff99] pb-2">
+                            <Label
+                              htmlFor="role"
+                              className="font-bold text-white text-base sm:text-lg block mb-2"
+                            >
+                              Which best describes you?
+                            </Label>
+                            <Select
+                              value={formData.role}
+                              onValueChange={handleRoleChange}
+                            >
+                              <SelectTrigger className="bg-transparent border-none focus:ring-0 text-white p-0 h-auto focus:ring-offset-0 [&>span]:text-white [&>svg]:text-white">
+                                <SelectValue
+                                  placeholder="Select your role"
+                                  className="text-white placeholder:text-gray-400"
+                                />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#5b5959] border-[#ffffff33] text-white">
+                                {roleOptions.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                    className="text-white focus:bg-[#ff6932] focus:text-[#1e1e24] cursor-pointer"
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {/* Newsletter Checkbox */}
+                          <div className="flex items-start space-x-3 pt-4">
+                            <Checkbox
+                              id="newsletter"
+                              checked={formData.agreeToNewsletter}
+                              onCheckedChange={handleNewsletterChange}
+                              className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932] shrink-0"
+                            />
+                            <Label
+                              htmlFor="newsletter"
+                              className="text-white text-xs sm:text-sm leading-relaxed cursor-pointer"
+                            >
+                              I agree to receive newsletters and updates from
+                              CrowdPass about upcoming events, features, and
+                              announcements. *
+                            </Label>
+                          </div>
+
+                          <Button
+                            type="submit"
+                            className="w-full h-[48px] sm:h-[58px] md:h-[68px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-lg sm:text-xl md:text-2xl font-semibold mt-4 sm:mt-6"
+                            disabled={loading}
+                          >
+                            {loading ? "Registering..." : "Register"}
+                          </Button>
+                        </form>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </>
             )}
             {data === true && (
               <Button

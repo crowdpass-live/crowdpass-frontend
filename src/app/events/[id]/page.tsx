@@ -2,10 +2,9 @@
 
 import EventDetails from "@/components/events/EventDetails";
 import EventDetailsBody from "@/components/events/EventDetailsBody";
-import { StarknetContext } from "@/contexts/UserContext";
 import useGetEventById from "@/hooks/read-hooks/useGetEventById";
 import { useParams } from "next/navigation";
-import React, { useContext } from "react";
+import React from "react";
 import HashLoader from "react-spinners/HashLoader";
 
 type Props = {};

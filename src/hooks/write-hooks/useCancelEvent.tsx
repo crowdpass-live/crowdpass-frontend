@@ -53,10 +53,12 @@ const useCancelEvent = () => {
                 const waitForTransaction = await account.waitForTransaction(transaction_hash);
           
                 setIsLoading(false);
+                toast.dismiss();
                 toast.success("Event Cancelled");
                 return "success";
               } catch (error) {
                 console.error(error);
+                toast.dismiss();
                 toast.error(`Error Cancelling ticket, Try again`);
                 setIsLoading(false);
               }

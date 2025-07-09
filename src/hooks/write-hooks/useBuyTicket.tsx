@@ -5,84 +5,126 @@ import { toast } from "sonner";
 import { useCallback, useContext } from "react";
 import { StarknetContext } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const useBuyTicket = () => {
   const {
     contractAddr,
     account,
     setIsLoading,
-    isLoading,
     token_addr,
-    argentWebWallet
+    argentWebWallet,
+    handleConnect
   }: any = useContext(StarknetContext);
-  const router = useRouter();
-  return useCallback(
-    async (event_id: number, amount: number) => {
-      const approvalRequests = [
-        {
-          tokenAddress: token_addr,
-          amount: (amount * 1e18).toString(),
-          spender: contractAddr,
-        },
-      ];
-      const res = await argentWebWallet.requestApprovals(approvalRequests);
 
+  const router = useRouter();
+
+  return useCallback(
+    async (
+      event: any,
+      formData: any,
+      address: string,
+      id: string | number
+    ) => {
       try {
+      
+        let activeAccount = account;
+        
         if (!account) {
-          throw new Error("Account not connected");
-        }
-        setIsLoading(true);
-        {
-          isLoading == true && toast.loading("Claiming refund in progress");
+          setIsLoading(true);
+          const loginAccount = await handleConnect();
+          if (!loginAccount) {
+            toast.error("Account not connected");
+            return;
+          }
+          toast.success("logged in successfully")
+          activeAccount = loginAccount;
         }
 
         try {
-          const call = {
-            contractAddress: contractAddr,
-            entrypoint: "purchase_ticket",
-            calldata: CallData.compile([cairo.uint256(event_id)]),
-          };
-
-          const { resourceBounds: estimatedResourceBounds } =
-            await account.estimateInvokeFee(call, {
-              version: "0x3",
-            });
-
-          const resourceBounds = {
-            ...estimatedResourceBounds,
-            l1_gas: {
-              ...estimatedResourceBounds.l1_gas,
-              max_amount: "0x1388",
-            },
-          };
-
-          let { transaction_hash } = await account.execute(call, {
-            version: "0x3",
-            resourceBounds,
+        setIsLoading(true);
+        toast.loading("Registering for event...");
+          const response = await axios.post("/api/registration", {
+            eventId: event?.uri.split("/").pop(),
+            eventName: event?.name,
+            eventStartDate: Number(event?.start_date),
+            id: String(id),
+            address,
+            ...formData,
           });
-          // // Wait for transaction to be mined
-          const waitForTransaction = await account.waitForTransaction(
-            transaction_hash
+          toast.dismiss();
+          toast.success("Registration successful");
+        } catch (regErr: any) {
+          toast.dismiss();
+          console.error("Registration failed:", regErr);
+          toast.error(
+            regErr.response?.data?.message || "Registration failed, try again"
           );
-
           setIsLoading(false);
-          toast.success("Ticket purchased");
-          router.push("/my-events");
-          return "success";
-        } catch (error) {
-          console.error(error);
-          toast.error(`Error purchasing ticket, Try again`);
-
-          setIsLoading(false);
+          return;
         }
+
+        if (Number(event?.ticket_price) > 0) {
+          const approvalRequests = [
+            {
+              tokenAddress: token_addr,
+              amount: (Number(event?.ticket_price) * 1e18).toString(),
+              spender: contractAddr,
+            },
+          ];
+          try {
+            await argentWebWallet.requestApprovals(approvalRequests);
+          } catch (error) {
+            console.error("Approval error:", error);
+            toast.error(`Error purchasing ticket: ${error}`);
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        toast.loading("Purchasing your ticket...");
+
+        const call = {
+          contractAddress: contractAddr,
+          entrypoint: "purchase_ticket",
+          calldata: CallData.compile([cairo.uint256(id)]),
+        };
+
+        const { resourceBounds: estimatedResourceBounds } =
+          await activeAccount.estimateInvokeFee(call, {
+            version: "0x3",
+          });
+
+        const resourceBounds = {
+          ...estimatedResourceBounds,
+          l1_gas: {
+            ...estimatedResourceBounds.l1_gas,
+            max_amount: "0x1388",
+          },
+        };
+
+        let { transaction_hash } = await activeAccount.execute(call, {
+          version: "0x3",
+          resourceBounds,
+        });
+
+        await activeAccount.waitForTransaction(transaction_hash);
+        toast.dismiss();
+        setIsLoading(false);
+        toast.success("Ticket purchased. Check your mail to see confirmation");
+        router.push("/my-events");
+        return "success";
       } catch (err) {
-        console.error("Error purchasing ticket :", err);
-        throw err instanceof Error
-          ? err
-          : new Error("Failed to purchase ticket ");
+        console.error("Error purchasing ticket:", err);
+        toast.dismiss();
+        const errMsg =
+          err instanceof Error ? err.message : "Failed to purchase ticket";
+        toast.error(errMsg);
+        setIsLoading(false);
+        throw err;
       }
     },
-    [account]
+    [account, handleConnect, contractAddr, setIsLoading, token_addr, argentWebWallet, router]
   );
 };
 

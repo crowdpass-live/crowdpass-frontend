@@ -165,8 +165,7 @@ export const StarknetContextProvider = ({
   // Provider setup - only initialize in client environment
   const provider = isClient
     ? new RpcProvider({
-        nodeUrl:
-          "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_7/gKKJpRDCSZwEGB79uwIXLS8Qyoabfcdp",
+        nodeUrl: process.env.NEXT_PUBLIC_NODE_URL,
         chainId: constants.StarknetChainId.SN_SEPOLIA,
       })
     : null;
@@ -267,6 +266,7 @@ export const StarknetContextProvider = ({
         setAccount(sessionAccount);
         setAddress(sessionAccount.address);
         toast.success("Wallet Connected Successfully");
+        return sessionAccount;
       } else {
         toast.error("requestConnection response is undefined");
       }

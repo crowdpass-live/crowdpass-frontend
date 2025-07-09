@@ -5,6 +5,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import useGetAllEvents from "@/hooks/read-hooks/useGetAllEvents";
 import HashLoader from "react-spinners/HashLoader";
+import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 
 const EventCarousel = () => {
   const { events, isLoading } = useGetAllEvents();
@@ -70,21 +71,27 @@ const EventCarousel = () => {
   }
 
   return (
-    <div className="slider-container w-full">
-      <Slider {...settings}>
-        {events.map((event, index) => (
-          <div key={index} className="px-3">
-            <a href={`/events/${event.id}`}>
-              <img 
-                src={event?.image} 
-                alt="carousel-image" 
-                className="h-24 w-[200px] md:h-60 md:w-[400px] lg:h-80 lg:w-[650px] mb-3 rounded-xl"
-              />
-            </a>
-          </div>
-        ))}
-      </Slider>
-    </div>
+   <Slider {...settings}>
+  {Array.isArray(events) &&
+    events.slice(-3).map((event, index) => (
+      <div key={index} className="px-3">
+        <div className="relative group">
+          <a href={`/events/${event.id}`}>
+            <img
+              src={event?.image}
+              alt="carousel-image"
+              className="h-24 w-[200px] md:h-60 md:w-[400px] lg:h-80 lg:w-[650px] mb-3 rounded-xl object-cover"
+            />
+            <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center rounded-xl">
+              <span className="text-white text-sm md:text-lg flex items-center gap-2">
+                Go to Event <BsFillArrowUpRightCircleFill />
+              </span>
+            </div>
+          </a>
+        </div>
+      </div>
+    ))}
+</Slider>
   );
 };
 

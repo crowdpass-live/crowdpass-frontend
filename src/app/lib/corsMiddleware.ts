@@ -1,25 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export function corsMiddleware(request: NextRequest, handler: Function) {
-  if (request.method === 'OPTIONS') {
-    return handleCorsPreflightRequest();
-  }
+const ALLOWED_ORIGINS = [
+  "https://www.crowdpassevents.com",
+  "http://localhost:3000",
+];
 
-  return handler().then((response: NextResponse) => {
-    return addCorsHeaders(response);
-  });
-}
+export function withCors(handler: (req: NextRequest) => Promise<NextResponse>) {
+  return async function(req: NextRequest) {
+    const origin = req.headers.get("origin");
+    
+    const allowedPatterns = [
+      /^https:\/\/.*\.crowdpassevents\.com$/,
+      /^http:\/\/localhost:\d+$/,        
+    ];
+    
+    const isAllowed = origin && (
+      ALLOWED_ORIGINS.includes(origin) || 
+      allowedPatterns.some(pattern => pattern.test(origin))
+    );
 
-function handleCorsPreflightRequest() {
-  const response = new NextResponse(null, { status: 204 });
-  return addCorsHeaders(response);
-}
+    if (req.method === "OPTIONS") {
+      const response = new NextResponse(null, { status: 200 });
+      
+      if (isAllowed) {
+        response.headers.set("Access-Control-Allow-Origin", origin);
+      }
+      
+      response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+      response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+      response.headers.set("Access-Control-Max-Age", "86400");
+      response.headers.set("Access-Control-Allow-Credentials", "true");
+      
+      return response;
+    }
 
-function addCorsHeaders(response: NextResponse) {
-  response.headers.set("Access-Control-Allow-Origin", "*");
-  response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-  response.headers.set("Access-Control-Max-Age", "86400");
-  
-  return response;
+    const response = await handler(req);
+    
+    if (isAllowed) {
+      response.headers.set("Access-Control-Allow-Origin", origin);
+    }
+    
+    response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+    response.headers.set("Access-Control-Allow-Credentials", "true");
+    
+    return response;
+  };
 }

@@ -11,28 +11,26 @@ import useGetEventAttendance from "@/hooks/read-hooks/useGetEventAttendance";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 type Props = {
-  id: number
+  id: number;
 };
 
 const EventCheckin = (props: Props) => {
   const params = useParams<{ id: string }>();
-  const checkUserIn = useCheckIn()
-  const [checkInEmail, setCheckInEmail] = useState("")
+  const checkUserIn = useCheckIn();
+  const [checkInEmail, setCheckInEmail] = useState("");
 
-  const {data: attendance} = useGetEventAttendance(Number(params.id))
-  
-  const {data: available} = useGetAvailableTicket(Number(params.id))
-  
+  const { data: attendance } = useGetEventAttendance(Number(params.id));
+  const { data: available } = useGetAvailableTicket(Number(params.id));
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setCheckInEmail(e.target.value)
+    setCheckInEmail(e.target.value);
   };
 
-  const handleCheckIn = ()=>{
-    checkUserIn(props.id, checkInEmail as `0x${string}`)
-  }
+  const handleCheckIn = () => {
+    checkUserIn(props.id, checkInEmail as `0x${string}`);
+  };
 
   Chart.register(CategoryScale);
 
@@ -57,9 +55,6 @@ const EventCheckin = (props: Props) => {
         display: false,
       },
     },
-    layout: {
-      padding: 0,
-    },
     maintainAspectRatio: false,
     cutout: "75%",
     circumference: 360,
@@ -70,65 +65,76 @@ const EventCheckin = (props: Props) => {
   return (
     <>
       <EventDay />
-      <div className="border border-deep-blue p-6 rounded-lg">
+      <div className="border border-deep-blue p-4 md:p-6 rounded-lg mb-4">
         <h1 className="text-white text-lg mb-4 raleway font-semibold">
-          Attendee Checkin{" "}
+          Attendee Checkin
         </h1>
-        <div className="flex w-full gap-4">
-          <div className="flex flex-col md:flex-row gap-4 w-full">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
             <input
               type="text"
               placeholder="Search email address"
-              className="raleway w-full bg-transparent border border-deep-blue rounded-lg text-deep-blue py-2 px-8"
+              className="raleway w-full bg-transparent border border-deep-blue rounded-lg text-white py-2 px-4"
               value={checkInEmail}
               onChange={handleInputChange}
             />
-            <Button className="bg-primary raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue h-full" onClick={handleCheckIn}>
+            <Button
+              className="bg-primary raleway text-light-black hover:border-deep-blue hover:bg-transparent hover:text-deep-blue h-full"
+              onClick={handleCheckIn}
+            >
               Search
             </Button>
           </div>
-          <div className="border border-deep-blue p-2 rounded-lg">
-            <LuScanLine size={30} color="#ffffff" />
+          <div className="border border-deep-blue p-2 rounded-lg flex justify-center items-center">
+            <LuScanLine size={24} className="text-white" />
           </div>
         </div>
       </div>
-      <div className="flex flex-grow w-full gap-4">
-        <div className="bg-[#14141A] w-2/5 rounded-xl p-10 flex justify-start gap-10 flex-col border border-deep-blue">
-          <h1 className="text-white text-xl raleway font-medium">
-            Ticket stats
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* Ticket Stats */}
+        <div className="bg-[#14141A] rounded-xl p-6 flex flex-col items-center border border-deep-blue">
+          <h1 className="text-white text-xl raleway font-medium mb-4">
+            Ticket Stats
           </h1>
-          <div className="flex items-center gap-2 w-full">
-            <Doughnut
-              data={DoughnutData}
-              options={DoughnutOptions}
-              style={{ width: "170px", height: "170px" }}
-            />
+          <div className="w-32 h-32 sm:w-40 sm:h-40">
+            <Doughnut data={DoughnutData} options={DoughnutOptions} />
           </div>
         </div>
-        <div className="bg-[#14141A] w-2/5 rounded-xl p-10 flex justify-start gap-10 flex-col border border-deep-blue">
-          <h1 className="text-white text-xl raleway font-medium">
-            User stats
+
+        {/* User Stats */}
+        <div className="bg-[#14141A] rounded-xl p-6 flex flex-col items-center border border-deep-blue">
+          <h1 className="text-white text-xl raleway font-medium mb-4">
+            User Stats
           </h1>
-          <div className="flex items-center gap-2 w-full">
-            <Doughnut
-              data={DoughnutData}
-              options={DoughnutOptions}
-              style={{ width: "170px", height: "170px" }}
-            />
+          <div className="w-32 h-32 sm:w-40 sm:h-40">
+            <Doughnut data={DoughnutData} options={DoughnutOptions} />
           </div>
         </div>
-        <div className="flex flex-col gap-4 w-1/5">
-          <div className="bg-[#14141A] rounded-xl w-full p-5 flex flex-col items-center justify-center border border-deep-blue">
-            <p className="text-xs xl:text-sm text-white/80 text-center">Total Registrations</p>
-            <h1 className="text-3xl text-white font-medium">0</h1>
+
+        {/* Numbers Summary */}
+        <div className="flex flex-col gap-3">
+          <div className="bg-[#14141A] rounded-xl w-full p-4 sm:p-5 flex flex-col items-center justify-center border border-deep-blue">
+            <p className="text-xs sm:text-sm text-white/80 text-center">
+              Total Registrations
+            </p>
+            <h1 className="text-2xl sm:text-3xl text-white font-medium">0</h1>
           </div>
-          <div className="bg-[#14141A] rounded-xl w-full p-5 flex flex-col items-center justify-center border border-deep-blue">
-            <p className="text-xs xl:text-sm text-white/80 text-center">Total Checkins</p>
-            <h1 className="text-3xl text-white font-medium">{Number(attendance)}</h1>
+          <div className="bg-[#14141A] rounded-xl w-full p-4 sm:p-5 flex flex-col items-center justify-center border border-deep-blue">
+            <p className="text-xs sm:text-sm text-white/80 text-center">
+              Total Checkins
+            </p>
+            <h1 className="text-2xl sm:text-3xl text-white font-medium">
+              {Number(attendance)}
+            </h1>
           </div>
-          <div className="bg-[#14141A] rounded-xl w-full p-5 flex flex-col items-center justify-center border border-deep-blue">
-            <p className="text-xs xl:text-sm text-white/80 text-center">Available Tickets</p>
-            <h1 className="text-3xl text-white font-medium">{Number(available)}</h1>
+          <div className="bg-[#14141A] rounded-xl w-full p-4 sm:p-5 flex flex-col items-center justify-center border border-deep-blue">
+            <p className="text-xs sm:text-sm text-white/80 text-center">
+              Available Tickets
+            </p>
+            <h1 className="text-2xl sm:text-3xl text-white font-medium">
+              {Number(available)}
+            </h1>
           </div>
         </div>
       </div>

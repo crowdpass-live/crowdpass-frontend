@@ -14,7 +14,6 @@ const useIsTicketHolder = (eventId: number, address: `0x${string}`) => {
     address: contractAddr,
     watch: false,
   });
-
   return { data, isError, isLoading, error };
 };
 

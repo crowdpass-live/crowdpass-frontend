@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { Toaster } from "@/components/ui/sonner";
 import { LenisProvider } from "@/providers/LenisProvider";
 import dynamic from 'next/dynamic';
+import { RpcProvider } from "starknet";
 const StarknetContextProvider = dynamic(
   () => import('@/contexts/UserContext').then((mod) => mod.StarknetContextProvider),
   { ssr: false }
@@ -24,7 +25,7 @@ export default function RootLayout({
           <StarknetContextProvider>
           <LenisProvider>
             {children}
-            <Toaster richColors={true} />
+            <Toaster richColors={true} position="top-right" />
           </LenisProvider>
           </StarknetContextProvider>
         </StarknetProvider>
