@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
-  const { address, isLoading } = useContext(StarknetContext);
+  const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
   const { data: availableTicket } = useGetAvailableTicket(id);
   const router = useRouter();
@@ -41,6 +41,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const response = epochToDatetime(`${Number(event?.start_date)}`);
   const refund = useClaimRefund();
   const [isOpen, setIsOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     role: "",
     name: "",
@@ -83,7 +84,22 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   const handleRegisterClick = () => {
+    // Check if user is connected
+    if (!address) {
+      setLoginModalOpen(true);
+      return;
+    }
     setIsOpen(true);
+  };
+
+  const handleLogin = async () => {
+    try {
+      await handleCartridgeConnect();
+      setLoginModalOpen(false);     
+    } catch (error) {
+      console.error("Login failed:", error);
+      toast.error("Login failed. Please try again.");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,7 +147,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
       setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
     }
   }, []);
-
 
   function convertTime(time: string) {
     let hours = time.substring(0, 2);
@@ -213,6 +228,29 @@ const EventDetails = ({ eventDetails, id }: any) => {
         </DialogContent>
       </Dialog>
 
+      {/* Login Modal */}
+      <Dialog open={loginModalOpen} onOpenChange={setLoginModalOpen}>
+        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl text-center">
+              Login to Register
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-300 mb-6">
+              You need to connect your wallet to register for this event
+            </p>
+            <Button
+              onClick={handleLogin}
+              className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-full py-3 text-lg"
+              disabled={isLoading}
+            >
+              {isLoading ? "Logging-in..." : "Login"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Back Button */}
       <div className="my-4">
         <Button
@@ -226,11 +264,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
-        {isLoading || loading && (
+        {(isLoading || loading) && (
           <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
             <HashLoader
               color={"#FF6932"}
-              loading={isLoading}
+              loading={isLoading || loading}
               size={100}
               aria-label="Loading Spinner"
               data-testid="loader"

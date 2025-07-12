@@ -6,6 +6,7 @@ const ALLOWED_ORIGINS = [
   "https://www.crowdpassevents.com",
   "http://localhost:3000",
   "http://localhost:3001",
+  
 ];
 
 function addCorsHeaders(response: NextResponse, request: NextRequest) {
