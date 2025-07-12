@@ -71,23 +71,26 @@ const useCreateEvent = () => {
               cairo.uint256(ticket_price),
             ]),
           };
-          const { resourceBounds: estimatedResourceBounds } =
-            await account.estimateInvokeFee(call, {
-              version: "0x3",
-            });
+          // const { resourceBounds: estimatedResourceBounds } =
+          //   await account.estimateInvokeFee(call, {
+          //     version: "0x3",
+          //   });
 
-          const resourceBounds = {
-            ...estimatedResourceBounds,
-            l1_gas: {
-              ...estimatedResourceBounds.l1_gas,
-              max_amount: "0x1388",
-            },
-          };
+          // const resourceBounds = {
+          //   ...estimatedResourceBounds,
+          //   l1_gas: {
+          //     ...estimatedResourceBounds.l1_gas,
+          //     max_amount: "0x1388",
+          //   },
+          // };
 
-          let { transaction_hash } = await account.execute(call, {
-            version: "0x3",
-            resourceBounds,
-          });
+          let { transaction_hash } = await account.execute(
+            call
+            //    {
+            //   version: "0x3",
+            //   resourceBounds,
+            // }
+          );
 
           // Wait for transaction to be mined
           const waitForTransaction =

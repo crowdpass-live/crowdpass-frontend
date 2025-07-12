@@ -21,7 +21,9 @@ const useAddOrganizer = () => {
         toast.loading("Fetching organizer info...");
 
         // 1️⃣ Fetch organizer address from API
-        const res = await axios.get(`/api/registration/${encodeURIComponent(email)}`);
+        const res = await axios.get(
+          `/api/registration/${encodeURIComponent(email)}`
+        );
         const organizer_address = res.data.address as `0x${string}`;
 
         if (!organizer_address) {
@@ -41,25 +43,28 @@ const useAddOrganizer = () => {
           ]),
         };
 
-        // 3️⃣ Estimate fee
-        const { resourceBounds: estimatedResourceBounds } =
-          await account.estimateInvokeFee(call, {
-            version: "0x3",
-          });
+        // // 3️⃣ Estimate fee
+        // const { resourceBounds: estimatedResourceBounds } =
+        //   await account.estimateInvokeFee(call, {
+        //     version: "0x3",
+        //   });
 
-        const resourceBounds = {
-          ...estimatedResourceBounds,
-          l1_gas: {
-            ...estimatedResourceBounds.l1_gas,
-            max_amount: "0x1388",
-          },
-        };
+        // const resourceBounds = {
+        //   ...estimatedResourceBounds,
+        //   l1_gas: {
+        //     ...estimatedResourceBounds.l1_gas,
+        //     max_amount: "0x1388",
+        //   },
+        // };
 
         // 4️⃣ Execute
-        const { transaction_hash } = await account.execute(call, {
-          version: "0x3",
-          resourceBounds,
-        });
+        const { transaction_hash } = await account.execute(
+          call
+          //    {
+          //   version: "0x3",
+          //   resourceBounds,
+          // }
+        );
 
         await account.waitForTransaction(transaction_hash);
         toast.dismiss();

@@ -21,7 +21,7 @@ const Header = () => {
     { name: "Marketplace", href: "/marketplace" },
   ];
 
-  const { address }: any = useContext(StarknetContext);
+  const { status }: any = useContext(StarknetContext);
   // const {address: cartridgeAddress}: any = useAccount();
 
   // console.log(cartridgeAddress)
@@ -65,7 +65,7 @@ const Header = () => {
               {link.name}
             </a>
           ))}
-          {address ? (
+          {status === "connected" ? (
             <a
               href="/my-events"
               className={`text-white font-medium text-md lg:text-xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
@@ -81,12 +81,12 @@ const Header = () => {
           )}
         </div>
         <div className="hidden md:flex gap-4">
-          {address ? (
+          {status === "connected" ? (
             <ConnectedUser showMobileNav={showMobileNav} />
           ) : (
             <ConnectWalletButton showMobileNav={showMobileNav} />
           )}
-          {address ? (
+          {status === "connected" ? (
             <Link href="/dashboard/create-event">
               <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
                 Create Event
@@ -94,7 +94,7 @@ const Header = () => {
             </Link>
           ) : (
             <Link href="/create-event">
-              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex">
+              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 hidden md:flex ">
                 Create Event
               </Button>
             </Link>
@@ -180,12 +180,12 @@ const Header = () => {
             ))}
 
             <li className="block relative list-none group">
-              {address ? (
+              {status === "connected" ? (
                 <ConnectedUser showMobileNav={showMobileNav} />
               ) : (
                 <ConnectWalletButton showMobileNav={showMobileNav} />
               )}
-              {address ? (
+              {status === "connected" ? (
             <Link href="/dashboard/create-event">
               <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 flex md:hidden">
                 Create Event

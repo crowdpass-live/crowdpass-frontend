@@ -6,7 +6,7 @@ import {ControllerConnector} from '@cartridge/connector'
 
 
 const ConnectWalletButton = ({showMobileNav}: any) => {
-  const { handleConnect, handleCartridgeConnect }: any = useContext(StarknetContext);
+  const { handleCartridgeConnect }: any = useContext(StarknetContext);
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect()
   const { address } = useAccount()
@@ -19,23 +19,14 @@ const ConnectWalletButton = ({showMobileNav}: any) => {
   }, [address, controller])
  
  
-  return (
-    <>
-    <Button
-      onClick={handleConnect}
-      className={`bg-transaparent text-white font-semibold border border-white text-sm lg:text-base raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 md:flex ${showMobileNav ? "block mb-3": ""}`}
+  return ( 
+   <Button
+      onClick={handleCartridgeConnect}
+      className={`bg-transaparent text-white font-semibold border border-white text-sm lg:text-base raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 md:flex transition-all duration-200 hover:scale-105 ${showMobileNav ? "block mb-3": ""}`}
     >
       Log in
     </Button>
 
-   <Button
-      onClick={handleCartridgeConnect}
-      className={`bg-transaparent text-white font-semibold border border-white text-sm lg:text-base raleway hover:bg-primary hover:text-black hover:border-primary lg:ml-4 lg:py-6 lg:px-6 md:flex ${showMobileNav ? "block mb-3": ""}`}
-    >
-      Cartridge
-    </Button>
-
-    </>
   );
 };
 
