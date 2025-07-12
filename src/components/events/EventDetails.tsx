@@ -103,9 +103,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
       const res = await handlePurchase( event, formData, String(address), id);
 
-      console.log(address)
-      toast.success("registration successful!");
-
       setLoading(false)
 
       setIsOpen(false);
@@ -136,6 +133,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
       setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
     }
   }, []);
+
+  console.log(shareUrl)
 
   function convertTime(time: string) {
     let hours = time.substring(0, 2);

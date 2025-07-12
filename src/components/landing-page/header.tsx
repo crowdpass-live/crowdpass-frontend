@@ -68,13 +68,13 @@ const Header = () => {
           {status === "connected" ? (
             <a
               href="/my-events"
-              className={`text-white font-medium text-md lg:text-xl raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
+              className={`text-white font-medium text-md lg:text-lg raleway hover:underline  hover:underline-offset-8 hover:decoration-primary ${
                 pathname === "/my-events"
                   ? "underline-offset-8 decoration-primary underline"
                   : ""
               }`}
             >
-              My Events
+              My-Events
             </a>
           ) : (
             ""

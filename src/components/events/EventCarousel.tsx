@@ -10,6 +10,7 @@ import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 const EventCarousel = () => {
   const { events, isLoading } = useGetAllEvents();
   const [mounted, setMounted] = useState(false);
+  console.log(events)
 
   useEffect(() => {
     setMounted(true);
@@ -70,10 +71,11 @@ const EventCarousel = () => {
     return null;
   }
 
+
   return (
    <Slider {...settings}>
   {Array.isArray(events) &&
-    events.slice(-3).map((event, index) => (
+    events.slice(0,3).map((event, index) => (
       <div key={index} className="px-3">
         <div className="relative group">
           <a href={`/events/${event.id}`}>
