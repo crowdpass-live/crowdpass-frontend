@@ -13,7 +13,7 @@ const useBuyTicket = () => {
     account,
     setIsLoading,
     token_addr,
-    handleConnect,
+    handleCartridgeConnect
   }: any = useContext(StarknetContext);
 
   const router = useRouter();
@@ -25,7 +25,7 @@ const useBuyTicket = () => {
 
         if (!account) {
           setIsLoading(true);
-          const loginAccount = await handleConnect();
+          const loginAccount = await handleCartridgeConnect();
           if (!loginAccount) {
             toast.error("Account not connected");
             return;
@@ -122,7 +122,7 @@ const useBuyTicket = () => {
         throw err;
       }
     },
-    [account, handleConnect, contractAddr, setIsLoading, token_addr, router]
+    [account, handleCartridgeConnect, contractAddr, setIsLoading, token_addr, router]
   );
 };
 
