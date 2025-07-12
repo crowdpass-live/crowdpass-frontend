@@ -32,12 +32,14 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
   const { data: availableTicket } = useGetAvailableTicket(id);
+  console.log(availableTicket)
   const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
   const { data } = useIsTicketHolder(id, address as `0x${string}`);
   const { event }: any = eventDetails;
+  console.log(event)
   const response = epochToDatetime(`${Number(event?.start_date)}`);
   const refund = useClaimRefund();
   const [isOpen, setIsOpen] = useState(false);
@@ -169,7 +171,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
   ];
 
-  const totalEventTicket =Number(event?.total_tickets)- Number(availableTicket) || 0
+  
+
+  const totalEventTicket = Number(event?.total_tickets) - Number(availableTicket) 
+
+  console.log(totalEventTicket)
 
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;

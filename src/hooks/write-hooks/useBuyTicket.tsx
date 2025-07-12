@@ -13,23 +13,16 @@ const useBuyTicket = () => {
     account,
     setIsLoading,
     token_addr,
-    argentWebWallet,
-    handleConnect
+    handleConnect,
   }: any = useContext(StarknetContext);
 
   const router = useRouter();
 
   return useCallback(
-    async (
-      event: any,
-      formData: any,
-      address: string,
-      id: string | number
-    ) => {
+    async (event: any, formData: any, address: string, id: string | number) => {
       try {
-      
         let activeAccount = account;
-        
+
         if (!account) {
           setIsLoading(true);
           const loginAccount = await handleConnect();
@@ -37,13 +30,13 @@ const useBuyTicket = () => {
             toast.error("Account not connected");
             return;
           }
-          toast.success("logged in successfully")
+          toast.success("logged in successfully");
           activeAccount = loginAccount;
         }
 
         try {
-        setIsLoading(true);
-        toast.loading("Registering for event...");
+          setIsLoading(true);
+          toast.loading("Registering for event...");
           const response = await axios.post("/api/registration", {
             eventId: event?.uri.split("/").pop(),
             eventName: event?.name,
@@ -64,23 +57,23 @@ const useBuyTicket = () => {
           return;
         }
 
-        if (Number(event?.ticket_price) > 0) {
-          const approvalRequests = [
-            {
-              tokenAddress: token_addr,
-              amount: (Number(event?.ticket_price) * 1e18).toString(),
-              spender: contractAddr,
-            },
-          ];
-          try {
-            await argentWebWallet.requestApprovals(approvalRequests);
-          } catch (error) {
-            console.error("Approval error:", error);
-            toast.error(`Error purchasing ticket: ${error}`);
-            setIsLoading(false);
-            return;
-          }
-        }
+        // if (Number(event?.ticket_price) > 0) {
+        //   const approvalRequests = [
+        //     {
+        //       tokenAddress: token_addr,
+        //       amount: (Number(event?.ticket_price) * 1e18).toString(),
+        //       spender: contractAddr,
+        //     },
+        //   ];
+        //   try {
+        //     await argentWebWallet.requestApprovals(approvalRequests);
+        //   } catch (error) {
+        //     console.error("Approval error:", error);
+        //     toast.error(`Error purchasing ticket: ${error}`);
+        //     setIsLoading(false);
+        //     return;
+        //   }
+        // }
 
         toast.loading("Purchasing your ticket...");
 
@@ -90,23 +83,28 @@ const useBuyTicket = () => {
           calldata: CallData.compile([cairo.uint256(id)]),
         };
 
-        const { resourceBounds: estimatedResourceBounds } =
-          await activeAccount.estimateInvokeFee(call, {
-            version: "0x3",
-          });
+        // const { resourceBounds: estimatedResourceBounds } =
+        //   await activeAccount.estimateInvokeFee(call,
+        //     {
+        //     version: "0x3",
+        //   }
+        // );
 
-        const resourceBounds = {
-          ...estimatedResourceBounds,
-          l1_gas: {
-            ...estimatedResourceBounds.l1_gas,
-            max_amount: "0x1388",
-          },
-        };
+        // const resourceBounds = {
+        //   ...estimatedResourceBounds,
+        //   l1_gas: {
+        //     ...estimatedResourceBounds.l1_gas,
+        //     max_amount: "0x1388",
+        //   },
+        // };
 
-        let { transaction_hash } = await activeAccount.execute(call, {
-          version: "0x3",
-          resourceBounds,
-        });
+        let { transaction_hash } = await activeAccount.execute(
+          call
+          //   {
+          //   version: "0x3",
+          //   resourceBounds,
+          // }
+        );
 
         await activeAccount.waitForTransaction(transaction_hash);
         toast.dismiss();
@@ -124,7 +122,7 @@ const useBuyTicket = () => {
         throw err;
       }
     },
-    [account, handleConnect, contractAddr, setIsLoading, token_addr, argentWebWallet, router]
+    [account, handleConnect, contractAddr, setIsLoading, token_addr, router]
   );
 };
 
