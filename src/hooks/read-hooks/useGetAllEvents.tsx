@@ -16,8 +16,6 @@ const useGetAllEvents = () => {
     watch: false,
   });
 
-  console.log(data);
-
   async function fetchAndMergeEventData(event: { uri: string; id: any }) {
     try {
       const response = await fetch(event.uri);
@@ -36,7 +34,6 @@ const useGetAllEvents = () => {
     const processedEvents = [];
     for (let i = 0; i < data.length; i++) {
       const event = data[i];
-      console.log(event);
       if (event && event.uri) {
         const updatedEvent = await fetchAndMergeEventData(event);
         processedEvents.push(updatedEvent);

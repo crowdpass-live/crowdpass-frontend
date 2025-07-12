@@ -15,16 +15,12 @@ const ConnectedUser = dynamic(() => import("../ConnectedUser"), {
 });
 
 const Header = () => {
-
   const navLinks = [
     { name: "Events", href: "/events" },
     { name: "Marketplace", href: "/marketplace" },
   ];
 
   const { status }: any = useContext(StarknetContext);
-  // const {address: cartridgeAddress}: any = useAccount();
-
-  // console.log(cartridgeAddress)
 
   const [showMobileNav, setShowMobileNav] = useState(false);
   useEffect(() => {
@@ -178,6 +174,18 @@ const Header = () => {
                 </Link>
               </li>
             ))}
+            {status === "connected" ? (
+              <a
+                href="/my-events"
+                className={`text-sm font-bold uppercase text-gray-100 block leading-none relative tracking-[0.8px] z-[1] font-barlow before:content-[''] before:absolute before:w-[7px] before:h-[7px] before:rounded-full before:opacity-0 before:transition-all before:duration-[0.3s] before:ease-[ease-out] before:delay-[0s]  before:top-1 before:-left-3 before:bg-primary group-hover:text-primary  group-hover:before:opacity-100  ${
+                  pathname === "/my-events" && "text-primary before:opacity-100"
+                }`}
+              >
+                My-Events
+              </a>
+            ) : (
+              ""
+            )}
 
             <li className="block relative list-none group">
               {status === "connected" ? (
@@ -186,18 +194,18 @@ const Header = () => {
                 <ConnectWalletButton showMobileNav={showMobileNav} />
               )}
               {status === "connected" ? (
-            <Link href="/dashboard/create-event">
-              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 flex md:hidden">
-                Create Event
-              </Button>
-            </Link>
-          ) : (
-            <Link href="/create-event">
-              <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 flex md:hidden">
-                Create Event
-              </Button>
-            </Link>
-          )}
+                <Link href="/dashboard/create-event">
+                  <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 flex md:hidden">
+                    Create Event
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/create-event">
+                  <Button className="bg-primary text-light-black font-semibold text-sm lg:text-base raleway hover:bg-primary hover:text-deep-blue lg:ml-4 lg:py-6 lg:px-6 flex md:hidden">
+                    Create Event
+                  </Button>
+                </Link>
+              )}
             </li>
           </ul>
         </div>

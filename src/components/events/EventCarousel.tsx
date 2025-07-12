@@ -10,7 +10,6 @@ import { BsFillArrowUpRightCircleFill } from "react-icons/bs";
 const EventCarousel = () => {
   const { events, isLoading } = useGetAllEvents();
   const [mounted, setMounted] = useState(false);
-  console.log(events)
 
   useEffect(() => {
     setMounted(true);

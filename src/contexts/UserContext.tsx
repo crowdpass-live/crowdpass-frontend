@@ -78,9 +78,6 @@ export const StarknetContextProvider = ({
   useEffect(() => {
     setAddress(cartridgeAddress);
     setAccount(cartridgeAccount);
-    console.log(cartridgeAddress);
-    console.log(cartridgeAccount);
-    console.log(status);
   }, [status]);
 
   // Initialize client-side only modules
