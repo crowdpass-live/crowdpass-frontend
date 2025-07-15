@@ -9,11 +9,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"; 
 import { StarknetContext } from "@/contexts/UserContext";
+import { lookupAddresses } from "@cartridge/controller";
 
 const ConnectedUser = ({ showMobileNav }: any) => {
   const { address, handleClearSession, username }: any = useContext(StarknetContext);
+
+  const getAddress =  async()=>{
+     const addressMap = await lookupAddresses([address.toString()]);
+     console.log(addressMap)
+     console.log(addressMap.get(`${address}`))
+  }
+  
+  getAddress();
 
   return (
     <Dialog>

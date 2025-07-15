@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 import { StarknetContext } from "@/contexts/UserContext";
-import { useAccount } from "@starknet-react/core";
+
 const ConnectWalletButton = dynamic(() => import("../ConnectWallet"), {
   ssr: false,
 });

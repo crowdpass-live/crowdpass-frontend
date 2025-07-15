@@ -41,7 +41,7 @@ const useBuyTicket = () => {
             ...formData,
           });
           toast.dismiss();
-          toast.success("Registration successful");
+          toast.success("Registration successful. Check your mail to see confirmation");
         } catch (regErr: any) {
           toast.dismiss();
           console.error("Registration failed:", regErr);
@@ -70,7 +70,6 @@ const useBuyTicket = () => {
         //   }
         // }
 
-        toast.loading("Purchasing your ticket...");
 
         const call = {
           contractAddress: contractAddr,
@@ -102,10 +101,9 @@ const useBuyTicket = () => {
         );
 
         await activeAccount.waitForTransaction(transaction_hash);
-        toast.dismiss();
         setIsLoading(false);
-        toast.success("Ticket purchased. Check your mail to see confirmation");
-        router.push("/my-events");
+        toast.success("Ticket purchased.");
+        router.push(`/my-events/${id}`);
         return "success";
       } catch (err) {
         console.error("Error purchasing ticket:", err);
