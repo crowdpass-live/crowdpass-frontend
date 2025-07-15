@@ -94,37 +94,45 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    if(!address){
-      await handleLogin();
-    }
+  const maxRetries = 10; 
+  let retryCount = 0;
 
-    try {
-
-      const res = await handlePurchase( event, formData, String(address), id);
-
-
-      setIsOpen(false);
-    } catch (error: any) {
-      console.error("Error:", error);
-      if (error.response) {
-        const errorMessage =
-          error.response.data?.message || "Registration failed";
-        toast.error(errorMessage)
-
-      } else if (error.request) {
-        toast.error("Network error. Please check your connection.");
-
-      } else {
-        toast.error(
-          error.message || "Payment or registration failed. Please try again."
-        );
-
+  while (!address && retryCount < maxRetries) {
+    await handleLogin();
+    if (!address) {
+      retryCount++;
+      if (retryCount < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, 3000));
       }
     }
-  };
+  }
+
+  if (!address) {
+    toast.error("Failed to get address after multiple attempts. Please try again.");
+    return;
+  }
+
+  try {
+    const res = await handlePurchase(event, formData, String(address), id);
+    setIsOpen(false);
+  } catch (error: any) {
+    console.error("Error:", error);
+    if (error.response) {
+      const errorMessage =
+        error.response.data?.message || "Registration failed";
+      toast.error(errorMessage);
+    } else if (error.request) {
+      toast.error("Network error. Please check your connection.");
+    } else {
+      toast.error(
+        error.message || "Payment or registration failed. Please try again."
+      );
+    }
+  }
+};
 
   useEffect(() => {
     if (typeof window !== "undefined") {
