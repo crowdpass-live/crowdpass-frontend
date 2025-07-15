@@ -101,6 +101,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   let retryCount = 0;
 
   while (!address && retryCount < maxRetries) {
+    setIsOpen(false);
     await handleLogin();
     if (!address) {
       retryCount++;
@@ -111,11 +112,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
   }
 
   if (!address) {
-    toast.error("Failed to get address after multiple attempts. Please try again.");
+    toast.error("Failed to get user details after multiple attempts. Please try again.");
     return;
   }
 
   try {
+    setIsOpen(true);
     const res = await handlePurchase(event, formData, String(address), id);
     setIsOpen(false);
   } catch (error: any) {
