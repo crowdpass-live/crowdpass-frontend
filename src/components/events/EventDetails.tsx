@@ -62,6 +62,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   });
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  console.log("Event Details:", eventDetails);
 
   const roleOptions = [
     { value: "founder", label: "Founder" },
@@ -424,7 +425,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
             {data && (
               <Button
-                className="bg-gray-600 raleway text-white hover:bg-gray-700 px-8 py-4 text-lg font-semibold rounded-lg flex-1 lg:flex-none lg:w-48"
+                className="bg-gray-600 raleway text-white hover:bg-gray-700 px-8 py-6 text-lg font-semibold rounded-lg flex-1 lg:flex-none lg:w-48"
+                disabled = {!eventDetails?.event?.is_cancelled}
                 onClick={async () => {
                   await refund(id, address as `0x${string}`);
                 }}

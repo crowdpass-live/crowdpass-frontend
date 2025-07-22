@@ -102,7 +102,7 @@ const useBuyTicket = () => {
         await activeAccount.waitForTransaction(transaction_hash);
         toast.dismiss();
         setIsLoading(false);
-        router.push("/my-events");
+        router.push(`/my-events/${id}`);
         return "success";
       } catch (err) {
         console.error("Error purchasing ticket:", err);
