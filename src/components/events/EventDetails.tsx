@@ -1,4 +1,14 @@
-import { Calendar, Share2, ArrowLeft, Copy, Check, X, Users, MapPin, Clock } from "lucide-react";
+import {
+  Calendar,
+  Share2,
+  ArrowLeft,
+  Copy,
+  Check,
+  X,
+  Users,
+  MapPin,
+  Clock,
+} from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useState, useEffect } from "react";
 import { Button } from "../ui/button";
@@ -29,7 +39,8 @@ import { toast } from "sonner";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
-  const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
+  const { address, isLoading, handleCartridgeConnect } =
+    useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
   const { data: availableTicket } = useGetAvailableTicket(id);
   const router = useRouter();
@@ -51,7 +62,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   });
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  
+
   const roleOptions = [
     { value: "founder", label: "Founder" },
     { value: "builder", label: "Builder" },
@@ -67,9 +78,24 @@ const EventDetails = ({ eventDetails, id }: any) => {
   ];
 
   const formFields = [
-    { id: "name", label: "Full Name", type: "text", placeholder: "Enter your full name" },
-    { id: "email", label: "Email Address", type: "email", placeholder: "your.email@example.com" },
-    { id: "xhandle", label: "X/Twitter Handle (Optional)", type: "text", placeholder: "@yourusername" },
+    {
+      id: "name",
+      label: "Full Name",
+      type: "text",
+      placeholder: "Enter your full name",
+    },
+    {
+      id: "email",
+      label: "Email Address",
+      type: "email",
+      placeholder: "your.email@example.com",
+    },
+    {
+      id: "xhandle",
+      label: "X/Twitter Handle (Optional)",
+      type: "text",
+      placeholder: "@yourusername",
+    },
   ];
 
   const handleInputChange = (id: string, value: string) => {
@@ -88,17 +114,16 @@ const EventDetails = ({ eventDetails, id }: any) => {
     if (!address) {
       setLoginModalOpen(true);
       return;
-    }
+    } 
     setIsOpen(true);
     setCurrentStep(1);
+    
   };
 
   const handleLogin = async () => {
     try {
       await handleCartridgeConnect();
       setLoginModalOpen(false);
-      setIsOpen(true);
-      setCurrentStep(1);
     } catch (error) {
       console.error("Login failed:", error);
       toast.error("Sign in failed. Please try again.");
@@ -184,7 +209,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
   ];
 
-  const totalEventTicket = Number(event?.total_tickets) - Number(availableTicket);
+  const totalEventTicket =
+    Number(event?.total_tickets) - Number(availableTicket);
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
   const spotsLeft = Number(availableTicket);
@@ -195,7 +221,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
         <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
           <DialogHeader>
-            <DialogTitle className="text-white text-xl">Share This Event</DialogTitle>
+            <DialogTitle className="text-white text-xl">
+              Share This Event
+            </DialogTitle>
           </DialogHeader>
           <div className="mt-4">
             <p className="text-sm text-gray-300 mb-3">
@@ -278,7 +306,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
             </div>
           </div>
         )}
-        
+
         <Image
           src={event?.image}
           alt="event-image"
@@ -286,7 +314,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
           height={467}
           className="rounded-3xl w-full md:w-96 object-center object-cover"
         />
-        
+
         <div className="flex flex-col gap-4 lg:w-full lg:gap-6 md:justify-between">
           <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
             {/* Price and Title */}
@@ -321,7 +349,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock size={16} color="#FF6932" />
-                  <p className="text-white text-sm">{convertTime(response.time)}</p>
+                  <p className="text-white text-sm">
+                    {convertTime(response.time)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -358,7 +388,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
                     <div className="flex flex-col">
                       <p className="font-semibold text-white flex items-center gap-1">
                         <Users size={16} />
-                        {totalEventTicket} {totalEventTicket === 1 ? 'person' : 'people'} registered
+                        {totalEventTicket}{" "}
+                        {totalEventTicket === 1 ? "person" : "people"}{" "}
+                        registered
                       </p>
                       <p className="font-medium text-sm text-gray-300">
                         Join the community
@@ -405,10 +437,13 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       {/* Registration Modal */}
-      <Dialog open={isOpen} onOpenChange={(open) => {
-        setIsOpen(open);
-        if (!open) setCurrentStep(1);
-      }}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          if (!open) setCurrentStep(1);
+        }}
+      >
         <DialogContent className="w-full h-full max-w-none max-h-none p-0 bg-[#5b5959] border-none rounded-none md:w-[90vw] md:max-w-lg md:rounded-[20px] md:overflow-hidden md:max-h-[90vh] md:h-auto overflow-y-auto">
           <DialogHeader className="sr-only">
             <DialogTitle>Event Registration</DialogTitle>
@@ -425,8 +460,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
               <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-between p-4">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
-                    <div className={`w-2 h-2 rounded-full ${currentStep >= 1 ? 'bg-primary' : 'bg-gray-500'}`} />
-                    <div className={`w-2 h-2 rounded-full ${currentStep >= 2 ? 'bg-primary' : 'bg-gray-500'}`} />
+                    <div
+                      className={`w-2 h-2 rounded-full ${currentStep >= 1 ? "bg-primary" : "bg-gray-500"}`}
+                    />
+                    <div
+                      className={`w-2 h-2 rounded-full ${currentStep >= 2 ? "bg-primary" : "bg-gray-500"}`}
+                    />
                   </div>
                   <Button
                     variant="ghost"
@@ -438,8 +477,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
                   </Button>
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-lg">Register for Event</h3>
-                  <p className="text-white/80 text-sm">Step {currentStep} of 2</p>
+                  <h3 className="text-white font-semibold text-lg">
+                    Register for Event
+                  </h3>
+                  <p className="text-white/80 text-sm">
+                    Step {currentStep} of 2
+                  </p>
                 </div>
               </div>
             </div>
@@ -448,10 +491,14 @@ const EventDetails = ({ eventDetails, id }: any) => {
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div>
-                    <h4 className="text-white text-xl font-semibold mb-2">Your Information</h4>
-                    <p className="text-gray-300 text-sm">Tell us a bit about yourself</p>
+                    <h4 className="text-white text-xl font-semibold mb-2">
+                      Your Information
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      Tell us a bit about yourself
+                    </p>
                   </div>
-                  
+
                   {formFields.map((field) => (
                     <div key={field.id} className="space-y-2">
                       <Label
@@ -467,20 +514,31 @@ const EventDetails = ({ eventDetails, id }: any) => {
                         value={
                           formData[field.id as keyof typeof formData] === false
                             ? ""
-                            : String(formData[field.id as keyof typeof formData] ?? "")
+                            : String(
+                                formData[field.id as keyof typeof formData] ??
+                                  ""
+                              )
                         }
-                        onChange={(e) => handleInputChange(field.id, e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange(field.id, e.target.value)
+                        }
                         className="bg-white/10 border-white/20 focus:border-primary text-white placeholder:text-gray-400 rounded-lg p-3"
-                        required={field.id !== 'xhandle'}
+                        required={field.id !== "xhandle"}
                       />
                     </div>
                   ))}
 
                   <div className="space-y-2">
-                    <Label htmlFor="role" className="font-medium text-white text-base block">
+                    <Label
+                      htmlFor="role"
+                      className="font-medium text-white text-base block"
+                    >
                       What best describes you?
                     </Label>
-                    <Select value={formData.role} onValueChange={handleRoleChange}>
+                    <Select
+                      value={formData.role}
+                      onValueChange={handleRoleChange}
+                    >
                       <SelectTrigger className="bg-white/10 border-white/20 focus:border-primary text-white rounded-lg p-3 h-auto">
                         <SelectValue placeholder="Choose your role" />
                       </SelectTrigger>
@@ -513,16 +571,34 @@ const EventDetails = ({ eventDetails, id }: any) => {
               {currentStep === 2 && (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <h4 className="text-white text-xl font-semibold mb-2">Almost Done!</h4>
-                    <p className="text-gray-300 text-sm">Just one more step to complete your registration</p>
+                    <h4 className="text-white text-xl font-semibold mb-2">
+                      Almost Done!
+                    </h4>
+                    <p className="text-gray-300 text-sm">
+                      Just one more step to complete your registration
+                    </p>
                   </div>
 
                   <div className="bg-white/5 rounded-lg p-4 space-y-2">
-                    <h5 className="text-white font-medium">Registration Summary</h5>
+                    <h5 className="text-white font-medium">
+                      Registration Summary
+                    </h5>
                     <div className="text-sm text-gray-300 space-y-1">
-                      <p><span className="font-medium">Name:</span> {formData.name}</p>
-                      <p><span className="font-medium">Email:</span> {formData.email}</p>
-                      <p><span className="font-medium">Role:</span> {roleOptions.find(r => r.value === formData.role)?.label}</p>
+                      <p>
+                        <span className="font-medium">Name:</span>{" "}
+                        {formData.name}
+                      </p>
+                      <p>
+                        <span className="font-medium">Email:</span>{" "}
+                        {formData.email}
+                      </p>
+                      <p>
+                        <span className="font-medium">Role:</span>{" "}
+                        {
+                          roleOptions.find((r) => r.value === formData.role)
+                            ?.label
+                        }
+                      </p>
                     </div>
                   </div>
 
@@ -537,7 +613,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       htmlFor="newsletter"
                       className="text-white text-sm leading-relaxed cursor-pointer"
                     >
-                      Yes, I'd like to receive updates about upcoming events and announcements from CrowdPass. You can unsubscribe anytime. *
+                      Yes, I'd like to receive updates about upcoming events and
+                      announcements from CrowdPass. You can unsubscribe anytime.
+                      *
                     </Label>
                   </div>
 
@@ -555,7 +633,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       className="flex-[2] h-[56px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-lg font-semibold"
                       disabled={loading || !formData.agreeToNewsletter}
                     >
-                      {loading ? "Completing Registration..." : "Complete Registration"}
+                      {loading
+                        ? "Completing Registration..."
+                        : "Complete Registration"}
                     </Button>
                   </div>
                 </form>
