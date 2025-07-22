@@ -1,8 +1,6 @@
 "use client";
 
-import { dummyEvents } from "@/components/events/dummyData";
 import EventDetails from "@/components/events/EventDetails";
-import EventTicketPrice from "@/components/events/EventTicktetPrice";
 import MyEventTab from "@/components/my-event/MyEventTab";
 import useGetEventById from "@/hooks/read-hooks/useGetEventById";
 import { MapPin } from "lucide-react";
@@ -33,7 +31,7 @@ const page = () => {
         </div>
       )}
       <EventDetails eventDetails={eventDetails} id={params.id} />
-      <div className="bg-[#CBCACF66] max-w-[1280px] pt-40 -mt-32 mb-10">
+      <div className="bg-deep-blue max-w-[1280px] pt-28 -mt-16 mb-4">
         <div className="mx-4 lg:mx-28">
           <hr className="text-white " />
           <h1 className="raleway text-2xl md:text-4xl text-white font-semibold my-4">
