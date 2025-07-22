@@ -6,7 +6,6 @@ import {
   Check,
   X,
   Users,
-  MapPin,
   Clock,
 } from "lucide-react";
 import Image from "next/image";
@@ -147,10 +146,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+
     if (!formData.agreeToNewsletter) {
       toast.error("Please agree to receive event updates to continue.");
       return;
     }
+     setIsOpen(false);
 
     try {
       setLoading(true);
@@ -616,7 +617,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       className="text-white text-sm leading-relaxed cursor-pointer"
                     >
                       Yes, I'd like to receive updates about upcoming events and
-                      announcements from CrowdPass. You can unsubscribe anytime.
+                      announcements from {event?.name}. You can unsubscribe anytime.
                       *
                     </Label>
                   </div>
