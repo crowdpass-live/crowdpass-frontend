@@ -83,6 +83,13 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setFormData((prev) => ({ ...prev, agreeToNewsletter: checked }));
   };
 
+  const handleRegisterClick = () => {
+    if (!address) {
+      setLoginModalOpen(true);
+      return;
+    }
+    setIsOpen(true);
+  };
 
   const handleLogin = async () => {
     try {
@@ -97,8 +104,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if(!address){
-      await handleLogin();
+    if (!formData.agreeToNewsletter) {
+      toast.error(
+        "Please agree to receive newsletters from CrowdPass to continue."
+      );
+      return;
     }
 
     try {
@@ -113,14 +123,14 @@ const EventDetails = ({ eventDetails, id }: any) => {
         const errorMessage =
           error.response.data?.message || "Registration failed";
         toast.error(errorMessage)
-
       } else if (error.request) {
         toast.error("Network error. Please check your connection.");
-
+        setLoading(false)
       } else {
         toast.error(
           error.message || "Payment or registration failed. Please try again."
         );
+        setLoading(false)
 
       }
     }
@@ -128,7 +138,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}/events/${id}`);
+      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
     }
   }, []);
 
@@ -212,6 +222,29 @@ const EventDetails = ({ eventDetails, id }: any) => {
         </DialogContent>
       </Dialog>
 
+      {/* Login Modal */}
+      <Dialog open={loginModalOpen} onOpenChange={setLoginModalOpen}>
+        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl text-center">
+              Login to Register
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-300 mb-6">
+              You need to connect your wallet to register for this event
+            </p>
+            <Button
+              onClick={handleLogin}
+              className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-full py-3 text-lg"
+              disabled={isLoading}
+            >
+              {isLoading ? "Logging-in..." : "Login"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Back Button */}
       <div className="my-4">
         <Button
@@ -225,6 +258,18 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
+        {(isLoading || loading) && (
+          <div className="fixed inset-0 z-50 flex flex-col gap-10 items-center justify-center bg-black bg-opacity-50">
+            <HashLoader
+              color={"#FF6932"}
+              loading={isLoading || loading}
+              size={100}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+            <div className="text-white text-2xl">Registering for event...</div>
+          </div>
+        )}
         <Image
           src={event?.image}
           alt="event-image"
@@ -310,7 +355,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
             {!data === true && (
               <>
                 <Button
-                  onClick={()=>setIsOpen(!isOpen)}
+                  onClick={handleRegisterClick}
                   className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
                 >
                   Register
@@ -430,11 +475,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
                               className="text-white text-sm leading-relaxed cursor-pointer"
                             >
                               I agree to receive newsletters and updates from
-                              {event?.name} about upcoming events, features, and
+                              CrowdPass about upcoming events, features, and
                               announcements. *
                             </Label>
                           </div>
-                          
 
                           {/* Submit Button - Fixed at bottom on mobile */}
                           <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#5b5959] border-t border-[#ffffff33] md:relative md:border-t-0 md:p-0 md:bg-transparent">
