@@ -70,7 +70,6 @@ const useBuyTicket = () => {
         //   }
         // }
 
-
         const call = {
           contractAddress: contractAddr,
           entrypoint: "purchase_ticket",
@@ -101,9 +100,9 @@ const useBuyTicket = () => {
         );
 
         await activeAccount.waitForTransaction(transaction_hash);
+        toast.dismiss();
         setIsLoading(false);
-        toast.success("Ticket purchased.");
-        router.push(`/my-events/${id}`);
+        router.push("/my-events");
         return "success";
       } catch (err) {
         console.error("Error purchasing ticket:", err);

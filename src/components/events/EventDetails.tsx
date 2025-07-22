@@ -1,4 +1,4 @@
-import { Calendar, Share2, ArrowLeft, Copy, Check, X } from "lucide-react";
+import { Calendar, Share2, ArrowLeft, Copy, Check, X, Users, MapPin, Clock } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useState, useEffect } from "react";
 import { Button } from "../ui/button";
@@ -49,7 +49,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
     xhandle: "",
     agreeToNewsletter: false,
   });
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  
   const roleOptions = [
     { value: "founder", label: "Founder" },
     { value: "builder", label: "Builder" },
@@ -64,11 +66,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
     { value: "other", label: "Other" },
   ];
 
-  // Form field data
   const formFields = [
-    { id: "name", label: "Name", type: "text" },
-    { id: "email", label: "Email", type: "email" },
-    { id: "xhandle", label: "X Handle", type: "text" },
+    { id: "name", label: "Full Name", type: "text", placeholder: "Enter your full name" },
+    { id: "email", label: "Email Address", type: "email", placeholder: "your.email@example.com" },
+    { id: "xhandle", label: "X/Twitter Handle (Optional)", type: "text", placeholder: "@yourusername" },
   ];
 
   const handleInputChange = (id: string, value: string) => {
@@ -83,52 +84,70 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setFormData((prev) => ({ ...prev, agreeToNewsletter: checked }));
   };
 
+  const handleRegisterClick = () => {
+    if (!address) {
+      setLoginModalOpen(true);
+      return;
+    }
+    setIsOpen(true);
+    setCurrentStep(1);
+  };
 
   const handleLogin = async () => {
     try {
       await handleCartridgeConnect();
-      setLoginModalOpen(false);     
+      setLoginModalOpen(false);
+      setIsOpen(true);
+      setCurrentStep(1);
     } catch (error) {
       console.error("Login failed:", error);
-      toast.error("Login failed. Please try again.");
+      toast.error("Sign in failed. Please try again.");
+    }
+  };
+
+  const validateStep1 = () => {
+    const { name, email, role } = formData;
+    return name.trim() && email.trim() && role;
+  };
+
+  const handleContinue = () => {
+    if (validateStep1()) {
+      setCurrentStep(2);
+    } else {
+      toast.error("Please fill in all required fields");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if(!address){
-      await handleLogin();
+    if (!formData.agreeToNewsletter) {
+      toast.error("Please agree to receive event updates to continue.");
+      return;
     }
 
     try {
-
-      const res = await handlePurchase( event, formData, String(address), id);
-
-
+      setLoading(true);
+      const res = await handlePurchase(event, formData, String(address), id);
+      setLoading(false);
       setIsOpen(false);
+      setCurrentStep(1);
+      setFormData({
+        role: "",
+        name: "",
+        email: "",
+        xhandle: "",
+        agreeToNewsletter: false,
+      });
     } catch (error: any) {
       console.error("Error:", error);
-      if (error.response) {
-        const errorMessage =
-          error.response.data?.message || "Registration failed";
-        toast.error(errorMessage)
-
-      } else if (error.request) {
-        toast.error("Network error. Please check your connection.");
-
-      } else {
-        toast.error(
-          error.message || "Payment or registration failed. Please try again."
-        );
-
-      }
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}/events/${id}`);
+      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
     }
   }, []);
 
@@ -153,6 +172,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const handleCopyLink = () => {
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
+    toast.success("Link copied!");
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -164,10 +184,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
   ];
 
-  const totalEventTicket = Number(event?.total_tickets) - Number(availableTicket) 
-
+  const totalEventTicket = Number(event?.total_tickets) - Number(availableTicket);
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
+  const spotsLeft = Number(availableTicket);
 
   return (
     <div className="flex flex-col w-full">
@@ -175,26 +195,24 @@ const EventDetails = ({ eventDetails, id }: any) => {
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
         <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
           <DialogHeader>
-            <DialogTitle className="text-white text-xl">
-              Share Event
-            </DialogTitle>
+            <DialogTitle className="text-white text-xl">Share This Event</DialogTitle>
           </DialogHeader>
           <div className="mt-4">
-            <p className="text-sm text-gray-300 mb-2">
-              Copy the link below to share this event
+            <p className="text-sm text-gray-300 mb-3">
+              Share this event with your friends and colleagues
             </p>
-            <div className="flex items-center bg-black/30 rounded-md p-2">
+            <div className="flex items-center bg-black/30 rounded-lg p-3">
               <input
                 type="text"
                 value={shareUrl}
                 readOnly
-                className="w-full bg-transparent text-white outline-none flex-1 mr-2 overflow-hidden text-ellipsis"
+                className="w-full bg-transparent text-white outline-none flex-1 mr-2 overflow-hidden text-ellipsis text-sm"
               />
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyLink}
-                className="hover:bg-gray-700 shrink-0"
+                className="hover:bg-gray-700 shrink-0 px-3"
               >
                 {copied ? (
                   <Check className="h-4 w-4 text-green-500" />
@@ -203,11 +221,32 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 )}
               </Button>
             </div>
-            {copied && (
-              <p className="text-green-500 text-sm mt-2">
-                Link copied to clipboard!
-              </p>
-            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Login Modal */}
+      <Dialog open={loginModalOpen} onOpenChange={setLoginModalOpen}>
+        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
+          <DialogHeader>
+            <DialogTitle className="text-white text-xl text-center">
+              Sign In to Register
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-300 mb-6">
+              Sign in to your account to register for this event
+            </p>
+            <Button
+              onClick={handleLogin}
+              className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-full py-3 text-lg"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+            <p className="text-xs text-gray-400 mt-3">
+              Quick and secure registration
+            </p>
           </div>
         </DialogContent>
       </Dialog>
@@ -220,11 +259,26 @@ const EventDetails = ({ eventDetails, id }: any) => {
           className="flex items-center gap-2 text-white hover:text-primary hover:bg-transparent"
         >
           <ArrowLeft size={20} />
-          <span>Back</span>
+          <span>Back to Events</span>
         </Button>
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
+        {(isLoading || loading) && (
+          <div className="fixed inset-0 z-50 flex flex-col gap-6 items-center justify-center bg-black bg-opacity-75">
+            <HashLoader
+              color={"#FF6932"}
+              loading={isLoading || loading}
+              size={80}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+            <div className="text-white text-xl text-center px-4">
+              {loading ? "Completing your registration..." : "Processing..."}
+            </div>
+          </div>
+        )}
+        
         <Image
           src={event?.image}
           alt="event-image"
@@ -232,40 +286,57 @@ const EventDetails = ({ eventDetails, id }: any) => {
           height={467}
           className="rounded-3xl w-full md:w-96 object-center object-cover"
         />
+        
         <div className="flex flex-col gap-4 lg:w-full lg:gap-6 md:justify-between">
           <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
+            {/* Price and Title */}
             <div>
-              <p className="text-primary">
-                {Number(event?.ticket_price) > 0
-                  ? `${Number(event?.ticket_price)} STRK`
-                  : "FREE"}
-              </p>
-              <h1 className="raleway text-2xl md:text-4xl text-white font-semibold">
+              <div className="flex items-center gap-2 mb-2">
+                <p className="text-primary text-lg font-semibold">
+                  {Number(event?.ticket_price) > 0
+                    ? `${Number(event?.ticket_price)} STRK`
+                    : "FREE EVENT"}
+                </p>
+                {spotsLeft > 0 && spotsLeft <= 10 && (
+                  <span className="text-xs bg-red-500 text-white px-2 py-1 rounded-full">
+                    Only {spotsLeft} spots left!
+                  </span>
+                )}
+              </div>
+              <h1 className="raleway text-2xl md:text-4xl text-white font-semibold leading-tight">
                 {event?.name}
               </h1>
             </div>
-            <div className="bg-[#CBCACF66] flex gap-2 rounded-lg lg:max-w-80 py-2 px-3">
+
+            {/* Date and Time Card */}
+            <div className="bg-[#CBCACF66] flex gap-3 rounded-lg lg:max-w-80 py-3 px-4">
               <div className="bg-[#14141A] p-2 rounded-xl">
-                <Calendar size={30} color="#FF6932" />
+                <Calendar size={28} color="#FF6932" />
               </div>
               <div className="flex flex-col gap-1">
-                <p className="text-white">
-                  {response.day} {response.month}, {response.year}
-                </p>
-                <p className="text-white text-sm">{convertTime(response.time)}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-white font-medium">
+                    {response.day} {response.month}, {response.year}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock size={16} color="#FF6932" />
+                  <p className="text-white text-sm">{convertTime(response.time)}</p>
+                </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <div className="flex gap-4">
+
+            {/* Attendees Section */}
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-4">
                 {totalEventTicket === 0 ? (
-                  <div className="flex items-center">
-                    <p className="text-gray-400 italic">
-                      No participant has registered yet
-                    </p>
+                  <div className="flex items-center gap-2">
+                    <Users size={20} color="#9CA3AF" />
+                    <p className="text-gray-400">Be the first to register!</p>
                   </div>
                 ) : (
                   <>
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center">
                       {attendeeImages.slice(0, displayCount).map((src, idx) => (
                         <Image
                           key={idx}
@@ -275,20 +346,22 @@ const EventDetails = ({ eventDetails, id }: any) => {
                           height={50}
                           className={`${
                             idx !== 0 ? "-ml-3" : ""
-                          } w-8 h-8 md:w-[50px] md:h-[50px]`}
+                          } w-10 h-10 md:w-[50px] md:h-[50px] rounded-full border-2 border-white`}
                         />
                       ))}
-
                       {totalEventTicket > 5 && (
-                        <p className="text-primary flex justify-center items-center text-sm p-2 bg-white rounded-full -ml-3 border-2 border-primary">
-                          {remaining}+
-                        </p>
+                        <div className="text-primary flex justify-center items-center text-sm w-10 h-10 md:w-[50px] md:h-[50px] bg-white rounded-full -ml-3 border-2 border-primary font-semibold">
+                          +{remaining}
+                        </div>
                       )}
                     </div>
                     <div className="flex flex-col">
-                      <p className="font-semibold text-white">Participant</p>
-                      <p className="font-medium text-sm text-white">
-                        Across the globe
+                      <p className="font-semibold text-white flex items-center gap-1">
+                        <Users size={16} />
+                        {totalEventTicket} {totalEventTicket === 1 ? 'person' : 'people'} registered
+                      </p>
+                      <p className="font-medium text-sm text-gray-300">
+                        Join the community
                       </p>
                     </div>
                   </>
@@ -296,177 +369,201 @@ const EventDetails = ({ eventDetails, id }: any) => {
               </div>
             </div>
           </div>
-          <div className="flex justify-end lg:w-full gap-8 items-center">
-            <div className="pt-4 flex gap-4">
+
+          {/* Action Buttons */}
+          <div className="flex justify-between lg:justify-end lg:w-full gap-4 items-center mt-6">
+            <Button
+              variant="ghost"
+              className="p-3 h-auto hover:bg-gray-800 rounded-full"
+              onClick={() => setShareOpen(true)}
+            >
+              <Share2 size={30} className="text-white" />
+            </Button>
+
+            {!data && (
               <Button
-                variant="ghost"
-                className="p-0 h-auto hover:bg-transparent"
-                onClick={() => setShareOpen(true)}
+                onClick={handleRegisterClick}
+                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue px-8 py-6 text-lg font-semibold rounded-lg flex-1 lg:flex-none lg:w-48"
+                disabled={spotsLeft === 0}
               >
-                <Share2 size={40} fill="#ffffff" color="#ffffff" />
+                {spotsLeft === 0 ? "Event Full" : "Register Now"}
               </Button>
-            </div>
-
-            {!data === true && (
-              <>
-                <Button
-                  onClick={()=>setIsOpen(!isOpen)}
-                  className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center"
-                >
-                  Register
-                </Button>
-
-                {/* Registration Modal - Full Page on Mobile */}
-                <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                  <DialogContent className="w-full h-full max-w-none max-h-none p-0 bg-[#5b5959] border-none rounded-none md:w-[90vw] md:max-w-lg md:rounded-[30px] md:overflow-hidden md:max-h-[90vh] md:h-auto overflow-y-auto">
-                    <DialogHeader className="sr-only">
-                      <DialogTitle>Event Registration</DialogTitle>
-                    </DialogHeader>
-
-                    <div className="w-full h-full md:h-auto">
-                      {/* Mobile Full-Screen Header */}
-                      <div className="relative md:hidden">
-                        <img
-                          className="w-full h-[200px] object-cover"
-                          alt={event?.name}
-                          src={event?.image}
-                        />
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setIsOpen(false)}
-                          className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
-                        >
-                          <X className="h-5 w-5" />
-                        </Button>
-                      </div>
-
-                      {/* Desktop Header */}
-                      <div className="hidden md:block">
-                        <img
-                          className="w-full h-[174px] object-cover"
-                          alt={event?.name}
-                          src={event?.image}
-                        />
-                      </div>
-
-                      <div className="flex-1 p-4 sm:p-6 md:p-10 space-y-4 sm:space-y-6 pb-20 md:pb-10">
-                        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                          {formFields.map((field) => (
-                            <div
-                              key={field.id}
-                              className="border-b-2 border-[#ffffff99]"
-                            >
-                              <Label
-                                htmlFor={field.id}
-                                className="font-bold text-white text-base sm:text-lg block mb-2"
-                              >
-                                {field.label}
-                              </Label>
-                              <Input
-                                id={field.id}
-                                type={field.type}
-                                value={
-                                  formData[
-                                    field.id as keyof typeof formData
-                                  ] === false
-                                    ? ""
-                                    : String(
-                                        formData[
-                                          field.id as keyof typeof formData
-                                        ] ?? ""
-                                      )
-                                }
-                                onChange={(e) =>
-                                  handleInputChange(field.id, e.target.value)
-                                }
-                                className="bg-transparent border-none focus:ring-0 text-white placeholder:text-gray-400 p-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-base"
-                                required
-                              />
-                            </div>
-                          ))}
-
-                          <div className="border-b-2 border-[#ffffff99] pb-2">
-                            <Label
-                              htmlFor="role"
-                              className="font-bold text-white text-base sm:text-lg block mb-2"
-                            >
-                              Which best describes you?
-                            </Label>
-                            <Select
-                              value={formData.role}
-                              onValueChange={handleRoleChange}
-                            >
-                              <SelectTrigger className="bg-transparent border-none focus:ring-0 text-white p-0 h-auto focus:ring-offset-0 [&>span]:text-white [&>svg]:text-white text-base">
-                                <SelectValue
-                                  placeholder="Select your role"
-                                  className="text-white placeholder:text-gray-400"
-                                />
-                              </SelectTrigger>
-                              <SelectContent className="bg-[#5b5959] border-[#ffffff33] text-white">
-                                {roleOptions.map((option) => (
-                                  <SelectItem
-                                    key={option.value}
-                                    value={option.value}
-                                    className="text-white focus:bg-[#ff6932] focus:text-[#1e1e24] cursor-pointer"
-                                  >
-                                    {option.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          {/* Newsletter Checkbox */}
-                          <div className="flex items-start space-x-3 pt-4">
-                            <Checkbox
-                              id="newsletter"
-                              checked={formData.agreeToNewsletter}
-                              onCheckedChange={handleNewsletterChange}
-                              className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932] shrink-0"
-                            />
-                            <Label
-                              htmlFor="newsletter"
-                              className="text-white text-sm leading-relaxed cursor-pointer"
-                            >
-                              I agree to receive newsletters and updates from
-                              {event?.name} about upcoming events, features, and
-                              announcements. *
-                            </Label>
-                          </div>
-                          
-
-                          {/* Submit Button - Fixed at bottom on mobile */}
-                          <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#5b5959] border-t border-[#ffffff33] md:relative md:border-t-0 md:p-0 md:bg-transparent">
-                            <Button
-                              type="submit"
-                              className="w-full h-[56px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-xl font-semibold"
-                              disabled={loading}
-                            >
-                              {loading ? "Registering..." : "Register"}
-                            </Button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </>
             )}
-            {data === true && (
+
+            {data && (
               <Button
-                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-60 py-6 text-xl mt-4 flex justify-center items-center "
-                disabled
+                className="bg-gray-600 raleway text-white hover:bg-gray-700 px-8 py-4 text-lg font-semibold rounded-lg flex-1 lg:flex-none lg:w-48"
                 onClick={async () => {
                   await refund(id, address as `0x${string}`);
                 }}
               >
-                Reclaim Refund
+                Request Refund
               </Button>
             )}
           </div>
         </div>
       </div>
+
+      {/* Registration Modal */}
+      <Dialog open={isOpen} onOpenChange={(open) => {
+        setIsOpen(open);
+        if (!open) setCurrentStep(1);
+      }}>
+        <DialogContent className="w-full h-full max-w-none max-h-none p-0 bg-[#5b5959] border-none rounded-none md:w-[90vw] md:max-w-lg md:rounded-[20px] md:overflow-hidden md:max-h-[90vh] md:h-auto overflow-y-auto">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Event Registration</DialogTitle>
+          </DialogHeader>
+
+          <div className="w-full h-full md:h-auto">
+            {/* Header with Progress */}
+            <div className="relative">
+              <img
+                className="w-full h-[160px] md:h-[140px] object-cover"
+                alt={event?.name}
+                src={event?.image}
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-between p-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${currentStep >= 1 ? 'bg-primary' : 'bg-gray-500'}`} />
+                    <div className={`w-2 h-2 rounded-full ${currentStep >= 2 ? 'bg-primary' : 'bg-gray-500'}`} />
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsOpen(false)}
+                    className="bg-black/50 hover:bg-black/70 text-white rounded-full p-2"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">Register for Event</h3>
+                  <p className="text-white/80 text-sm">Step {currentStep} of 2</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex-1 p-6 space-y-6 pb-24 md:pb-6">
+              {currentStep === 1 && (
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="text-white text-xl font-semibold mb-2">Your Information</h4>
+                    <p className="text-gray-300 text-sm">Tell us a bit about yourself</p>
+                  </div>
+                  
+                  {formFields.map((field) => (
+                    <div key={field.id} className="space-y-2">
+                      <Label
+                        htmlFor={field.id}
+                        className="font-medium text-white text-base block"
+                      >
+                        {field.label}
+                      </Label>
+                      <Input
+                        id={field.id}
+                        type={field.type}
+                        placeholder={field.placeholder}
+                        value={
+                          formData[field.id as keyof typeof formData] === false
+                            ? ""
+                            : String(formData[field.id as keyof typeof formData] ?? "")
+                        }
+                        onChange={(e) => handleInputChange(field.id, e.target.value)}
+                        className="bg-white/10 border-white/20 focus:border-primary text-white placeholder:text-gray-400 rounded-lg p-3"
+                        required={field.id !== 'xhandle'}
+                      />
+                    </div>
+                  ))}
+
+                  <div className="space-y-2">
+                    <Label htmlFor="role" className="font-medium text-white text-base block">
+                      What best describes you?
+                    </Label>
+                    <Select value={formData.role} onValueChange={handleRoleChange}>
+                      <SelectTrigger className="bg-white/10 border-white/20 focus:border-primary text-white rounded-lg p-3 h-auto">
+                        <SelectValue placeholder="Choose your role" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#5b5959] border-[#ffffff33] text-white">
+                        {roleOptions.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                            className="text-white focus:bg-[#ff6932] focus:text-[#1e1e24] cursor-pointer"
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#5b5959] border-t border-[#ffffff33] md:relative md:border-t-0 md:p-0 md:bg-transparent">
+                    <Button
+                      onClick={handleContinue}
+                      className="w-full h-[56px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-lg font-semibold"
+                      disabled={!validateStep1()}
+                    >
+                      Continue
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 2 && (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div>
+                    <h4 className="text-white text-xl font-semibold mb-2">Almost Done!</h4>
+                    <p className="text-gray-300 text-sm">Just one more step to complete your registration</p>
+                  </div>
+
+                  <div className="bg-white/5 rounded-lg p-4 space-y-2">
+                    <h5 className="text-white font-medium">Registration Summary</h5>
+                    <div className="text-sm text-gray-300 space-y-1">
+                      <p><span className="font-medium">Name:</span> {formData.name}</p>
+                      <p><span className="font-medium">Email:</span> {formData.email}</p>
+                      <p><span className="font-medium">Role:</span> {roleOptions.find(r => r.value === formData.role)?.label}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <Checkbox
+                      id="newsletter"
+                      checked={formData.agreeToNewsletter}
+                      onCheckedChange={handleNewsletterChange}
+                      className="mt-1 border-white data-[state=checked]:bg-[#ff6932] data-[state=checked]:border-[#ff6932] shrink-0"
+                    />
+                    <Label
+                      htmlFor="newsletter"
+                      className="text-white text-sm leading-relaxed cursor-pointer"
+                    >
+                      Yes, I'd like to receive updates about upcoming events and announcements from CrowdPass. You can unsubscribe anytime. *
+                    </Label>
+                  </div>
+
+                  <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#5b5959] border-t border-[#ffffff33] md:relative md:border-t-0 md:p-0 md:bg-transparent flex gap-3">
+                    <Button
+                      type="button"
+                      onClick={() => setCurrentStep(1)}
+                      variant="outline"
+                      className="flex-1 h-[56px] bg-transparent border-white/30 text-white hover:bg-white/10 rounded-lg text-lg"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="flex-[2] h-[56px] bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-lg font-semibold"
+                      disabled={loading || !formData.agreeToNewsletter}
+                    >
+                      {loading ? "Completing Registration..." : "Complete Registration"}
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
