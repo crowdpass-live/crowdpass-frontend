@@ -131,7 +131,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
       const res = await handlePurchase(event, formData, String(address), id);
       setLoading(false);
       setIsOpen(false);
-      toast.success("Registration successful! 🎉");
       setCurrentStep(1);
       setFormData({
         role: "",
@@ -143,15 +142,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
     } catch (error: any) {
       console.error("Error:", error);
       setLoading(false);
-      
-      if (error.response) {
-        const errorMessage = error.response.data?.message || "Registration failed";
-        toast.error(errorMessage);
-      } else if (error.request) {
-        toast.error("Connection issue. Please check your internet and try again.");
-      } else {
-        toast.error("Something went wrong. Please try again.");
-      }
     }
   };
 
