@@ -9,7 +9,7 @@ import {
   Clock,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, use } from "react";
 import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
 import useBuyTicket from "@/hooks/write-hooks/useBuyTicket";
@@ -36,11 +36,13 @@ import {
 } from "../ui/select";
 import { toast } from "sonner";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
+import useBuyWeb2Ticket from "@/hooks/write-hooks/useBuyWeb2Ticket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleCartridgeConnect } =
     useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
+  const handleBuyWeb2Ticket = useBuyWeb2Ticket();
   const { data: availableTicket } = useGetAvailableTicket(id);
   const router = useRouter();
   const [shareOpen, setShareOpen] = useState(false);
@@ -130,6 +132,19 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
   };
 
+  useEffect(() => {
+    if (address) {
+      setIsOpen(true);
+      setCurrentStep(1);
+    }
+  }, [address]);
+
+  const handleRegisterWithoutSigning = () => {
+    setLoginModalOpen(false);
+    setIsOpen(true);
+    setCurrentStep(1);
+  };
+
   const validateStep1 = () => {
     const { name, email, role } = formData;
     return name.trim() && email.trim() && role;
@@ -143,10 +158,33 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
   };
 
+  const handlePurchaseTicketWithoutSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.agreeToNewsletter) {
+      toast.error("Please agree to receive event updates to continue.");
+      return;
+    }
+    try {
+      setLoading(true);
+      await handleBuyWeb2Ticket(event, formData, String(address), id);
+      setLoading(false);
+      setIsOpen(false);
+      setCurrentStep(1);
+      setFormData({
+        role: "",
+        name: "",
+        email: "",
+        xhandle: "",
+        agreeToNewsletter: false,
+      });
+    } catch (error: any) {
+      console.error("Error:", error);
+      setLoading(false);
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-
     if (!formData.agreeToNewsletter) {
       toast.error("Please agree to receive event updates to continue.");
       return;
@@ -260,22 +298,34 @@ const EventDetails = ({ eventDetails, id }: any) => {
         <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
           <DialogHeader>
             <DialogTitle className="text-white text-xl text-center">
-              Sign In to Register
+              Register for Event
             </DialogTitle>
           </DialogHeader>
           <div className="mt-4 text-center">
             <p className="text-sm text-gray-300 mb-6">
-              Sign in to your account to register for this event
+              Choose how you'd like to register for this event
             </p>
-            <Button
-              onClick={handleLogin}
-              className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-full py-3 text-lg"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-            <p className="text-xs text-gray-400 mt-3">
-              Quick and secure registration
+            
+            <div className="space-y-3">
+              <Button
+                onClick={handleRegisterWithoutSigning}
+                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-full py-3 text-lg"
+              >
+                Register without signing in
+              </Button>
+              
+              <Button
+                onClick={handleLogin}
+                variant="outline"
+                className="border-white raleway text-white hover:bg-white hover:text-light-black w-full py-3 text-lg"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign in and register"}
+              </Button>
+            </div>
+            
+            <p className="text-xs text-gray-400 mt-4">
+              Signing in allows you to manage your registrations and receive updates
             </p>
           </div>
         </DialogContent>
@@ -294,20 +344,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
-        {(isLoading || loading) && (
-          <div className="fixed inset-0 z-50 flex flex-col gap-6 items-center justify-center bg-black bg-opacity-75">
-            <HashLoader
-              color={"#FF6932"}
-              loading={isLoading || loading}
-              size={80}
-              aria-label="Loading Spinner"
-              data-testid="loader"
-            />
-            <div className="text-white text-xl text-center px-4">
-              {loading ? "Completing your registration..." : "Processing..."}
-            </div>
-          </div>
-        )}
 
         <Image
           src={event?.image}
@@ -572,7 +608,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
               )}
 
               {currentStep === 2 && (
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={address ? handleSubmit : handlePurchaseTicketWithoutSignIn} className="space-y-6">
                   <div>
                     <h4 className="text-white text-xl font-semibold mb-2">
                       Almost Done!
