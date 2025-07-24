@@ -14,7 +14,6 @@ import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
 import useBuyTicket from "@/hooks/write-hooks/useBuyTicket";
 import { StarknetContext } from "@/contexts/UserContext";
-import HashLoader from "react-spinners/HashLoader";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -164,6 +163,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
       toast.error("Please agree to receive event updates to continue.");
       return;
     }
+    setIsOpen(false);
     try {
       setLoading(true);
       await handleBuyWeb2Ticket(event, formData, String(address), id);
@@ -189,8 +189,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
       toast.error("Please agree to receive event updates to continue.");
       return;
     }
-     setIsOpen(false);
-
+    setIsOpen(false);
     try {
       setLoading(true);
       const res = await handlePurchase(event, formData, String(address), id);
@@ -306,26 +305,38 @@ const EventDetails = ({ eventDetails, id }: any) => {
               Choose how you'd like to register for this event
             </p>
             
-            <div className="space-y-3">
-              <Button
-                onClick={handleRegisterWithoutSigning}
-                className="bg-primary raleway text-light-black hover:bg-primary hover:text-deep-blue w-full py-3 text-lg"
-              >
-                Register without signing in
-              </Button>
+            <div className="space-y-4">
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-left">
+                <p className="text-primary text-sm font-medium mb-2">New to Web3?</p>
+                <p className="text-gray-300 text-xs mb-3">
+                  If you're not familiar with Web3 wallets, choose this option for a simple registration
+                </p>
+                <Button
+                  onClick={handleRegisterWithoutSigning}
+                  className="bg-gradient-to-r text-black w-full py-3 text-lg font-semibold shadow-lg transition-all duration-200"
+                >
+                  Register without signing in
+                </Button>
+              </div>
               
-              <Button
-                onClick={handleLogin}
-                variant="outline"
-                className="border-white raleway text-white hover:bg-white hover:text-light-black w-full py-3 text-lg"
-                disabled={isLoading}
-              >
-                {isLoading ? "Signing in..." : "Sign in and register"}
-              </Button>
+              <div className="bg-gray-500/10 border border-gray-500/20 rounded-lg p-4 text-left">
+                <p className="text-white text-sm font-medium mb-2">Web3 Savvy?</p>
+                <p className="text-gray-300 text-xs mb-3">
+                  If you're comfortable with Web3, sign in to manage your registrations
+                </p>
+                <Button
+                  onClick={handleLogin}
+                  className="text-white w-full py-3 text-lg font-semibold shadow-lg transition-all duration-200"
+                  disabled={isLoading}
+                  variant={"outline"}
+                >
+                  {isLoading ? "Signing in..." : "Sign in and register"}
+                </Button>
+              </div>
             </div>
             
             <p className="text-xs text-gray-400 mt-4">
-              Signing in allows you to manage your registrations and receive updates
+              Both options will get you registered for the event
             </p>
           </div>
         </DialogContent>
