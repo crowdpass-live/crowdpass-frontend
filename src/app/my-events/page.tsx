@@ -84,7 +84,7 @@ const page = () => {
           )}
         </div>
       </Tabs>
-      <SuggestionsSection />
+      {/* <SuggestionsSection /> */}
     </div>
   );
 };
