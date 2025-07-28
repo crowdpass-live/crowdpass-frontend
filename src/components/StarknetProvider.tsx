@@ -1,15 +1,14 @@
 "use client";
 import React from "react";
 import { Chain, sepolia, mainnet } from "@starknet-react/chains";
-// import { WebWalletConnector } from "starknetkit/webwallet";
 import { StarknetConfig, voyager, jsonRpcProvider } from "@starknet-react/core";
-import Controller, { toSessionPolicies } from "@cartridge/controller";
+import { toSessionPolicies } from "@cartridge/controller";
 import { ControllerConnector } from "@cartridge/connector";
 import { constants } from "starknet";
 
 const policies = {
   contracts: {
-    "0x038333fabb72e3349038439cddcb1687d58458f30dfaef3e1d71ae7401445d26": {
+    [process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as string]: {
       methods: [
         {
           name: "Create Event",
@@ -70,10 +69,10 @@ const connector = new ControllerConnector({
   chains: [
     {
       rpcUrl:
-        "https://api.cartridge.gg/x/starknet/sepolia",
+        "https://api.cartridge.gg/x/starknet/mainnet",
     },
   ],
-  defaultChainId: constants.StarknetChainId.SN_SEPOLIA,
+  defaultChainId: constants.StarknetChainId.SN_MAIN,
 });
 
 // Configure RPC provider
@@ -86,7 +85,7 @@ const provider = jsonRpcProvider({
       default:
         return {
           nodeUrl:
-            "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_8/FtlFKmlVF7DMCHmzZHQDu",
+            "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_8/FtlFKmlVF7DMCHmzZHQDu",
         };
     }
   },
@@ -96,7 +95,7 @@ export function StarknetProvider({ children }: { children: React.ReactNode }) {
   return (
     <StarknetConfig
       autoConnect
-      chains={[sepolia]}
+      chains={[mainnet]}
       provider={provider}
       connectors={[connector]}
       explorer={voyager}
