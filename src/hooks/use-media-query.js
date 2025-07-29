@@ -2,7 +2,6 @@
 
 import Sidebar from "../../components/dashboard/sidebar";
 import Navbar from "../../components/dashboard/navbar";
-import React from "react";
 
 
 const Layout = ({ children }) => {
