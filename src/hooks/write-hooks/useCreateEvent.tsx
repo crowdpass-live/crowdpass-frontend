@@ -27,10 +27,7 @@ const useCreateEvent = () => {
       ticket_price: number
     ) => {
       try {
-        if (!account) {
-          throw new Error("Account not connected");
-        }
-
+      
         setIsLoading(true);
         {
           isLoading == true && toast.loading("creating event");
