@@ -25,7 +25,7 @@ export default function RootLayout({
           <StarknetContextProvider>
           <LenisProvider>
             {children}
-            <Toaster richColors={true} position="bottom-right" />
+            <Toaster richColors={true} position="top-right" />
           </LenisProvider>
           </StarknetContextProvider>
         </StarknetProvider>

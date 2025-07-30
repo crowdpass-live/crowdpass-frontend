@@ -9,7 +9,7 @@ import {
   Clock,
 } from "lucide-react";
 import Image from "next/image";
-import React, { useContext, useState, useEffect, use } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
 import useBuyTicket from "@/hooks/write-hooks/useBuyTicket";
@@ -38,8 +38,7 @@ import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 import useBuyWeb2Ticket from "@/hooks/write-hooks/useBuyWeb2Ticket";
 
 const EventDetails = ({ eventDetails, id }: any) => {
-  const { address, isLoading, handleCartridgeConnect } =
-    useContext(StarknetContext);
+  const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
   const handleBuyWeb2Ticket = useBuyWeb2Ticket();
   const { data: availableTicket } = useGetAvailableTicket(id);
@@ -62,7 +61,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
   });
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  console.log("Event Details:", eventDetails);
 
   const roleOptions = [
     { value: "founder", label: "Founder" },
@@ -112,13 +110,18 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   const handleRegisterClick = () => {
-    if (!address) {
-      setLoginModalOpen(true);
-      return;
-    } 
-    setIsOpen(true);
-    setCurrentStep(1);
-    
+    if (window.innerWidth < 768) {
+      // Mobile: Navigate to registration page
+      router.push(`/events/${id}/register`);
+    } else {
+      // Desktop: Open modal
+      if (!address) {
+        setLoginModalOpen(true);
+        return;
+      }
+      setIsOpen(true);
+      setCurrentStep(1);
+    }
   };
 
   const handleLogin = async () => {
@@ -132,7 +135,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   useEffect(() => {
-    if (address) {
+    if (address && window.innerWidth >= 768) {
       setIsOpen(true);
       setCurrentStep(1);
     }
@@ -140,8 +143,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
   const handleRegisterWithoutSigning = () => {
     setLoginModalOpen(false);
-    setIsOpen(true);
-    setCurrentStep(1);
+    if (window.innerWidth < 768) {
+      router.push(`/events/${id}/register`);
+    } else {
+      setIsOpen(true);
+      setCurrentStep(1);
+    }
   };
 
   const validateStep1 = () => {
@@ -177,11 +184,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
         xhandle: "",
         agreeToNewsletter: false,
       });
+      router.push(`/events/${id}/success`);
     } catch (error: any) {
       console.error("Error:", error);
       setLoading(false);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,7 +200,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setIsOpen(false);
     try {
       setLoading(true);
-      const res = await handlePurchase(event, formData, String(address), id);
+      await handlePurchase(event, formData, String(address), id);
       setLoading(false);
       setIsOpen(false);
       setCurrentStep(1);
@@ -203,6 +211,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
         xhandle: "",
         agreeToNewsletter: false,
       });
+      router.push(`/events/${id}/success`);
     } catch (error: any) {
       console.error("Error:", error);
       setLoading(false);
@@ -248,8 +257,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
   ];
 
-  const totalEventTicket =
-    Number(event?.total_tickets) - Number(availableTicket);
+  const totalEventTicket = Number(event?.total_tickets) - Number(availableTicket);
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
   const spotsLeft = Number(availableTicket);
@@ -292,9 +300,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
         </DialogContent>
       </Dialog>
 
-      {/* Login Modal */}
+      {/* Login Modal (Desktop Only) */}
       <Dialog open={loginModalOpen} onOpenChange={setLoginModalOpen}>
-        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto">
+        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto hidden md:block">
           <DialogHeader>
             <DialogTitle className="text-white text-xl text-center">
               Register for Event
@@ -304,7 +312,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
             <p className="text-sm text-gray-300 mb-6">
               Choose how you'd like to register for this event
             </p>
-            
             <div className="space-y-4">
               <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-left">
                 <p className="text-primary text-sm font-medium mb-2">New to Web3?</p>
@@ -318,7 +325,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                   Register without signing in
                 </Button>
               </div>
-              
               <div className="bg-gray-500/10 border border-gray-500/20 rounded-lg p-4 text-left">
                 <p className="text-white text-sm font-medium mb-2">Web3 Savvy?</p>
                 <p className="text-gray-300 text-xs mb-3">
@@ -334,7 +340,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 </Button>
               </div>
             </div>
-            
             <p className="text-xs text-gray-400 mt-4">
               Both options will get you registered for the event
             </p>
@@ -355,7 +360,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
       </div>
 
       <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
-
         <Image
           src={event?.image}
           alt="event-image"
@@ -363,10 +367,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
           height={467}
           className="rounded-3xl w-full md:w-96 object-center object-cover"
         />
-
         <div className="flex flex-col gap-4 lg:w-full lg:gap-6 md:justify-between">
           <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
-            {/* Price and Title */}
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <p className="text-primary text-lg font-semibold">
@@ -384,8 +386,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 {event?.name}
               </h1>
             </div>
-
-            {/* Date and Time Card */}
             <div className="bg-[#CBCACF66] flex gap-3 rounded-lg lg:max-w-80 py-3 px-4">
               <div className="bg-[#14141A] p-2 rounded-xl">
                 <Calendar size={28} color="#FF6932" />
@@ -404,8 +404,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 </div>
               </div>
             </div>
-
-            {/* Attendees Section */}
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-4">
                 {totalEventTicket === 0 ? (
@@ -450,8 +448,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
               </div>
             </div>
           </div>
-
-          {/* Action Buttons */}
           <div className="flex justify-between lg:justify-end lg:w-full gap-4 items-center mt-6">
             <Button
               variant="ghost"
@@ -460,7 +456,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
             >
               <Share2 size={30} className="text-white" />
             </Button>
-
             {!data && (
               <Button
                 onClick={handleRegisterClick}
@@ -470,11 +465,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 {spotsLeft === 0 ? "Event Full" : "Register Now"}
               </Button>
             )}
-
             {data && (
               <Button
                 className="bg-gray-600 raleway text-white hover:bg-gray-700 px-8 py-6 text-lg font-semibold rounded-lg flex-1 lg:flex-none lg:w-48"
-                disabled = {!eventDetails?.event?.is_cancelled}
+                disabled={!eventDetails?.event?.is_cancelled}
                 onClick={async () => {
                   await refund(id, address as `0x${string}`);
                 }}
@@ -486,7 +480,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
         </div>
       </div>
 
-      {/* Registration Modal */}
+      {/* Registration Modal (Desktop Only) */}
       <Dialog
         open={isOpen}
         onOpenChange={(open) => {
@@ -494,13 +488,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
           if (!open) setCurrentStep(1);
         }}
       >
-        <DialogContent className="w-full h-full max-w-none max-h-none p-0 bg-[#5b5959] border-none rounded-none md:w-[90vw] md:max-w-lg md:rounded-[20px] md:overflow-hidden md:max-h-[90vh] md:h-auto overflow-y-auto">
+        <DialogContent className="w-full h-full max-w-none max-h-none p-0 bg-[#5b5959] border-none rounded-none md:w-[90vw] md:max-w-lg md:rounded-[20px] md:overflow-hidden md:max-h-[90vh] md:h-auto overflow-y-auto hidden md:block">
           <DialogHeader className="sr-only">
             <DialogTitle>Event Registration</DialogTitle>
           </DialogHeader>
-
           <div className="w-full h-full md:h-auto">
-            {/* Header with Progress */}
             <div className="relative">
               <img
                 className="w-full h-[160px] md:h-[140px] object-cover"
@@ -536,7 +528,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 </div>
               </div>
             </div>
-
             <div className="flex-1 p-6 space-y-6 pb-24 md:pb-6">
               {currentStep === 1 && (
                 <div className="space-y-6">
@@ -548,7 +539,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       Tell us a bit about yourself
                     </p>
                   </div>
-
                   {formFields.map((field) => (
                     <div key={field.id} className="space-y-2">
                       <Label
@@ -565,8 +555,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                           formData[field.id as keyof typeof formData] === false
                             ? ""
                             : String(
-                                formData[field.id as keyof typeof formData] ??
-                                  ""
+                                formData[field.id as keyof typeof formData] ?? ""
                               )
                         }
                         onChange={(e) =>
@@ -577,7 +566,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       />
                     </div>
                   ))}
-
                   <div className="space-y-2">
                     <Label
                       htmlFor="role"
@@ -605,7 +593,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       </SelectContent>
                     </Select>
                   </div>
-
                   <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#5b5959] border-t border-[#ffffff33] md:relative md:border-t-0 md:p-0 md:bg-transparent">
                     <Button
                       onClick={handleContinue}
@@ -617,9 +604,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
                   </div>
                 </div>
               )}
-
               {currentStep === 2 && (
-                <form onSubmit={address ? handleSubmit : handlePurchaseTicketWithoutSignIn} className="space-y-6">
+                <form
+                  onSubmit={address ? handleSubmit : handlePurchaseTicketWithoutSignIn}
+                  className="space-y-6"
+                >
                   <div>
                     <h4 className="text-white text-xl font-semibold mb-2">
                       Almost Done!
@@ -628,7 +617,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       Just one more step to complete your registration
                     </p>
                   </div>
-
                   <div className="bg-white/5 rounded-lg p-4 space-y-2">
                     <h5 className="text-white font-medium">
                       Registration Summary
@@ -644,14 +632,10 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       </p>
                       <p>
                         <span className="font-medium">Role:</span>{" "}
-                        {
-                          roleOptions.find((r) => r.value === formData.role)
-                            ?.label
-                        }
+                        {roleOptions.find((r) => r.value === formData.role)?.label}
                       </p>
                     </div>
                   </div>
-
                   <div className="flex items-start space-x-3">
                     <Checkbox
                       id="newsletter"
@@ -668,7 +652,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       *
                     </Label>
                   </div>
-
                   <div className="fixed bottom-0 left-0 right-0 p-4 bg-[#5b5959] border-t border-[#ffffff33] md:relative md:border-t-0 md:p-0 md:bg-transparent flex gap-3">
                     <Button
                       type="button"

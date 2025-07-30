@@ -176,24 +176,6 @@ const FilterEvent = ({ filterState, setFilterState }: any) => {
 
   return (
     <>
-      {/* Mobile Filter Button - Visible on mobile and tablet */}
-      <div className="lg:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-        <Button 
-          onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
-          className="bg-primary text-white flex items-center gap-2"
-        >
-          {isMobileFilterOpen ? (
-            <>
-              <X size={20} /> Close Filters
-            </>
-          ) : (
-            <>
-              <Filter size={20} /> Click to Filter
-            </>
-          )}
-        </Button>
-      </div>
-
       {/* Desktop Filter - Always visible on large screens */}
       <div className="hidden lg:flex flex-col w-[40%] h-auto pb-10 bg-[#14141A] p-5 space-y-8 rounded-2xl mb-4">
         <FilterContent />

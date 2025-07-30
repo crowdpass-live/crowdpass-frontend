@@ -3,13 +3,26 @@
 
 import Sidebar from "../../components/dashboard/sidebar";
 import Navbar from "../../components/dashboard/navbar";
-import React from "react";
+import React, { useContext, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { StarknetContext } from "@/contexts/UserContext";
+import { toast } from "sonner";
 
 const Layout = ({ children }) => {
+  const { address } = useContext(StarknetContext);
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const router = useRouter();
+  
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
+
+   useEffect(() => {
+      if (!address) {
+        router.push("/");
+        toast.error("Please connect your wallet to access the dashboard.");
+      }
+    }, [address]);
 
   return (
     <div className="bg-deep-blue w-screen md:w-full flex overflow-x-hidden min-h-screen">
