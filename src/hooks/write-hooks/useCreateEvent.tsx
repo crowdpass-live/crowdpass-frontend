@@ -99,7 +99,7 @@ const useCreateEvent = () => {
           setIsLoading(false);
           toast.success("Event Created");
 
-          window.location.href = "/dashboard/analytics/events";
+          window.location.href = "/events";
           toast.dismiss();
 
           return "success";
