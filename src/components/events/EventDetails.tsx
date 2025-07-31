@@ -72,7 +72,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
       try {
         setRegistrationLoading(true);
-        const response = await axios.get(`/api/registrations`, {
+        const response = await axios.get(`/api/registration`, {
           params: { eventId: event?.uri.split("/").pop()}
         });
         console.log("Registration count response:", response);
