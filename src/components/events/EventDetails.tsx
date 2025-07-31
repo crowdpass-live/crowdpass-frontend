@@ -36,6 +36,7 @@ import {
 import { toast } from "sonner";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 import useBuyWeb2Ticket from "@/hooks/write-hooks/useBuyWeb2Ticket";
+import axios from "axios";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
@@ -52,6 +53,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const refund = useClaimRefund();
   const [isOpen, setIsOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  
+  // New state for registration data
+  const [registrationCount, setRegistrationCount] = useState(0);
+  const [registrationLoading, setRegistrationLoading] = useState(true);
+  
   const [formData, setFormData] = useState({
     role: "",
     name: "",
@@ -61,6 +67,29 @@ const EventDetails = ({ eventDetails, id }: any) => {
   });
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+
+  // Fetch registration count
+  useEffect(() => {
+    const fetchRegistrationCount = async () => {
+      if (!event?.uri.split("/").pop()) return;
+
+      try {
+        setRegistrationLoading(true);
+        const response = await axios.get(`/api/registrations`, {
+          params: { eventId: event?.uri.split("/").pop()}
+        });
+
+        setRegistrationCount(response.data.total);
+      } catch (err) {
+        console.error("Error fetching registration count:", err);
+        setRegistrationCount(0);
+      } finally {
+        setRegistrationLoading(false);
+      }
+    };
+
+    fetchRegistrationCount();
+  }, [id]);
 
   const roleOptions = [
     { value: "founder", label: "Founder" },
@@ -184,6 +213,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
         xhandle: "",
         agreeToNewsletter: false,
       });
+      // Refresh registration count after successful registration
+      const response = await axios.get(`/api/registrations`, {
+        params: { eventId: id }
+      });
+      setRegistrationCount(response.data.total);
       router.push(`/events/${id}/success`);
     } catch (error: any) {
       console.error("Error:", error);
@@ -211,7 +245,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
         xhandle: "",
         agreeToNewsletter: false,
       });
-      router.push(`/events/${id}/success`);
+      // Refresh registration count after successful registration
+      const response = await axios.get(`/api/registrations`, {
+        params: { eventId: id }
+      });
+      setRegistrationCount(response.data.total);
     } catch (error: any) {
       console.error("Error:", error);
       setLoading(false);
@@ -257,7 +295,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
     "https://res.cloudinary.com/dnohqlmjc/image/upload/v1742633487/attendee4_swblfx.png",
   ];
 
-  const totalEventTicket = Number(event?.total_tickets) - Number(availableTicket);
+  // Use registration count from API instead of calculated value
+  const totalEventTicket = registrationLoading ? 0 : registrationCount;
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
   const spotsLeft = Number(availableTicket);
@@ -313,20 +352,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
               Choose how you'd like to register for this event
             </p>
             <div className="space-y-4">
-              {/* <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-left">
-                <p className="text-primary text-sm font-medium mb-2">New to Web3?</p>
-                <p className="text-gray-300 text-xs mb-3">
-                  If you're not familiar with Web3 wallets, choose this option for a simple registration
-                </p>
-                <Button
-                  onClick={handleRegisterWithoutSigning}
-                  className="bg-gradient-to-r text-black w-full py-3 text-lg font-semibold shadow-lg transition-all duration-200"
-                >
-                  Register without signing in
-                </Button>
-              </div> */}
               <div className="bg-gray-500/10 border border-gray-500/20 rounded-lg p-4 text-left">
-                {/* <p className="text-white text-sm font-medium mb-2">Web3 Savvy?</p> */}
                 <p className="text-gray-300 text-xs mb-3">
                    sign in to manage your registrations
                 </p>
@@ -340,9 +366,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 </Button>
               </div>
             </div>
-            {/* <p className="text-xs text-gray-400 mt-4">
-              Both options will get you registered for the event
-            </p> */}
           </div>
         </DialogContent>
       </Dialog>
@@ -406,7 +429,12 @@ const EventDetails = ({ eventDetails, id }: any) => {
             </div>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-4">
-                {totalEventTicket === 0 ? (
+                {registrationLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Users size={20} color="#9CA3AF" />
+                    <p className="text-gray-400">Loading registrations...</p>
+                  </div>
+                ) : totalEventTicket === 0 ? (
                   <div className="flex items-center gap-2">
                     <Users size={20} color="#9CA3AF" />
                     <p className="text-gray-400">Be the first to register!</p>
