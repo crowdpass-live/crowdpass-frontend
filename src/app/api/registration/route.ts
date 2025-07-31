@@ -8,13 +8,33 @@ export async function GET(request: NextRequest) {
   try {
     await connectDB();
 
-    const registrations = await Registration.find({})
+    const { searchParams } = new URL(request.url);
+    const eventId = searchParams.get('eventId');
+
+    if (!eventId) {
+      return NextResponse.json(
+        { message: "eventId parameter is required" },
+        { status: 400 }
+      );
+    }
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      return NextResponse.json(
+        { message: "Event not found" },
+        { status: 404 }
+      );
+    }
+
+    const registrations = await Registration.find({ eventId })
       .sort({ registrationDate: -1 }) 
       .select('-__v'); 
 
     return NextResponse.json(
       {
         message: "Registrations retrieved successfully",
+        eventId: eventId,
+        eventName: event.name,
         data: registrations,
         total: registrations.length
       },
