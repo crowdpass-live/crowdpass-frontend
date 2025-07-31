@@ -4,6 +4,39 @@ import Event from "../../models/eventModel";
 import { connectDB } from "@/app/lib/db";
 import { sendRegistrationEmail } from "@/app/lib/sendRegistrationEmail";
 
+export async function GET(request: NextRequest) {
+  try {
+    await connectDB();
+
+    const registrations = await Registration.find({})
+      .sort({ registrationDate: -1 }) 
+      .select('-__v'); 
+
+    return NextResponse.json(
+      {
+        message: "Registrations retrieved successfully",
+        data: registrations,
+        total: registrations.length
+      },
+      { status: 200 }
+    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error fetching registrations:", error.message);
+      return NextResponse.json(
+        { message: "Failed to fetch registrations" },
+        { status: 500 }
+      );
+    } else {
+      console.error("An unknown error occurred:", error);
+      return NextResponse.json(
+        { message: "An unknown error occurred" },
+        { status: 500 }
+      );
+    }
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     await connectDB();

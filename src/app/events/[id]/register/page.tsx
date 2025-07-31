@@ -39,7 +39,7 @@ const RegisterPage = () => {
     agreeToNewsletter: false,
   });
   const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0); // Start at step 0 for login options
+  const [currentStep, setCurrentStep] = useState(0); 
 
   const roleOptions = [
     { value: "founder", label: "Founder" },
