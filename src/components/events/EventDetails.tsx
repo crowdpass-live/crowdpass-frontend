@@ -313,7 +313,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
               Choose how you'd like to register for this event
             </p>
             <div className="space-y-4">
-              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-left">
+              {/* <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-left">
                 <p className="text-primary text-sm font-medium mb-2">New to Web3?</p>
                 <p className="text-gray-300 text-xs mb-3">
                   If you're not familiar with Web3 wallets, choose this option for a simple registration
@@ -324,11 +324,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 >
                   Register without signing in
                 </Button>
-              </div>
+              </div> */}
               <div className="bg-gray-500/10 border border-gray-500/20 rounded-lg p-4 text-left">
-                <p className="text-white text-sm font-medium mb-2">Web3 Savvy?</p>
+                {/* <p className="text-white text-sm font-medium mb-2">Web3 Savvy?</p> */}
                 <p className="text-gray-300 text-xs mb-3">
-                  If you're comfortable with Web3, sign in to manage your registrations
+                   sign in to manage your registrations
                 </p>
                 <Button
                   onClick={handleLogin}
@@ -340,9 +340,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-gray-400 mt-4">
+            {/* <p className="text-xs text-gray-400 mt-4">
               Both options will get you registered for the event
-            </p>
+            </p> */}
           </div>
         </DialogContent>
       </Dialog>
