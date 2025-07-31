@@ -18,8 +18,6 @@ const ConnectedUser = ({ showMobileNav }: any) => {
 
   const getAddress =  async()=>{
      const addressMap = await lookupAddresses([address.toString()]);
-     console.log(addressMap)
-     console.log(addressMap.get(`${address}`))
   }
   
   getAddress();

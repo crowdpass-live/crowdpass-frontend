@@ -53,8 +53,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const refund = useClaimRefund();
   const [isOpen, setIsOpen] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  
-  // New state for registration data
   const [registrationCount, setRegistrationCount] = useState(0);
   const [registrationLoading, setRegistrationLoading] = useState(true);
   
@@ -68,20 +66,19 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Fetch registration count
   useEffect(() => {
     const fetchRegistrationCount = async () => {
-      if (!event?.uri.split("/").pop()) return;
+      if (!(event?.uri.split("/").pop())) return;
 
       try {
         setRegistrationLoading(true);
         const response = await axios.get(`/api/registrations`, {
           params: { eventId: event?.uri.split("/").pop()}
         });
-
+        console.log("Registration count response:", response);
         setRegistrationCount(response.data.total);
       } catch (err) {
-        console.error("Error fetching registration count:", err);
+        console.log("Error fetching registration count:", err);
         setRegistrationCount(0);
       } finally {
         setRegistrationLoading(false);
@@ -89,7 +86,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     };
 
     fetchRegistrationCount();
-  }, [id]);
+  }, [event]);
 
   const roleOptions = [
     { value: "founder", label: "Founder" },
