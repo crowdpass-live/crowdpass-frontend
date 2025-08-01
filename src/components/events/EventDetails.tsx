@@ -447,7 +447,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                           width={50}
                           height={50}
                           className={`${
-                            idx !== 0 ? "-ml-3" : ""
+                            idx !== 0 ? "-ml-5" : ""
                           } w-10 h-10 md:w-[50px] md:h-[50px] rounded-full border-2 border-white`}
                         />
                       ))}
@@ -458,7 +458,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
                       )}
                     </div>
                     <div className="flex flex-col">
-                      <p className="font-semibold text-white flex items-center gap-1">
+                      <p className="font-normal md:font-semibold text-white flex items-center gap-1">
                         <Users size={16} />
                         {totalEventTicket}{" "}
                         {totalEventTicket === 1 ? "person" : "people"}{" "}

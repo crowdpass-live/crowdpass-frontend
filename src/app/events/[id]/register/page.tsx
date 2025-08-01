@@ -1,7 +1,5 @@
 "use client";
-import {
-  ArrowLeft,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import React, { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
@@ -23,7 +21,8 @@ import useGetEventById from "@/hooks/read-hooks/useGetEventById";
 import { useRouter, useParams } from "next/navigation";
 
 const RegisterPage = () => {
-  const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
+  const { address, isLoading, handleCartridgeConnect } =
+    useContext(StarknetContext);
   const router = useRouter();
   const params = useParams();
   const id = params?.id as string;
@@ -39,7 +38,7 @@ const RegisterPage = () => {
     agreeToNewsletter: false,
   });
   const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0); 
+  const [currentStep, setCurrentStep] = useState(0);
 
   const roleOptions = [
     { value: "founder", label: "Founder" },
@@ -165,7 +164,6 @@ const RegisterPage = () => {
     }
   };
 
-
   if (!event) return <div>Loading...</div>;
 
   return (
@@ -219,22 +217,12 @@ const RegisterPage = () => {
               </p>
             </div>
             <div className="space-y-4">
-              <div className="bg-primary/5 border border-primary rounded-lg p-4 text-left">
-                <p className="text-primary text-sm font-medium mb-2">New to Web3?</p>
-                <p className="text-gray-300 text-xs mb-3">
-                  If you're not familiar with Web3 wallets, choose this option for a simple registration
-                </p>
-                <Button
-                  onClick={handleRegisterWithoutSigning}
-                  className="bg-primary text-black w-full py-3 text-lg font-semibold shadow-lg transition-all duration-200"
-                >
-                  Register without signing in
-                </Button>
-              </div>
               <div className="bg-gray-500/10 border border-gray-400 rounded-lg p-4 text-left">
-                <p className="text-white text-sm font-medium mb-2">Web3 Savvy?</p>
+                <p className="text-white text-sm font-medium mb-2">
+                  Web3 Savvy?
+                </p>
                 <p className="text-gray-300 text-xs mb-3">
-                  If you're comfortable with Web3, sign in to manage your registrations
+                  Sign in to manage your registrations
                 </p>
                 <Button
                   onClick={handleLogin}
@@ -246,9 +234,6 @@ const RegisterPage = () => {
                 </Button>
               </div>
             </div>
-            <p className="text-xs text-gray-400 text-center">
-              Both options will get you registered for the event
-            </p>
           </div>
         )}
         {currentStep === 1 && (
@@ -276,7 +261,9 @@ const RegisterPage = () => {
                   value={
                     formData[field.id as keyof typeof formData] === false
                       ? ""
-                      : String(formData[field.id as keyof typeof formData] ?? "")
+                      : String(
+                          formData[field.id as keyof typeof formData] ?? ""
+                        )
                   }
                   onChange={(e) => handleInputChange(field.id, e.target.value)}
                   className="bg-white/10 border-white/20 focus:border-primary text-white placeholder:text-gray-400 rounded-lg p-3"
@@ -329,7 +316,9 @@ const RegisterPage = () => {
         )}
         {currentStep === 2 && (
           <form
-            onSubmit={address ? handleSubmit : handlePurchaseTicketWithoutSignIn}
+            onSubmit={
+              address ? handleSubmit : handlePurchaseTicketWithoutSignIn
+            }
             className="space-y-6"
           >
             <div>
@@ -384,7 +373,9 @@ const RegisterPage = () => {
                 className="flex-[2] h-12 bg-[#ff6932] hover:bg-[#ff8152] rounded-lg text-[#1e1e24] text-lg font-semibold"
                 disabled={loading || !formData.agreeToNewsletter}
               >
-                {loading ? "Completing Registration..." : "Complete Registration"}
+                {loading
+                  ? "Completing Registration..."
+                  : "Complete Registration"}
               </Button>
             </div>
           </form>
