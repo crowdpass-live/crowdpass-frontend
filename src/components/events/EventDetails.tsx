@@ -232,31 +232,23 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setIsOpen(false);
     try {
       setLoading(true);
-
-      const alatApiKey = process.env.NEXT_PUBLIC_ALAT_API_KEY;
-      const businessId = process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID;
-      
-      if (!alatApiKey || !businessId) {
-        throw new Error("Payment configuration missing");
-      }
-
-  const config= UseALATPay({
-    amount: 5000,
-    apiKey: alatApiKey, 
-    businessId: businessId, 
-    currency: "NGN",
-    email: formData.email, 
-    firstName:formData.name.split(' ')[0],
-    lastName:formData.name.split(' ')[1], 
-    metadata:"",   
-    phone:'09169501662',
-    color: "#FF6932",
-    onClose: () => {
-      toast.error("Could not complete payment and registration");},
-    onTransaction: async() => {
-      await handlePurchase(event, formData, String(address), id);
-      toast.success("payment and registration successful");
-    },
+      const config= UseALATPay({
+        amount: 5000,
+        apiKey: process.env.NEXT_PUBLIC_ALAT_API_KEY as string, 
+        businessId: process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID as string, 
+        currency: "NGN",
+        email: formData.email, 
+        firstName:formData.name.split(' ')[0],
+        lastName:formData.name.split(' ')[1], 
+        metadata:"",   
+        phone:'09169501662',
+        color: "#FF6932",
+        onClose: () => {
+          toast.error("Could not complete payment and registration");},
+        onTransaction: async() => {
+          await handlePurchase(event, formData, String(address), id);
+          toast.success("payment and registration successful");
+      },
   })
 
   config.submit();
