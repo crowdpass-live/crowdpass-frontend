@@ -166,7 +166,7 @@ const Sidebar = ({ isOpen, closeSidebar }: any) => {
       {/* Mobile Sidebar */}
       <motion.div
         className="lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-deep-blue shadow-lg overflow-y-auto"
-        variants={sidebarVariants}
+        // variants={sidebarVariants}
         initial="closed"
         animate={isOpen ? "open" : "closed"}
       >

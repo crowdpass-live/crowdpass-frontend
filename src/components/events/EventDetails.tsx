@@ -37,6 +37,7 @@ import { toast } from "sonner";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 import useBuyWeb2Ticket from "@/hooks/write-hooks/useBuyWeb2Ticket";
 import axios from "axios";
+import UseALATPay from "react-alatpay"
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
@@ -122,6 +123,23 @@ const EventDetails = ({ eventDetails, id }: any) => {
       placeholder: "@yourusername",
     },
   ];
+  const config= UseALATPay({
+    amount: 5000,
+    apiKey: process.env.NEXT_PUBLIC_API_KEY, 
+    businessId: process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID, 
+    currency: "NGN",
+    email: formData.email, 
+    firstName:formData.name.split(' ')[0],
+    lastName:formData.name.split(' ')[1], 
+    metadata:"",   
+    phone:'09169501662',
+    color: "#FF6932",
+    onClose: () => {
+      toast.error("Payment popup closed")},
+    onTransaction: () => {
+      toast.success("Transaction successful");
+    },
+  })
 
   const handleInputChange = (id: string, value: string) => {
     setFormData((prev) => ({ ...prev, [id]: value }));
@@ -231,6 +249,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setIsOpen(false);
     try {
       setLoading(true);
+      await config.submit();
       await handlePurchase(event, formData, String(address), id);
       setLoading(false);
       setIsOpen(false);

@@ -7,7 +7,7 @@ import { StarknetContext } from "@/contexts/UserContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-const useBuyTicket = () => {
+const useBuyPaidTicket = () => {
   const {
     contractAddr,
     account,
@@ -125,4 +125,4 @@ const useBuyTicket = () => {
   );
 };
 
-export default useBuyTicket;
+export default useBuyPaidTicket;

@@ -24,7 +24,7 @@ const SpolightEvent = (props: Props) => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.5 }}
-        variants={headingVariants}
+        // variants={headingVariants}
       >
         Spotlight Events
       </motion.h1>
@@ -34,7 +34,7 @@ const SpolightEvent = (props: Props) => {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.5 }}
-        variants={containerVariants}
+        // variants={containerVariants}
       >
         <EventCarousel />
       </motion.div>

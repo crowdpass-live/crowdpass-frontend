@@ -27,7 +27,7 @@ const useCheckIn = () => {
         const attendee_address = res.data.address as `0x${string}`;
 
         if (!attendee_address) {
-          throw new Error("Attendee address not found");
+          toast.error("Attendee address not found");
         }
         toast.dismiss();
 
