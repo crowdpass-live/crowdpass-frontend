@@ -125,7 +125,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   ];
   const config= UseALATPay({
     amount: 5000,
-    apiKey: process.env.NEXT_PUBLIC_API_KEY, 
+    apiKey: process.env.NEXT_PUBLIC_ALAT_API_KEY, 
     businessId: process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID, 
     currency: "NGN",
     email: formData.email, 
