@@ -232,6 +232,14 @@ const EventDetails = ({ eventDetails, id }: any) => {
     setIsOpen(false);
     try {
       setLoading(true);
+
+      const alatApiKey = process.env.NEXT_PUBLIC_ALAT_API_KEY;
+      const businessId = process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID;
+      
+      if (!alatApiKey || !businessId) {
+        throw new Error("Payment configuration missing");
+      }
+
   const config= UseALATPay({
     amount: 5000,
     apiKey: process.env.NEXT_PUBLIC_ALAT_API_KEY, 
