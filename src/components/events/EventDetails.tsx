@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React, { useContext, useState, useEffect } from "react";
-import dynamic from 'next/dynamic';
 import { Button } from "../ui/button";
 import { epochToDatetime } from "datetime-epoch-conversion";
 import useBuyTicket from "@/hooks/write-hooks/useBuyTicket";
@@ -38,8 +37,13 @@ import { toast } from "sonner";
 import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 import useBuyWeb2Ticket from "@/hooks/write-hooks/useBuyWeb2Ticket";
 import axios from "axios";
-import UseALATPay from "react-alatpay";
 
+// Declare global Alatpay for TypeScript
+declare global {
+  interface Window {
+    Alatpay: any;
+  }
+}
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
@@ -58,6 +62,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [registrationCount, setRegistrationCount] = useState(0);
   const [registrationLoading, setRegistrationLoading] = useState(true);
+  const [alatPayLoaded, setAlatPayLoaded] = useState(false);
   
   const [formData, setFormData] = useState({
     role: "",
@@ -68,6 +73,27 @@ const EventDetails = ({ eventDetails, id }: any) => {
   });
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+
+  // Load AlatPay script
+  useEffect(() => {
+    const loadAlatPayScript = () => {
+      if (document.querySelector('script[src="https://web.alatpay.ng/js/alatpay.js"]')) {
+        setAlatPayLoaded(true);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = 'https://web.alatpay.ng/js/alatpay.js';
+      script.onload = () => setAlatPayLoaded(true);
+      script.onerror = () => {
+        console.error('Failed to load AlatPay script');
+        setAlatPayLoaded(false);
+      };
+      document.body.appendChild(script);
+    };
+
+    loadAlatPayScript();
+  }, []);
 
   useEffect(() => {
     const fetchRegistrationCount = async () => {
@@ -223,7 +249,65 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
   };
 
- const handleSubmit = async (formEvent: React.FormEvent) => {
+  const initializeAlatPayment = () => {
+    if (!alatPayLoaded || !window.Alatpay) {
+      toast.error("Payment system is not ready. Please try again.");
+      return null;
+    }
+
+    // Check environment variables
+    const alatApiKey = process.env.NEXT_PUBLIC_ALAT_API_KEY;
+    const businessId = process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID;
+    
+    if (!alatApiKey || !businessId) {
+      toast.error("Payment configuration missing");
+      return null;
+    }
+
+    return window.Alatpay.setup({
+      amount: 5000,
+      apiKey: alatApiKey,
+      businessId: businessId,
+      currency: "NGN",
+      email: formData.email,
+      firstName: formData.name.split(' ')[0] || formData.name,
+      lastName: formData.name.split(' ')[1] || '',
+      metadata: null,
+      phone: '09169501662',
+      onClose: () => {
+        toast.error("Could not complete payment and registration");
+        setLoading(false);
+      },
+      onTransaction: async (response: any) => {
+        console.log("Payment response:", response);
+        try {
+          await handlePurchase(event, formData, String(address), id);
+          toast.success("Payment and registration successful");
+          
+          const registrationResponse = await axios.get(`/api/registrations`, {
+            params: { eventId: id }
+          });
+          setRegistrationCount(registrationResponse.data?.total || 0);
+          
+          setFormData({
+            role: "",
+            name: "",
+            email: "",
+            xhandle: "",
+            agreeToNewsletter: false,
+          });
+          setCurrentStep(1);
+        } catch (transactionError) {
+          console.error("Transaction error:", transactionError);
+          toast.error("Registration failed");
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
+  };
+
+  const handleSubmit = async (formEvent: React.FormEvent) => {
     formEvent.preventDefault();
     if (!formData.agreeToNewsletter) {
       toast.error("Please agree to receive event updates to continue.");
@@ -239,59 +323,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
       if (typeof window === "undefined") {
         throw new Error("Payment not available on server");
       }
-      
-      // Check environment variables
-      const alatApiKey = process.env.NEXT_PUBLIC_ALAT_API_KEY;
-      const businessId = process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID;
-      
-      if (!alatApiKey || !businessId) {
-        throw new Error("Payment configuration missing");
-      }
 
-      const config = UseALATPay({
-        amount: 5000,
-        apiKey: alatApiKey,
-        businessId: businessId,
-        currency: "NGN",
-        email: formData.email,
-        firstName: formData.name.split(' ')[0] || formData.name,
-        lastName: formData.name.split(' ')[1] || '',
-        metadata: "",
-        phone: '09169501662',
-        color: "#FF6932",
-        onClose: () => {
-          toast.error("Could not complete payment and registration");
-          setLoading(false);
-        },
-        onTransaction: async () => {
-          try {
-            await handlePurchase(event, formData, String(address), id);
-            toast.success("Payment and registration successful");
-            
-            const registrationResponse = await axios.get(`/api/registrations`, {
-              params: { eventId: id }
-            });
-            setRegistrationCount(registrationResponse.data?.total || 0);
-            
-            setFormData({
-              role: "",
-              name: "",
-              email: "",
-              xhandle: "",
-              agreeToNewsletter: false,
-            });
-            setCurrentStep(1);
-          } catch (transactionError) {
-            console.error("Transaction error:", transactionError);
-            toast.error("Registration failed");
-          } finally {
-            setLoading(false);
-          }
-        },
-      });
-
-      if (config && config.submit) {
-        config.submit();
+      const popup = initializeAlatPayment();
+      
+      if (popup && popup.show) {
+        popup.show();
       } else {
         throw new Error("Payment configuration invalid");
       }
@@ -348,7 +384,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
   const spotsLeft = Number(availableTicket);
-
   return (
   
     <div className="flex flex-col w-full">
