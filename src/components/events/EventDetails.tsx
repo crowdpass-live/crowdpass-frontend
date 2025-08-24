@@ -38,6 +38,7 @@ import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 import useBuyWeb2Ticket from "@/hooks/write-hooks/useBuyWeb2Ticket";
 import axios from "axios";
 import UseALATPay from "react-alatpay"
+import Head from "next/head";
 
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
@@ -319,6 +320,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const spotsLeft = Number(availableTicket);
 
   return (
+  
     <div className="flex flex-col w-full">
       {/* Share Modal */}
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
@@ -723,6 +725,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
         </DialogContent>
       </Dialog>
     </div>
+  
   );
 };
 

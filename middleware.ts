@@ -17,20 +17,22 @@ export function middleware(request: NextRequest) {
         'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
         'Access-Control-Max-Age': '86400',
         'Access-Control-Allow-Credentials': 'true',
+        'Permissions-Policy': 'payment=*',
       },
     });
   }
 
   const response = NextResponse.next();
-  
+
   response.headers.set('Access-Control-Allow-Origin', origin);
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   response.headers.set('Access-Control-Allow-Credentials', 'true');
-  
+  response.headers.set('Permissions-Policy', 'payment=*');
+
   return response;
 }
 
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ['/', '/(.*)'],
 };
