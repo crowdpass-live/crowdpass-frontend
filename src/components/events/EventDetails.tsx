@@ -38,13 +38,6 @@ import useGetAvailableTicket from "@/hooks/read-hooks/useGetAvailableTicket";
 import useBuyWeb2Ticket from "@/hooks/write-hooks/useBuyWeb2Ticket";
 import axios from "axios";
 
-// Declare global Alatpay for TypeScript
-declare global {
-  interface Window {
-    Alatpay: any;
-  }
-}
-
 const EventDetails = ({ eventDetails, id }: any) => {
   const { address, isLoading, handleCartridgeConnect } = useContext(StarknetContext);
   const handlePurchase = useBuyTicket();
@@ -62,7 +55,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [registrationCount, setRegistrationCount] = useState(0);
   const [registrationLoading, setRegistrationLoading] = useState(true);
-  const [alatPayLoaded, setAlatPayLoaded] = useState(false);
   
   const [formData, setFormData] = useState({
     role: "",
@@ -74,30 +66,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Load AlatPay script
-  useEffect(() => {
-    const loadAlatPayScript = () => {
-      if (document.querySelector('script[src="https://web.alatpay.ng/js/alatpay.js"]')) {
-        setAlatPayLoaded(true);
-        return;
-      }
-
-      const script = document.createElement('script');
-      script.src = 'https://web.alatpay.ng/js/alatpay.js';
-      script.onload = () => setAlatPayLoaded(true);
-      script.onerror = () => {
-        console.error('Failed to load AlatPay script');
-        setAlatPayLoaded(false);
-      };
-      document.body.appendChild(script);
-    };
-
-    loadAlatPayScript();
-  }, []);
-
   useEffect(() => {
     const fetchRegistrationCount = async () => {
-      if (!(event?.uri?.split("/").pop())) return;
+      if (!(event?.uri.split("/").pop())) return;
 
       try {
         setRegistrationLoading(true);
@@ -105,9 +76,9 @@ const EventDetails = ({ eventDetails, id }: any) => {
           params: { eventId: event?.uri.split("/").pop()}
         });
         console.log("Registration count response:", response);
-        setRegistrationCount(response.data?.total || 0);
+        setRegistrationCount(response.data.total);
       } catch (err) {
-        console.error("Error fetching registration count:", err);
+        console.log("Error fetching registration count:", err);
         setRegistrationCount(0);
       } finally {
         setRegistrationLoading(false);
@@ -152,8 +123,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
     },
   ];
 
-  const handleInputChange = (fieldId: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [fieldId]: value }));
+  const handleInputChange = (id: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleRoleChange = (value: string) => {
@@ -165,9 +136,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   const handleRegisterClick = () => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
+    if (window.innerWidth < 768) {
+      // Mobile: Navigate to registration page
       router.push(`/events/${id}/register`);
     } else {
+      // Desktop: Open modal
       if (!address) {
         setLoginModalOpen(true);
         return;
@@ -188,7 +161,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   useEffect(() => {
-    if (address && typeof window !== "undefined" && window.innerWidth >= 768) {
+    if (address && window.innerWidth >= 768) {
       setIsOpen(true);
       setCurrentStep(1);
     }
@@ -196,7 +169,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
   const handleRegisterWithoutSigning = () => {
     setLoginModalOpen(false);
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
+    if (window.innerWidth < 768) {
       router.push(`/events/${id}/register`);
     } else {
       setIsOpen(true);
@@ -217,8 +190,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
   };
 
-  const handlePurchaseTicketWithoutSignIn = async (submitEvent: React.FormEvent) => {
-    submitEvent.preventDefault();
+  const handlePurchaseTicketWithoutSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!formData.agreeToNewsletter) {
       toast.error("Please agree to receive event updates to continue.");
       return;
@@ -237,11 +210,11 @@ const EventDetails = ({ eventDetails, id }: any) => {
         xhandle: "",
         agreeToNewsletter: false,
       });
-      
+      // Refresh registration count after successful registration
       const response = await axios.get(`/api/registrations`, {
         params: { eventId: id }
       });
-      setRegistrationCount(response.data?.total || 0);
+      setRegistrationCount(response.data.total);
       router.push(`/events/${id}/success`);
     } catch (error: any) {
       console.error("Error:", error);
@@ -249,102 +222,42 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
   };
 
-  const initializeAlatPayment = () => {
-    if (!alatPayLoaded || !window.Alatpay) {
-      toast.error("Payment system is not ready. Please try again.");
-      return null;
-    }
-
-    // Check environment variables
-    const alatApiKey = process.env.NEXT_PUBLIC_ALAT_API_KEY;
-    const businessId = process.env.NEXT_PUBLIC_ALAT_PAY_BUSINESS_ID;
-    
-    if (!alatApiKey || !businessId) {
-      toast.error("Payment configuration missing");
-      return null;
-    }
-
-    return window.Alatpay.setup({
-      amount: 5000,
-      apiKey: alatApiKey,
-      businessId: businessId,
-      currency: "NGN",
-      email: formData.email,
-      firstName: formData.name.split(' ')[0] || formData.name,
-      lastName: formData.name.split(' ')[1] || '',
-      metadata: null,
-      phone: '09169501662',
-      onClose: () => {
-        toast.error("Could not complete payment and registration");
-        setLoading(false);
-      },
-      onTransaction: async (response: any) => {
-        console.log("Payment response:", response);
-        try {
-          await handlePurchase(event, formData, String(address), id);
-          toast.success("Payment and registration successful");
-          
-          const registrationResponse = await axios.get(`/api/registrations`, {
-            params: { eventId: id }
-          });
-          setRegistrationCount(registrationResponse.data?.total || 0);
-          
-          setFormData({
-            role: "",
-            name: "",
-            email: "",
-            xhandle: "",
-            agreeToNewsletter: false,
-          });
-          setCurrentStep(1);
-        } catch (transactionError) {
-          console.error("Transaction error:", transactionError);
-          toast.error("Registration failed");
-        } finally {
-          setLoading(false);
-        }
-      },
-    });
-  };
-
-  const handleSubmit = async (formEvent: React.FormEvent) => {
-    formEvent.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!formData.agreeToNewsletter) {
       toast.error("Please agree to receive event updates to continue.");
       return;
     }
-    
     setIsOpen(false);
-    
     try {
       setLoading(true);
-      
-      // Check if we're in browser environment
-      if (typeof window === "undefined") {
-        throw new Error("Payment not available on server");
-      }
-
-      const popup = initializeAlatPayment();
-      
-      if (popup && popup.show) {
-        popup.show();
-      } else {
-        throw new Error("Payment configuration invalid");
-      }
-      
-    } catch (submitError: any) {
-      console.error("Error:", submitError);
-      toast.error(submitError.message || "Registration failed");
+      await handlePurchase(event, formData, String(address), id);
+      setLoading(false);
+      setIsOpen(false);
+      setCurrentStep(1);
+      setFormData({
+        role: "",
+        name: "",
+        email: "",
+        xhandle: "",
+        agreeToNewsletter: false,
+      });
+      // Refresh registration count after successful registration
+      const response = await axios.get(`/api/registrations`, {
+        params: { eventId: id }
+      });
+      setRegistrationCount(response.data.total);
+    } catch (error: any) {
+      console.error("Error:", error);
       setLoading(false);
     }
   };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_JSON_URL || window.location.origin;
-      setShareUrl(`${baseUrl}/events/${id}`);
+      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
     }
-  }, [id]);
+  }, []);
 
   function convertTime(time: string) {
     let hours = time.substring(0, 2);
@@ -384,8 +297,8 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
   const spotsLeft = Number(availableTicket);
+
   return (
-  
     <div className="flex flex-col w-full">
       {/* Share Modal */}
       <Dialog open={shareOpen} onOpenChange={setShareOpen}>
@@ -790,7 +703,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
         </DialogContent>
       </Dialog>
     </div>
-  
   );
 };
 
