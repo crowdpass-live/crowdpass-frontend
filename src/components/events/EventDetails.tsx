@@ -44,17 +44,23 @@ const EventDetails = ({ eventDetails, id }: any) => {
   const handleBuyWeb2Ticket = useBuyWeb2Ticket();
   const { data: availableTicket } = useGetAvailableTicket(id);
   const router = useRouter();
+  
   const [shareOpen, setShareOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [registrationCount, setRegistrationCount] = useState(0);
+  const [registrationLoading, setRegistrationLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [hydrated, setHydrated] = useState(false); 
+  const [isDesktop, setIsDesktop] = useState(false); 
+  
   const { data } = useIsTicketHolder(id, address as `0x${string}`);
   const { event }: any = eventDetails;
   const response = epochToDatetime(`${Number(event?.start_date)}`);
   const refund = useClaimRefund();
-  const [isOpen, setIsOpen] = useState(false);
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [registrationCount, setRegistrationCount] = useState(0);
-  const [registrationLoading, setRegistrationLoading] = useState(true);
   
   const [formData, setFormData] = useState({
     role: "",
@@ -63,17 +69,38 @@ const EventDetails = ({ eventDetails, id }: any) => {
     xhandle: "",
     agreeToNewsletter: false,
   });
-  const [loading, setLoading] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
 
+  // Handle hydration
   useEffect(() => {
+    setHydrated(true);
+    
+    // Set share URL after hydration
+    if (process.env.NEXT_PUBLIC_BASE_JSON_URL) {
+      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
+    }
+    
+    // Check screen size after hydration
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, [id]);
+
+  // Fetch registration count after hydration
+  useEffect(() => {
+    if (!hydrated || !event?.uri) return;
+
     const fetchRegistrationCount = async () => {
-      if (!(event?.uri.split("/").pop())) return;
+      const eventId = event?.uri.split("/").pop();
+      if (!eventId) return;
 
       try {
         setRegistrationLoading(true);
         const response = await axios.get(`/api/registration`, {
-          params: { eventId: event?.uri.split("/").pop()}
+          params: { eventId }
         });
         console.log("Registration count response:", response);
         setRegistrationCount(response.data.total);
@@ -86,7 +113,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
     };
 
     fetchRegistrationCount();
-  }, [event]);
+  }, [event, hydrated]);
 
   const roleOptions = [
     { value: "founder", label: "Founder" },
@@ -136,7 +163,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   const handleRegisterClick = () => {
-    if (window.innerWidth < 768) {
+    if (!isDesktop) {
       // Mobile: Navigate to registration page
       router.push(`/events/${id}/register`);
     } else {
@@ -161,15 +188,15 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   useEffect(() => {
-    if (address && window.innerWidth >= 768) {
+    if (address && isDesktop) {
       setIsOpen(true);
       setCurrentStep(1);
     }
-  }, [address]);
+  }, [address, isDesktop]);
 
   const handleRegisterWithoutSigning = () => {
     setLoginModalOpen(false);
-    if (window.innerWidth < 768) {
+    if (!isDesktop) {
       router.push(`/events/${id}/register`);
     } else {
       setIsOpen(true);
@@ -253,12 +280,6 @@ const EventDetails = ({ eventDetails, id }: any) => {
     }
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setShareUrl(`${process.env.NEXT_PUBLIC_BASE_JSON_URL}events/${id}`);
-    }
-  }, []);
-
   function convertTime(time: string) {
     let hours = time.substring(0, 2);
     let minutes = time.substring(3, 5);
@@ -278,6 +299,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
   };
 
   const handleCopyLink = () => {
+    if (!hydrated) return;
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     toast.success("Link copied!");
@@ -293,10 +315,36 @@ const EventDetails = ({ eventDetails, id }: any) => {
   ];
 
   // Use registration count from API instead of calculated value
-  const totalEventTicket = registrationLoading ? 0 : registrationCount;
+  const totalEventTicket = registrationCount;
   const displayCount = Math.min(totalEventTicket, 5);
   const remaining = totalEventTicket - 5;
   const spotsLeft = Number(availableTicket);
+
+  // Show loading state until hydrated
+  if (!hydrated) {
+    return (
+      <div className="flex flex-col w-full">
+        <div className="my-4">
+          <Button
+            onClick={handleGoBack}
+            variant="ghost"
+            className="flex items-center gap-2 text-white hover:text-primary hover:bg-transparent"
+          >
+            <ArrowLeft size={20} />
+            <span>Back to Events</span>
+          </Button>
+        </div>
+        <div className="flex flex-col md:flex-row mx-4 lg:mx-28 gap-4 lg:gap-10">
+          <div className="w-full md:w-96 h-96 bg-gray-800 rounded-3xl animate-pulse" />
+          <div className="flex flex-col gap-4 lg:w-full lg:gap-6">
+            <div className="h-8 bg-gray-800 rounded animate-pulse" />
+            <div className="h-20 bg-gray-800 rounded animate-pulse" />
+            <div className="h-16 bg-gray-800 rounded animate-pulse" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full">
@@ -338,7 +386,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
 
       {/* Login Modal (Desktop Only) */}
       <Dialog open={loginModalOpen} onOpenChange={setLoginModalOpen}>
-        <DialogContent className="bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto hidden md:block">
+        <DialogContent className={`bg-[#14141A] border border-gray-700 text-white w-[95vw] max-w-md mx-auto ${!isDesktop ? 'hidden' : 'block'}`}>
           <DialogHeader>
             <DialogTitle className="text-white text-xl text-center">
               Register for Event
@@ -513,7 +561,7 @@ const EventDetails = ({ eventDetails, id }: any) => {
           if (!open) setCurrentStep(1);
         }}
       >
-        <DialogContent className="w-full h-full max-w-none max-h-none p-0 bg-[#5b5959] border-none rounded-none md:w-[90vw] md:max-w-lg md:rounded-[20px] md:overflow-hidden md:max-h-[90vh] md:h-auto overflow-y-auto hidden md:block">
+        <DialogContent className={`w-full h-full max-w-none max-h-none p-0 bg-[#5b5959] border-none rounded-none md:w-[90vw] md:max-w-lg md:rounded-[20px] md:overflow-hidden md:max-h-[90vh] md:h-auto overflow-y-auto ${!isDesktop ? 'hidden' : 'block'}`}>
           <DialogHeader className="sr-only">
             <DialogTitle>Event Registration</DialogTitle>
           </DialogHeader>
